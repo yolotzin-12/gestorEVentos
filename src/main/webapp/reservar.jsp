@@ -72,6 +72,16 @@
             </div>
 
 
+            <div class="badge-info text-dark fs-5 my-2 py-3">
+                FECHA: 15/12/26
+            </div>
+
+
+            <div class="badge-info text-dark fs-5 my-2 py-3">
+                Auditorio Principal
+            </div>
+
+
             <div class="col-md-5 mt-4 mt-md-0 d-flex flex-column justify-content-between info-lateral text-center">
 
                 <div class="my-2">
@@ -83,14 +93,8 @@
                     </div>
                 </div>
 
-                <div class="badge-info text-dark fs-5 my-2 py-3">
-                    FECHA: 15/12/26
-                </div>
+                <button type="button" name="">Reservar</button>
 
-
-                <div class="badge-info text-dark fs-5 my-2 py-3">
-                    Auditorio Principal
-                </div>
 
             </div>
         </div>
