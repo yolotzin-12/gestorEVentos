@@ -1,4 +1,3 @@
-/* estilos para la tarjeta de registro */
 .tarjeta-personalizada {
     width: 100%;
     max-width: 650px;
@@ -7,29 +6,23 @@
     border: none;
 }
 
-/* estilos exactos para el botón azul del SRAE */
 .btn-srae {
     background-color: #162e54;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.15);
-
     font-family: 'Montserrat', sans-serif;
-
 }
 
-/* efecto opcional: Que el botón brille un poco al pasar el mouse */
 .btn-srae:hover {
     background-color: #1a3663;
     color: white;
 }
 
-/* rstilos para los textos de los campos (labels)*/
 .label-formulario {
     font-size: 0.9rem;
     color: #333333;
 }
 
-/* Estilos para las cajas de texto (inputs) */
 .input-formulario {
     border-radius: 10px;
     padding: 10px;
@@ -37,8 +30,24 @@
     background-color: #ffffff;
 }
 
-
 .input-formulario:focus {
     border-color: #162e54;
-    box-shadow: 0 0 0 0.2rem rgba(22, 46, 84, 0.25); /*  resplandor azul  */
+    box-shadow: 0 0 0 0.2rem rgba(22, 46, 84, 0.25);
+}
+
+.btn-ingresar {
+    background-color: #058971 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.15) !important;
+}
+
+.btn-ingresar:hover {
+    background-color: #007058 !important;
+    color: #ffffff !important;
+}
+
+.btn-ingresar i {
+    color: #ffffff !important;
 }

@@ -18,7 +18,7 @@
 
             <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
 
-            <form action="hello-servlet" method="POST">
+            <form action="crearPerfil.jsp" method="POST">
 
                 <div class="mb-3 text-start">
                     <label for="nombre" class="form-label fw-bold label-formulario">Nombre Completo:</label>
