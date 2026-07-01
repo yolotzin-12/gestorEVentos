@@ -12,34 +12,26 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<header>
-    <div class="logo">
-        <img src="img/logo.png" width="100" alt="Logo">
-        <img src="img/letras.png" width="210" alt="SRAE">
-    </div>
-</header>
+<body class="bg-light">
 
 <div class="container my-5 d-flex justify-content-center">
 
     <div class="card p-4 shadow modal-reservacion w-100" style="max-width: 900px;">
-
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="titulo-reserva m-0">FORMULARIO DE RESERVACIÓN</h4>
             <a href="paginaPrincipal.jsp" class="text-secondary fs-4"><i class="bi bi-x-lg"></i></a>
         </div>
 
-        <div class="row">
+        <div class="row align-items-stretch">
 
-            <div class="col-md-7 pe-md-4">
+            <div class="col-md-7 pe-md-4 border-end">
                 <form action="#" method="post">
 
                     <div class="mb-3">
                         <label for="nombre" class="form-label text-muted fw-semibold mb-1">Nombre completo</label>
                         <input type="text" name="nombre" class="form-control rounded-3" id="nombre" placeholder="Tu nombre:" required>
                     </div>
-
 
                     <div class="row mb-3">
                         <div class="col-6">
@@ -62,8 +54,7 @@
                         <input type="text" name="asistencia" class="form-control rounded-3" id="asistencia" placeholder="Proyecto académico:" required>
                     </div>
 
-
-                    <div class="text-center">
+                    <div class="text-start">
                         <button type="submit" class="btn btn-confirmar fw-bold py-2 px-4 shadow-sm fs-5">
                             <i class="bi bi-check-lg me-2"></i> Confirmar reserva
                         </button>
@@ -71,30 +62,27 @@
                 </form>
             </div>
 
+            <div class="col-md-5 ps-md-4 d-flex flex-column justify-content-between mt-4 mt-md-0 text-center">
 
-            <div class="badge-info text-dark fs-5 my-2 py-3">
-                FECHA: 15/12/26
-            </div>
+                <div class="d-flex flex-column gap-3">
+                    <div class="badge-info-modal">
+                        FECHA: 15/12/26
+                    </div>
 
-
-            <div class="badge-info text-dark fs-5 my-2 py-3">
-                Auditorio Principal
-            </div>
-
-
-            <div class="col-md-5 mt-4 mt-md-0 d-flex flex-column justify-content-between info-lateral text-center">
-
-                <div class="my-2">
-                    <div class="circulo-progreso" id="circuloProgreso">
-                        <div class="fs-4 fw-bold m-0 text-dark">
-                            <span id="registrados">135</span><span class="fs-5 fw-normal text-muted">/<span id="cupoMaximo">200</span></span>
-                        </div>
-                        <small class="fw-bold text-dark" style="font-size: 0.8rem;"><span id="porcentaje">67.5</span>%</small>
+                    <div class="badge-info-modal">
+                        Auditorio Principal
                     </div>
                 </div>
 
-                <button type="button" name="">Reservar</button>
-
+                <div class="my-auto pt-4">
+                    <div class="circulo-progreso-modal" id="circuloProgreso">
+                        <div class="fs-4 fw-bold m-0 text-dark pt-4">
+                            <span id="registrados">135</span><span class="fs-5 fw-normal text-muted">/<span id="cupoMaximo">200</span></span>
+                        </div>
+                        <small class="fw-bold text-muted" style="font-size: 0.8rem;"><span id="porcentaje">67.5</span>%</small>
+                    </div>
+                    <p class="fw-bold text-secondary mt-2 mb-0" style="font-size: 0.9rem;">Aforo actual</p>
+                </div>
 
             </div>
         </div>
