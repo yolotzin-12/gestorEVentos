@@ -1,0 +1,32 @@
+/* Contenedor principal del footer */
+.custom-footer {
+    background-color: #0b192c; /* Azul oscuro */
+    color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Elementos individuales del footer */
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Estilo específico para los íconos: Arreglo de tamaño */
+.footer-item i {
+    color: #ffffff; /* Cambia a #20c997 si los quieres verdes */
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px; /* Otorga un espacio fijo uniforme para todos los íconos */
+    height: 24px;
+}
