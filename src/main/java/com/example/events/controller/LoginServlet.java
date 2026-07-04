@@ -1,4 +1,40 @@
 package com.example.events.controller;
 
-public class LoginServlet {
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import com.example.events.model.dao.UsuarioDao;
+
+import java.io.IOException;
+
+@WebServlet(name = "LoginServlet", value = "/login")
+public class LoginServlet extends HttpServlet {
+
+
+    UsuarioDao dao = new UsuarioDao();
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String email = request.getParameter("email");
+        String contra = request.getParameter("contra");
+
+
+        boolean esValido = dao.login(email, contra);
+
+        if (esValido) {
+            HttpSession session = request.getSession(true);
+            session.setAttribute("usuario", email);
+
+
+            response.sendRedirect("gestion-eventos.jsp");
+        } else {
+            request.setAttribute("error", "Usuario o contraseña incorrectos. Inténtalo de nuevo.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
+    }
 }
