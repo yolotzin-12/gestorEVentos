@@ -47,6 +47,12 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
+            <version>23.4.0.24.05</version> <!-- Use the latest available version -->
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,6 +1,6 @@
 package com.example.events.model.dao;
 
-import com.example.events.model.Evento;
+import com.example.events.model.models.Evento;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;

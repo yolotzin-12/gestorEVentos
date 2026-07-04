@@ -5,7 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.example.events.model.Evento;
+import com.example.events.model.models.Evento;
 import com.example.events.model.dao.EventoDao;
 import java.io.IOException;
 import java.util.List;
@@ -29,8 +29,13 @@ public class EventoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         try {
             String nombre = request.getParameter("nombre");
-            String categoria = request.getParameter("categoria");
+            //String categoria = request.getParameter("categoria");
             int capacidad = Integer.parseInt(request.getParameter("capacidad"));
+            //String ubicacion = request.getParameter("ubicacion");
+           // String fecha = request.getParameter("fecha");
+            //boolean estado = request.getParameter("estado") != null;
+            String img = request.getParameter("img");
+            String categoria = request.getParameter("categoria");
             String ubicacion = request.getParameter("ubicacion");
             String fecha = request.getParameter("fecha");
             boolean estado = request.getParameter("estado") != null;

@@ -1,4 +1,4 @@
-package com.example.events.model;
+package com.example.events.model.models;
 
 public class Evento {
     private int id;
