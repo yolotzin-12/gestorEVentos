@@ -1,0 +1,248 @@
+
+body.eventos-body {
+    background-color: #f4f5fa;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.eventos-header {
+    background-color: #ffffff;
+    padding: 14px 0;
+}
+
+.eventos-header .marca small {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    font-weight: 700;
+}
+
+.eventos-nav {
+    display: flex;
+    gap: 40px;
+}
+
+.eventos-nav a {
+    color: #162e54;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+}
+
+.eventos-nav a.activo {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.eventos-nav a:hover {
+    color: #0d8a5f;
+}
+
+.icono-usuario {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #d9d9d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #162e54;
+    font-size: 1.2rem;
+}
+
+.btn-logout-eventos {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background-color: #cc0000;
+    color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.btn-logout-eventos:hover {
+    background-color: #a80000;
+    color: #fff;
+}
+
+/* Línea divisoria verde debajo del header */
+.divisor-teal {
+    height: 4px;
+    background-color: #0d8a5f;
+    border: none;
+    margin: 0 0 24px 0;
+}
+
+.barra-filtros {
+    background-color: #e4e4e6;
+    border-radius: 18px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.filtro-ubicacion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pin-ubicacion {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0d8a5f;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.chip-ubicacion {
+    background-color: #fff;
+    border-radius: 999px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    color: #0d8a5f;
+    text-decoration: underline;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.chip-ubicacion i {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.buscador-evento {
+    flex: 1;
+    max-width: 480px;
+    background-color: #fff;
+    border-radius: 999px;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.buscador-evento input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 1rem;
+    padding: 8px 0;
+}
+
+.buscador-evento i {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+
+.tarjeta-evento-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+.tarjeta-evento {
+    background-color: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tarjeta-evento-link:hover .tarjeta-evento {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+}
+
+.tarjeta-evento .encabezado-evento {
+    background-color: #162e54;
+    color: #fff;
+    padding: 12px 14px;
+}
+
+.tarjeta-evento .encabezado-evento h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.tarjeta-evento .encabezado-evento p {
+    font-size: 0.75rem;
+    margin: 2px 0 0 0;
+    opacity: 0.85;
+}
+
+.tarjeta-evento .imagen-evento {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    display: block;
+}
+
+.tarjeta-evento .pie-evento {
+    background-color: #162e54;
+    color: #fff;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    margin-top: auto;
+}
+
+.tarjeta-evento .pie-evento div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.tarjeta-evento .pie-evento div:last-child {
+    margin-bottom: 0;
+}
+
+.tarjeta-evento .pie-evento i {
+    color: #ffffff;
+}
+
+.footer-eventos {
+    background-color: #162e54;
+    color: #fff;
+    padding: 22px 0;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.footer-eventos div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.footer-eventos i {
+    font-size: 1.1rem;
+}
