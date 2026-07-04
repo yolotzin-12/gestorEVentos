@@ -1,51 +1,125 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - SRAE</title>
+    <title>Eventos - SRAE</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/eventos.css">
 </head>
-<body class="bg-light">
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
+<body class="eventos-body d-flex flex-column min-vh-100">
 
-    <div class="card p-4 shadow-sm tarjeta-personalizada">
-        <div class="card-body text-center">
+<main class="flex-grow-1">
 
-            <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
+    <header class="eventos-header">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-            <form action="crearPerfil.jsp" method="POST">
+            <div class="d-flex align-items-center gap-2">
+                <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
+                <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
 
-                <div class="mb-3 text-start">
-                    <label for="nombre" class="form-label fw-bold label-formulario">Nombre Completo:</label>
-                    <input type="text" name="nombre" class="form-control input-formulario" id="nombre" placeholder="Tu nombre:" required>
-                </div>
+            <nav class="eventos-nav">
+                <a href="eventos.jsp" class="activo">Eventos</a>
+                <a href="categorias.jsp">Categorias</a>
+                <a href="historialReservas.jsp">Mis reservas</a>
+            </nav>
 
-                <div class="mb-3 text-start">
-                    <label for="email" class="form-label fw-bold label-formulario">Correo Electrónico:</label>
-                    <input type="email" name="email" class="form-control input-formulario" id="email" placeholder="Tu correo electrónico:" required>
-                </div>
+            <div class="d-flex align-items-center gap-2">
+                <a href="crearPerfil.jsp" class="icono-usuario">
+                    <i class="bi bi-person"></i>
+                </a>
+                <a href="logout" class="btn-logout-eventos">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
 
-                <div class="mb-4 text-start">
-                    <label for="password" class="form-label fw-bold label-formulario">Contraseña:</label>
-                    <input type="password" name="password" class="form-control input-formulario" id="password" placeholder="Tu contraseña:" required>
-                </div>
-
-                <div class="text-center mt-2">
-                    <button type="submit" class="btn btn-primary fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
-                        <i class="bi bi-cursor me-2" style="font-size: 1.2rem;"></i> Registrarse
-                    </button>
-                </div>
-
-            </form>
         </div>
+    </header>
+
+    <hr class="divisor-teal">
+
+    <div class="container">
+
+        <div class="barra-filtros">
+            <div class="filtro-ubicacion" id="filtroUbicacion">
+                <div class="pin-ubicacion"><i class="bi bi-geo-alt-fill"></i></div>
+                <div class="chip-ubicacion">
+                    Campus UTEZ
+                    <i class="bi bi-x-lg" onclick="quitarUbicacion()" title="Quitar filtro"></i>
+                </div>
+            </div>
+
+            <div class="buscador-evento">
+                <i class="bi bi-search"></i>
+                <input type="text" name="buscar" placeholder="Buscar evento">
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <c:choose>
+                <c:when test="${empty listaEventos}">
+                    <%-- Tarjetas de ejemplo mientras no haya datos dinámicos --%>
+                    <c:forEach begin="1" end="4">
+                        <div class="col-6 col-md-3">
+                            <a href="detalle-evento.jsp" class="tarjeta-evento-link">
+                                <div class="tarjeta-evento">
+                                    <div class="encabezado-evento">
+                                        <h3>Evento Nombre</h3>
+                                        <p>Desc desc desc desc</p>
+                                    </div>
+                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
+                                    <div class="pie-evento">
+                                        <div><i class="bi bi-calendar-event"></i> 4 JUL | 11:00 AM</div>
+                                        <div><i class="bi bi-geo-alt-fill"></i> Auditorio Pacheco UTEZ</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </c:forEach>
+                </c:when>
+
+                <c:otherwise>
+                    <c:forEach items="${listaEventos}" var="evento">
+                        <div class="col-6 col-md-3">
+                            <a href="evento?id=${evento.id}" class="tarjeta-evento-link">
+                                <div class="tarjeta-evento">
+                                    <div class="encabezado-evento">
+                                        <h3>${evento.nombre}</h3>
+                                        <p>${evento.categoria}</p>
+                                    </div>
+                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
+                                    <div class="pie-evento">
+                                        <div><i class="bi bi-calendar-event"></i> ${evento.fecha}</div>
+                                        <div><i class="bi bi-geo-alt-fill"></i> ${evento.ubicacion}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+        </div>
+
     </div>
-</div>
+
+</main>
+
+<footer class="footer-eventos">
+    <div><i class="bi bi-people-fill"></i> CONTACTANOS</div>
+    <div><i class="bi bi-telephone-fill"></i> 777-0000-000</div>
+    <div><i class="bi bi-envelope-fill"></i> CORREO@UTEZ.EDU.MX</div>
+    <div><i class="bi bi-geo-alt-fill"></i> UBICACIÓN</div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function quitarUbicacion() {
+        document.getElementById('filtroUbicacion').style.display = 'none';
+    }
+</script>
 </body>
 </html>

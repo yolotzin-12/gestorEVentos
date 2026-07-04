@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <a href="crear-evento.jsp" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
+            <a href="crearEvent.jsp" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
                 <i class="bi bi-plus-circle"></i> Nuevo Evento
             </a>
             <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">

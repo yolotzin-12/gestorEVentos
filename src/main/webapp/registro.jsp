@@ -1,94 +1,75 @@
-registro.jsp<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Registro</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-    <link rel="stylesheet" href="assets/css/bi/bootstrap-icons.css">
-    <style>
-        body {background-color: #f8f9fa;}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - SRAE</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body class="d-flex align-items-center justify-content-center min-vh-100 py-4">
+<body class="bg-light">
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-5">
+    <div class="card p-4 shadow-sm tarjeta-personalizada">
+        <div class="card-body text-center">
 
-            <div class="card shadow border-0 rounded-3">
-                <div class="card-body p-5">
+            <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
+            <h4 class="fw-bold mb-4 text-dark">Crear Cuenta</h4>
 
-                    <div class="text-center mb-4">
-                        <div class="display-4 text-primary mb-2">
-                            <i class="bi bi-person-plus-fill"></i>
-                        </div>
-                        <h2 class="fw-bold h4 text-dark">Crear Cuenta</h2>
-                        <p class="text-muted small">Completa tus datos para registrarte</p>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="small">
+                            ${error}
                     </div>
-
-                    <c:if test="${not empty error}">
-                        <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <div class="small">
-                                    ${error}
-                            </div>
-                        </div>
-                    </c:if>
-
-                    <c:if test="${not empty mensaje}">
-                        <div class="alert alert-info d-flex align-items-center py-2" role="alert">
-                            <i class="bi bi-info-circle-fill me-2"></i>
-                            <div class="small">
-                                    ${mensaje}
-                            </div>
-                        </div>
-                    </c:if>
-
-                    <form action="register" method="post">
-
-                        <div class="form-floating mb-3">
-                            <input value="${param.nombre}" type="text" class="form-control" id="txtNombre" name="nombre" placeholder="Nombre Completo" required>
-                            <label for="txtNombre">
-                                <i class="bi bi-person me-1"></i> Nombre Completo
-                            </label>
-                        </div>
-
-                        <div class="form-floating mb-3">
-                            <input value="${param.email}" type="email" class="form-control" id="txtCorreo" name="email" placeholder="Correo electrónico" required>
-                            <label for="txtCorreo">
-                                <i class="bi bi-envelope me-1"></i> Correo electrónico
-                            </label>
-                        </div>
-
-                        <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="txtPassword" name="contra" placeholder="Contraseña" required>
-                            <label for="txtPassword">
-                                <i class="bi bi-lock me-1"></i> Contraseña
-                            </label>
-                        </div>
-
-                        <button class="btn btn-primary w-100 py-2 fw-semibold shadow-sm carga" type="submit">
-                            <i class="bi bi-check-circle me-2"></i> Registrarme
-                        </button>
-
-                        <div class="d-flex flex-column align-items-center gap-2 small mt-4">
-                            <div>
-                                <span class="text-muted">¿Ya tienes una cuenta?</span>
-                                <a href="login.jsp" class="text-decoration-none fw-medium">Inicia sesión aquí</a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
-            </div>
+            </c:if>
+
+            <c:if test="${not empty mensaje}">
+                <div class="alert alert-info d-flex align-items-center py-2 text-start" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <div class="small">
+                            ${mensaje}
+                    </div>
+                </div>
+            </c:if>
+
+            <form action="register" method="post">
+
+                <div class="mb-3 text-start">
+                    <label for="txtNombre" class="form-label fw-bold label-formulario">Nombre Completo:</label>
+                    <input type="text" name="nombre" value="${param.nombre}" class="form-control input-formulario" id="txtNombre" placeholder="Tu nombre completo:" required>
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label for="txtCorreo" class="form-label fw-bold label-formulario">Correo Electrónico:</label>
+                    <input type="email" name="email" value="${param.email}" class="form-control input-formulario" id="txtCorreo" placeholder="Tu correo electrónico:" required>
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label for="txtPassword" class="form-label fw-bold label-formulario">Contraseña:</label>
+                    <input type="password" name="contra" class="form-control input-formulario" id="txtPassword" placeholder="Crea una contraseña:" required>
+                </div>
+
+                <div class="text-center mt-2">
+                    <button type="submit" class="btn btn-primary fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center carga">
+                        <i class="bi bi-person-plus-fill me-2" style="font-size: 1.2rem;"></i> Registrarme
+                    </button>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="login.jsp" class="text-decoration-none">¿Ya tienes una cuenta? Inicia sesión aquí</a>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
 
-<script src="assets/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

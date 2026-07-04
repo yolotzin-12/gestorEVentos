@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("usuario", email);
 
 
-            response.sendRedirect("gestion-eventos.jsp");
+            response.sendRedirect("index.jsp");
         } else {
             request.setAttribute("error", "Usuario o contraseña incorrectos. Inténtalo de nuevo.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
