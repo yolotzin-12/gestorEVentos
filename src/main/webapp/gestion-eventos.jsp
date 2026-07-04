@@ -63,18 +63,12 @@
                                 </div>
 
                                 <div class="mt-auto pt-3 border-top">
-                                    <c:choose>
-                                        <c:when test="${evento.estado}">
-                                            <button class="btn w-100 fw-bold text-white shadow-sm mb-2" style="background-color: #0d8a5f; border-radius: 10px;">
-                                                <i class="bi bi-calendar-check"></i> Reservar Lugar
+                                            <button class="btn w-100 fw-bold text-white shadow-sm mb-2" style="background-color: #058971; border-radius: 10px;">
+                                                <i class="bi bi-pencil"></i> Editar Evento
                                             </button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button class="btn btn-secondary w-100 fw-bold shadow-sm mb-2" disabled style="border-radius: 10px;">
-                                                <i class="bi bi-dash-circle"></i> Evento Inactivo
+                                            <button class="btn btn-secondary w-100 fw-bold shadow-sm mb-2"  style= "background-color: #C5001A; border-radius: 10px;">
+                                                <i class="bi bi-backspace"></i> Eliminar evento
                                             </button>
-                                        </c:otherwise>
-                                    </c:choose>
                                 </div>
                             </div>
                         </div>
@@ -85,7 +79,6 @@
     </div>
 </div>
 
-<%@ include file="layout/footer.jsp" %>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
