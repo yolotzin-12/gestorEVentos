@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-// El asterisco (*) indica que el filtro analizará ABSOLUTAMENTE TODAS las páginas y servlets
 @WebFilter(urlPatterns = {"/*"})
 public class FiltroAutenticacion extends HttpFilter {
 
@@ -23,38 +22,33 @@ public class FiltroAutenticacion extends HttpFilter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        // Obtener la ruta actual que el usuario está intentando visitar
         String requestURI = request.getRequestURI();
+        String contextPath = request.getContextPath();
 
-        // Obtener la sesión actual (sin crear una nueva)
         HttpSession session = request.getSession(false);
-
-        // Verificar si el usuario tiene una sesión activa con el atributo "usuario"
         boolean loggedIn = (session != null && session.getAttribute("usuario") != null);
 
-        // Definir qué rutas son públicas (no requieren login)
+        // Páginas y servlets públicos (no requieren login)
         boolean isLoginJsp = requestURI.endsWith("login.jsp");
-        boolean isLoginServlet = requestURI.endsWith("LoginServlet");
-        // Permitir archivos estáticos (CSS, imágenes) para que la página de login no pierda el diseño
-        boolean isStaticResource = requestURI.contains("/css/") || requestURI.contains("/img/") || requestURI.contains("/js/");
+        boolean isRegistroJsp = requestURI.endsWith("registro.jsp");
+        boolean isLoginServlet = requestURI.equals(contextPath + "/login");
+        boolean isRegisterServlet = requestURI.equals(contextPath + "/register");
+        boolean isStaticResource = requestURI.contains("/css/") || requestURI.contains("/img/") || requestURI.contains("/js/") || requestURI.contains("/assets/");
+
+        boolean esRutaPublica = isLoginJsp || isRegistroJsp || isLoginServlet || isRegisterServlet || isStaticResource;
 
         if (loggedIn) {
-            // CASO 1: El usuario SÍ está logueado
-            if (isLoginJsp || isLoginServlet) {
-                // Si ya está logueado e intenta ir al login, lo mandamos al inicio
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
+            if (isLoginJsp || isRegistroJsp || isLoginServlet || isRegisterServlet) {
+                // Ya logueado: no tiene sentido ir a login/registro, lo mandamos al inicio
+                response.sendRedirect(contextPath + "/index.jsp");
             } else {
-                // Si va a cualquier otra página, lo dejamos pasar
                 chain.doFilter(req, res);
             }
         } else {
-            // CASO 2: El usuario NO está logueado
-            if (isLoginJsp || isLoginServlet || isStaticResource) {
-                // Lo dejamos pasar únicamente si va al login o necesita los estilos CSS
+            if (esRutaPublica) {
                 chain.doFilter(req, res);
             } else {
-                // Si intenta entrar a index.jsp, EventoServlet, etc., lo redirigimos al login
-                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                response.sendRedirect(contextPath + "/login.jsp");
             }
         }
     }

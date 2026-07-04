@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - SRAE</title>
+    <title>Iniciar Sesión - SRAE</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -18,12 +18,13 @@
 
             <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
 
-            <form action="crearPerfil.jsp" method="POST">
+            <% if (request.getAttribute("error") != null) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= request.getAttribute("error") %>
+            </div>
+            <% } %>
 
-                <div class="mb-3 text-start">
-                    <label for="nombre" class="form-label fw-bold label-formulario">Nombre Completo:</label>
-                    <input type="text" name="nombre" class="form-control input-formulario" id="nombre" placeholder="Tu nombre:" required>
-                </div>
+            <form action="login" method="POST">
 
                 <div class="mb-3 text-start">
                     <label for="email" class="form-label fw-bold label-formulario">Correo Electrónico:</label>
@@ -31,14 +32,18 @@
                 </div>
 
                 <div class="mb-4 text-start">
-                    <label for="password" class="form-label fw-bold label-formulario">Contraseña:</label>
-                    <input type="password" name="password" class="form-control input-formulario" id="password" placeholder="Tu contraseña:" required>
+                    <label for="contra" class="form-label fw-bold label-formulario">Contraseña:</label>
+                    <input type="password" name="contra" class="form-control input-formulario" id="contra" placeholder="Tu contraseña:" required>
                 </div>
 
                 <div class="text-center mt-2">
                     <button type="submit" class="btn btn-primary fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
-                        <i class="bi bi-cursor me-2" style="font-size: 1.2rem;"></i> Registrarse
+                        <i class="bi bi-cursor me-2" style="font-size: 1.2rem;"></i> Iniciar Sesión
                     </button>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a href="registro.jsp">¿No tienes cuenta? Regístrate</a>
                 </div>
 
             </form>
