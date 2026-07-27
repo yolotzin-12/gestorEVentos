@@ -50,7 +50,6 @@
                     <input type="email" name="email" value="${param.email}" class="form-control input-formulario" id="txtCorreo" placeholder="Tu correo electrónico:" required>
                 </div>
 
-                <!-- CAMBIO AQUÍ: Se cambió el name, id y for a "emailConfirmacion" -->
                 <div class="mb-3 text-start">
                     <label for="txtCorreoConfirmacion" class="form-label fw-bold label-formulario">Confirmar Correo:</label>
                     <input type="email" name="emailConfirmacion" value="${param.emailConfirmacion}" class="form-control input-formulario" id="txtCorreoConfirmacion" placeholder="Confirme su correo electronico:" required>
