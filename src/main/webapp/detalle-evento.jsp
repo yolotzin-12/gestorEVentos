@@ -103,12 +103,7 @@
 
 </main>
 
-<footer class="footer-eventos">
-    <div><i class="bi bi-people-fill"></i> CONTACTANOS</div>
-    <div><i class="bi bi-telephone-fill"></i> 777-0000-000</div>
-    <div><i class="bi bi-envelope-fill"></i> CORREO@UTEZ.EDU.MX</div>
-    <div><i class="bi bi-geo-alt-fill"></i> UBICACIÓN</div>
-</footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

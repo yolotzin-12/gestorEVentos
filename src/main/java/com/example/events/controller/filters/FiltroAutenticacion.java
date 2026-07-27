@@ -31,15 +31,15 @@ public class FiltroAutenticacion extends HttpFilter {
         // Páginas y servlets públicos (no requieren login)
         boolean isLoginJsp = requestURI.endsWith("login.jsp");
         boolean isRegistroJsp = requestURI.endsWith("registro.jsp");
+        boolean isRecuperarJsp = requestURI.endsWith("recuperarContra.jsp"); // NUEVO: Detectar vista de recuperar contraseña
         boolean isLoginServlet = requestURI.equals(contextPath + "/login");
         boolean isRegisterServlet = requestURI.equals(contextPath + "/register");
         boolean isStaticResource = requestURI.contains("/css/") || requestURI.contains("/img/") || requestURI.contains("/js/") || requestURI.contains("/assets/");
 
-        boolean esRutaPublica = isLoginJsp || isRegistroJsp || isLoginServlet || isRegisterServlet || isStaticResource;
+        boolean esRutaPublica = isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet || isStaticResource;
 
         if (loggedIn) {
-            if (isLoginJsp || isRegistroJsp || isLoginServlet || isRegisterServlet) {
-                // Ya logueado: no tiene sentido ir a login/registro, lo mandamos al inicio
+            if (isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet) {
                 response.sendRedirect(contextPath + "/index.jsp");
             } else {
                 chain.doFilter(req, res);

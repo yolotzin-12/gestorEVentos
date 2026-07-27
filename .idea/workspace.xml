@@ -11,7 +11,15 @@
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/registro.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/registro.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/filters/FiltroAutenticacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/filters/FiltroAutenticacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/detalle-evento.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/detalle-evento.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/editarEvent.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/editarEvent.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/historialReservas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/historialReservas.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/reservar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/reservar.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,7 +221,7 @@
       <updated>1783133272951</updated>
       <workItem from="1783133274054" duration="3524000" />
       <workItem from="1783657637976" duration="51000" />
-      <workItem from="1785179518709" duration="326000" />
+      <workItem from="1785179518709" duration="1673000" />
     </task>
     <servers />
   </component>

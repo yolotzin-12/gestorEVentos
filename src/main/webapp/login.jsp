@@ -45,6 +45,9 @@
                 <div class="text-center mt-3">
                     <a href="registro.jsp">¿No tienes cuenta? Regístrate</a>
                 </div>
+                <div class="text-center mt-3">
+                    <a href="recuperarContra.jsp"> Recuperar contraseña </a>
+                </div>
 
             </form>
         </div>
