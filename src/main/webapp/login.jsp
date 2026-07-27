@@ -19,8 +19,20 @@
             <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
 
             <% if (request.getAttribute("error") != null) { %>
-            <div class="alert alert-danger" role="alert">
-                <%= request.getAttribute("error") %>
+            <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div class="small">
+                    <%= request.getAttribute("error") %>
+                </div>
+            </div>
+            <% } %>
+
+            <% if (request.getAttribute("mensaje") != null) { %>
+            <div class="alert alert-success d-flex align-items-center py-2 text-start" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <div class="small">
+                    <%= request.getAttribute("mensaje") %>
+                </div>
             </div>
             <% } %>
 
@@ -43,10 +55,10 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <a href="registro.jsp">¿No tienes cuenta? Regístrate</a>
+                    <a href="registro.jsp" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
                 </div>
-                <div class="text-center mt-3">
-                    <a href="recuperarContra.jsp"> Recuperar contraseña </a>
+                <div class="text-center mt-2">
+                    <a href="recuperarContra.jsp" class="text-decoration-none">Recuperar contraseña</a>
                 </div>
 
             </form>

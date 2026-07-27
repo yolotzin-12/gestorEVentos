@@ -41,8 +41,20 @@
             <form action="register" method="post">
 
                 <div class="mb-3 text-start">
-                    <label for="txtNombre" class="form-label fw-bold label-formulario">Nombre Completo:</label>
-                    <input type="text" name="nombre" value="${param.nombre}" class="form-control input-formulario" id="txtNombre" placeholder="Tu nombre completo:" required>
+                    <label for="txtNombre" class="form-label fw-bold label-formulario">Nombre(s):</label>
+                    <input type="text" name="nombre" value="${param.nombre}" class="form-control input-formulario" id="txtNombre" placeholder="Tu nombre(s):" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3 text-start">
+                        <label for="txtApellidoPaterno" class="form-label fw-bold label-formulario">Apellido Paterno:</label>
+                        <input type="text" name="apellidoPaterno" value="${param.apellidoPaterno}" class="form-control input-formulario" id="txtApellidoPaterno" placeholder="Primer apellido:" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3 text-start">
+                        <label for="txtApellidoMaterno" class="form-label fw-bold label-formulario">Apellido Materno:</label>
+                        <input type="text" name="apellidoMaterno" value="${param.apellidoMaterno}" class="form-control input-formulario" id="txtApellidoMaterno" placeholder="Segundo apellido:" required>
+                    </div>
                 </div>
 
                 <div class="mb-3 text-start">
