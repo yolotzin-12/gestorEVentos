@@ -31,7 +31,7 @@ public class FiltroAutenticacion extends HttpFilter {
         // Páginas y servlets públicos (no requieren login)
         boolean isLoginJsp = requestURI.endsWith("login.jsp");
         boolean isRegistroJsp = requestURI.endsWith("registro.jsp");
-        boolean isRecuperarJsp = requestURI.endsWith("recuperarContra.jsp"); // NUEVO: Detectar vista de recuperar contraseña
+        boolean isRecuperarJsp = requestURI.endsWith("recuperarContra.jsp");
         boolean isLoginServlet = requestURI.equals(contextPath + "/login");
         boolean isRegisterServlet = requestURI.equals(contextPath + "/register");
         boolean isStaticResource = requestURI.contains("/css/") || requestURI.contains("/img/") || requestURI.contains("/js/") || requestURI.contains("/assets/");
