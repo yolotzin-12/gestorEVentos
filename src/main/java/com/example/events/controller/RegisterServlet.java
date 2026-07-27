@@ -21,10 +21,17 @@ public class RegisterServlet extends HttpServlet {
 
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
+        String emailConfirmacion = request.getParameter("emailConfirmacion");
         String contra = request.getParameter("contra");
 
-        if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty() || contra == null || contra.trim().isEmpty()) {
+        if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty() || emailConfirmacion == null || emailConfirmacion.trim().isEmpty() || contra == null || contra.trim().isEmpty()) {
             request.setAttribute("error", "Por favor, completa todos los campos obligatorios.");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
+
+        if (!email.equals(emailConfirmacion)) {
+            request.setAttribute("error", "Los correos electrónicos no coinciden.");
             request.getRequestDispatcher("registro.jsp").forward(request, response);
             return;
         }
