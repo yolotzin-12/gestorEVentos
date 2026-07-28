@@ -10,10 +10,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EmailSender.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RestablecerContraServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AdministradorDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/TokenRecuperacionDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Administrador.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Asistente.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Organizador.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/TokenRecuperacion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RegisterServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RegisterServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/registro.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/registro.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,43 +81,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "Tomcat Server.Tomcat 10.1.56.executor": "Run",
-    "git-widget-placeholder": "emely",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/axela/OneDrive/Escritorio/integradora/gestorEVentos",
-    "list.type.of.created.stylesheet": "CSS",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Tomcat Server.Tomcat 10.1.56.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;emely&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/axela/OneDrive/Escritorio/integradora/gestorEVentos&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\emely\Desktop\xccxvc\gestorEVentos\src\main\webapp" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="configurationStatuses">
-      <map>
-        <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
-          <value>
-            <map>
-              <entry key="Tomcat 10.1.56" value="STOPPED" />
-            </map>
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="RunManager">
     <configuration name="Tomcat 10.1.56" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.56" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
