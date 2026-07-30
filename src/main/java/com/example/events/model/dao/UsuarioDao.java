@@ -3,75 +3,124 @@ package com.example.events.model.dao;
 import com.example.events.model.Usuario;
 import com.example.events.DB.OracleConnectApp;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.security.MessageDigest;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDao {
 
-    // Método para crear (registrar) un usuario en la base de datos
-    public boolean create(Usuario usuario) {
-        if (usuario == null) {
-            return false;
+    // ── Hashear contraseña con SHA-256 ──────────────────────────────────────
+    public static String hashSHA256(String texto) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(texto.getBytes("UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al hashear contraseña", e);
         }
+    }
 
-        // Ajusta los nombres de las columnas (nombre, apellido_paterno, etc.) a como estén exactamente en tu tabla de Oracle
-        String sql = "INSERT INTO USUARIOS(nombre, apellido_paterno, apellido_materno, email, password, telefono) VALUES(?, ?, ?, ?, ?, ?)";
+    // ── Crear usuario (INSERT en USUARIO + tabla hija según rol) ────────────
+    public boolean create(Usuario usuario) {
+        if (usuario == null) return false;
 
-        try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        // id_rol 3 = Asistente por defecto al registrarse
+        String sqlUsuario = "INSERT INTO USUARIO(id_rol, nombre, apellido_paterno, " +
+                "apellido_materno, correo_electronico, activo) " +
+                "VALUES(3, ?, ?, ?, ?, 1)";
 
-            ps.setString(1, usuario.getNombre());
-            ps.setString(2, usuario.getApellidoPaterno());
-            ps.setString(3, usuario.getApellidoMaterno());
-            ps.setString(4, usuario.getEmail());
-            ps.setString(5, usuario.getPassword());
-            ps.setString(6, usuario.getTelefono());
+        String sqlAsistente = "INSERT INTO ASISTENTE(id_usuario, telefono) " +
+                "VALUES(SEQ_ASISTENTE.CURRVAL, ?)";
 
-            int filasAfectadas = ps.executeUpdate();
-            return filasAfectadas > 0;
+        try (Connection con = OracleConnectApp.getConnection()) {
+            con.setAutoCommit(false);
+
+            // 1. Insertar en USUARIO
+            try (PreparedStatement ps = con.prepareStatement(sqlUsuario,
+                    new String[]{"ID_USUARIO"})) {
+                ps.setString(1, usuario.getNombre());
+                ps.setString(2, usuario.getApellidoPaterno());
+                ps.setString(3, usuario.getApellidoMaterno());
+                ps.setString(4, usuario.getEmail());
+                ps.executeUpdate();
+
+                // Obtener el ID generado
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    usuario.setId(rs.getInt(1));
+                }
+            }
+
+            // 2. Insertar contraseña hasheada en CONTRASENA
+            String sqlContra = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
+            try (PreparedStatement ps = con.prepareStatement(sqlContra)) {
+                ps.setInt(1, usuario.getId());
+                ps.setString(2, hashSHA256(usuario.getPassword()));
+                ps.executeUpdate();
+            }
+
+            // 3. Insertar en ASISTENTE (tabla hija)
+            String sqlAsis = "INSERT INTO ASISTENTE(id_usuario, telefono) VALUES(?, ?)";
+            try (PreparedStatement ps = con.prepareStatement(sqlAsis)) {
+                ps.setInt(1, usuario.getId());
+                ps.setString(2, usuario.getTelefono() != null ? usuario.getTelefono() : "");
+                ps.executeUpdate();
+            }
+
+            con.commit();
+            return true;
 
         } catch (SQLException e) {
-            System.err.println("Error al intentar registrar al usuario.");
+            System.err.println("Error al registrar usuario: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    // Método para iniciar sesión
-    public boolean login(String email, String password) {
-        if (email == null || password == null) {
-            return false;
-        }
+    // ── Login ────────────────────────────────────────────────────────────────
+    public Usuario login(String email, String password) {
+        if (email == null || password == null) return null;
 
-        String sql = "SELECT COUNT(*) FROM USUARIOS WHERE email = ? AND password = ?";
+        String sql = "SELECT u.id_usuario, u.id_rol, u.nombre, u.apellido_paterno, " +
+                "u.apellido_materno, u.correo_electronico, u.activo " +
+                "FROM USUARIO u " +
+                "JOIN CONTRASENA c ON c.id_usuario = u.id_usuario AND c.activa = 1 " +
+                "WHERE u.correo_electronico = ? AND c.hash_contrasena = ? AND u.activo = 1";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, email.trim());
-            ps.setString(2, password);
+            ps.setString(1, email.trim().toLowerCase());
+            ps.setString(2, hashSHA256(password));
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    // Si el conteo es mayor a 0, las credenciales son correctas
-                    return rs.getInt(1) > 0;
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id_usuario"));
+                    u.setIdRol(rs.getInt("id_rol"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setApellidoPaterno(rs.getString("apellido_paterno"));
+                    u.setApellidoMaterno(rs.getString("apellido_materno"));
+                    u.setEmail(rs.getString("correo_electronico"));
+                    u.setActivo(rs.getInt("activo") == 1);
+                    return u;
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error al intentar realizar el login.");
+            System.err.println("Error en login: " + e.getMessage());
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
-    // Método para obtener todos los usuarios (opcional, basado en tu ejemplo)
+    // ── Obtener todos los usuarios (para Admin) ──────────────────────────────
     public List<Usuario> getAll() {
-        List<Usuario> listaUsuarios = new ArrayList<>();
-        String sql = "SELECT * FROM USUARIOS";
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT id_usuario, id_rol, nombre, apellido_paterno, " +
+                "apellido_materno, correo_electronico, activo FROM USUARIO";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -79,19 +128,95 @@ public class UsuarioDao {
 
             while (rs.next()) {
                 Usuario u = new Usuario();
+                u.setId(rs.getInt("id_usuario"));
+                u.setIdRol(rs.getInt("id_rol"));
                 u.setNombre(rs.getString("nombre"));
                 u.setApellidoPaterno(rs.getString("apellido_paterno"));
                 u.setApellidoMaterno(rs.getString("apellido_materno"));
-                u.setEmail(rs.getString("email"));
-                u.setPassword(rs.getString("password"));
-                u.setTelefono(rs.getString("telefono"));
-
-                listaUsuarios.add(u);
+                u.setEmail(rs.getString("correo_electronico"));
+                u.setActivo(rs.getInt("activo") == 1);
+                lista.add(u);
             }
         } catch (SQLException e) {
-            System.err.println("Error al intentar obtener los usuarios.");
             e.printStackTrace();
         }
-        return listaUsuarios;
+        return lista;
+    }
+
+    // ── Deshabilitar usuario (Admin - HU-04) ─────────────────────────────────
+    public boolean deshabilitar(int idUsuario) {
+        String sql = "UPDATE USUARIO SET activo = 0 WHERE id_usuario = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ── Asignar rol (Admin - HU-04) ──────────────────────────────────────────
+    public boolean asignarRol(int idUsuario, int idRol) {
+        String sql = "UPDATE USUARIO SET id_rol = ? WHERE id_usuario = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idRol);
+            ps.setInt(2, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ── Buscar por correo (para recuperación de contraseña) ──────────────────
+    public Usuario getByEmail(String email) {
+        String sql = "SELECT id_usuario, id_rol, nombre, correo_electronico, activo " +
+                "FROM USUARIO WHERE correo_electronico = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email.trim().toLowerCase());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id_usuario"));
+                    u.setIdRol(rs.getInt("id_rol"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setEmail(rs.getString("correo_electronico"));
+                    u.setActivo(rs.getInt("activo") == 1);
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // ── Actualizar contraseña (después de recuperación) ──────────────────────
+    public boolean actualizarContrasena(int idUsuario, String nuevaContrasena) {
+        // Desactivar contraseña anterior
+        String sqlDesact = "UPDATE CONTRASENA SET activa = 0 WHERE id_usuario = ?";
+        // Insertar nueva
+        String sqlNueva = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
+
+        try (Connection con = OracleConnectApp.getConnection()) {
+            con.setAutoCommit(false);
+            try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
+                ps1.setInt(1, idUsuario);
+                ps1.executeUpdate();
+            }
+            try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
+                ps2.setInt(1, idUsuario);
+                ps2.setString(2, hashSHA256(nuevaContrasena));
+                ps2.executeUpdate();
+            }
+            con.commit();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -2,29 +2,29 @@ package com.example.events.model.models;
 
 public class Reserva {
     private int id;
-    private String nombre;
-    private String matricula;
-    private String carrera;
-    private String email;
-    private String asistencia;
+    private int idEvento;
+    private int idAsistente;
+    private String codigoReserva;
+    private String estado;
+    private String fechaHoraReserva;
 
     public Reserva() {}
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public int getIdEvento() { return idEvento; }
+    public void setIdEvento(int idEvento) { this.idEvento = idEvento; }
 
-    public String getMatricula() { return matricula; }
-    public void setMatricula(String matricula) { this.matricula = matricula; }
+    public int getIdAsistente() { return idAsistente; }
+    public void setIdAsistente(int idAsistente) { this.idAsistente = idAsistente; }
 
-    public String getCarrera() { return carrera; }
-    public void setCarrera(String carrera) { this.carrera = carrera; }
+    public String getCodigoReserva() { return codigoReserva; }
+    public void setCodigoReserva(String codigoReserva) { this.codigoReserva = codigoReserva; }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public String getAsistencia() { return asistencia; }
-    public void setAsistencia(String asistencia) { this.asistencia = asistencia; }
+    public String getFechaHoraReserva() { return fechaHoraReserva; }
+    public void setFechaHoraReserva(String fechaHoraReserva) { this.fechaHoraReserva = fechaHoraReserva; }
 }

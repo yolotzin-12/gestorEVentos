@@ -1,134 +1,172 @@
 package com.example.events.model.dao;
 
 import com.example.events.model.models.Evento;
-import java.io.*;
+import com.example.events.DB.OracleConnectApp;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventoDao implements Dao<Evento, Integer> {
 
-    // Ruta del archivo CSV donde se guardarán los datos de prueba
-    private static final String FILE_PATH = "eventos_test.csv";
-    private static final String SEPARADOR = ",";
-
-    public EventoDao() {
-        // Al instanciar el DAO, verifica si el archivo existe. Si no, lo crea.
-        File archivo = new File(FILE_PATH);
-        if (!archivo.exists()) {
-            try {
-                archivo.createNewFile();
-            } catch (IOException e) {
-                System.out.println("Error al crear el archivo CSV: " + e.getMessage());
-            }
-        }
-    }
-
     @Override
-    public boolean create(Evento entidad) {
-        List<Evento> eventos = getAll();
+    public boolean create(Evento e) {
+        String sql = "INSERT INTO EVENTO(id_organizador, id_espacio, nombre, descripcion, " +
+                "capacidad_maxima, capacidad_disponible, fecha_hora, estado) " +
+                "VALUES(?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD'), ?)";
 
-        // Autoincrementar el ID (busca el mayor ID actual y le suma 1)
-        int nuevoId = 1;
-        for (Evento e : eventos) {
-            if (e.getId() >= nuevoId) {
-                nuevoId = e.getId() + 1;
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql, new String[]{"ID_EVENTO"})) {
+
+            ps.setInt(1, e.getIdOrganizador());
+            ps.setInt(2, e.getIdEspacio() > 0 ? e.getIdEspacio() : 1); // espacio por defecto
+            ps.setString(3, e.getNombre());
+            ps.setString(4, e.getDescripcion());
+            ps.setInt(5, e.getCapacidadMaxima());
+            ps.setInt(6, e.getCapacidadMaxima()); // disponible = máxima al crear
+            ps.setString(7, e.getFechaHora());
+            ps.setString(8, e.getEstado() != null ? e.getEstado() : "Borrador");
+
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) e.setId(rs.getInt(1));
+                return true;
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        entidad.setId(nuevoId);
-        eventos.add(entidad);
-
-        return guardarTodos(eventos);
+        return false;
     }
 
     @Override
     public List<Evento> getAll() {
-        List<Evento> datos = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                if (linea.trim().isEmpty()) continue; // Saltar líneas vacías
+        List<Evento> lista = new ArrayList<>();
+        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
+                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                "e.fecha_hora, e.estado, esp.ubicacion " +
+                "FROM EVENTO e JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "WHERE e.estado = 'Disponible' ORDER BY e.fecha_hora";
 
-                String[] partes = linea.split(SEPARADOR);
-                if (partes.length >= 7) {
-                    Evento e = new Evento();
-                    e.setId(Integer.parseInt(partes[0]));
-                    e.setNombre(partes[1]);
-                    e.setCategoria(partes[2]);
-                    e.setCapacidad(Integer.parseInt(partes[3]));
-                    e.setUbicacion(partes[4]);
-                    e.setFecha(partes[5]);
-                    e.setEstado(Boolean.parseBoolean(partes[6])); // true o false
-                    datos.add(e);
-                }
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(mapear(rs));
             }
-        } catch (Exception e) {
-            System.out.println("Error al leer el CSV: " + e.getMessage());
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        return datos;
+        return lista;
+    }
+
+    // Obtener todos los eventos de un organizador (panel del organizador)
+    public List<Evento> getByOrganizador(int idOrganizador) {
+        List<Evento> lista = new ArrayList<>();
+        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
+                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                "e.fecha_hora, e.estado, esp.ubicacion " +
+                "FROM EVENTO e JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idOrganizador);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) lista.add(mapear(rs));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lista;
     }
 
     @Override
     public Evento getById(Integer id) {
-        List<Evento> eventos = getAll();
-        for (Evento e : eventos) {
-            if (e.getId() == id) {
-                return e; // Retorna el evento si coincide el ID
+        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
+                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                "e.fecha_hora, e.estado, esp.ubicacion " +
+                "FROM EVENTO e JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "WHERE e.id_evento = ?";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        return null; // Si no lo encuentra, retorna null
+        return null;
     }
 
     @Override
-    public boolean update(Evento entidad) {
-        List<Evento> eventos = getAll();
-        boolean encontrado = false;
+    public boolean update(Evento e) {
+        String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, capacidad_maxima=?, " +
+                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD'), estado=? WHERE id_evento=?";
 
-        for (int i = 0; i < eventos.size(); i++) {
-            if (eventos.get(i).getId() == entidad.getId()) {
-                eventos.set(i, entidad); // Reemplaza el evento viejo por el nuevo
-                encontrado = true;
-                break;
-            }
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, e.getNombre());
+            ps.setString(2, e.getDescripcion());
+            ps.setInt(3, e.getCapacidadMaxima());
+            ps.setString(4, e.getFechaHora());
+            ps.setString(5, e.getEstado());
+            ps.setInt(6, e.getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
         }
-
-        if (encontrado) {
-            return guardarTodos(eventos);
-        }
-        return false;
     }
 
     @Override
     public boolean delete(Integer id) {
-        List<Evento> eventos = getAll();
-        boolean removido = eventos.removeIf(e -> e.getId() == id); // Elimina de la lista si el ID coincide
-
-        if (removido) {
-            return guardarTodos(eventos); // Sobreescribe el archivo sin el elemento eliminado
-        }
-        return false;
-    }
-
-    /**
-     * Método auxiliar privado que sobreescribe todo el archivo CSV
-     * con la lista actual de eventos.
-     */
-    private boolean guardarTodos(List<Evento> eventos) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (Evento e : eventos) {
-                String linea = e.getId() + SEPARADOR +
-                        e.getNombre() + SEPARADOR +
-                        e.getCategoria() + SEPARADOR +
-                        e.getCapacidad() + SEPARADOR +
-                        e.getUbicacion() + SEPARADOR +
-                        e.getFecha() + SEPARADOR +
-                        e.isEstado();
-                bw.write(linea);
-                bw.newLine();
-            }
-            return true;
-        } catch (IOException ex) {
-            System.out.println("Error al escribir en el CSV: " + ex.getMessage());
+        String sql = "DELETE FROM EVENTO WHERE id_evento = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
             return false;
         }
+    }
+
+    // Decrementar disponibilidad al reservar
+    public boolean decrementarDisponibilidad(int idEvento, Connection con) throws SQLException {
+        String sql = "UPDATE EVENTO SET capacidad_disponible = capacidad_disponible - 1 " +
+                "WHERE id_evento = ? AND capacidad_disponible > 0";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idEvento);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    // Incrementar disponibilidad al cancelar
+    public boolean incrementarDisponibilidad(int idEvento, Connection con) throws SQLException {
+        String sql = "UPDATE EVENTO SET capacidad_disponible = capacidad_disponible + 1 " +
+                "WHERE id_evento = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idEvento);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    private Evento mapear(ResultSet rs) throws SQLException {
+        Evento e = new Evento();
+        e.setId(rs.getInt("id_evento"));
+        e.setIdOrganizador(rs.getInt("id_organizador"));
+        e.setIdEspacio(rs.getInt("id_espacio"));
+        e.setNombre(rs.getString("nombre"));
+        e.setDescripcion(rs.getString("descripcion"));
+        e.setCapacidadMaxima(rs.getInt("capacidad_maxima"));
+        e.setCapacidadDisponible(rs.getInt("capacidad_disponible"));
+        e.setFechaHora(rs.getString("fecha_hora"));
+        e.setEstado(rs.getString("estado"));
+        e.setUbicacion(rs.getString("ubicacion"));
+        return e;
     }
 }

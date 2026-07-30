@@ -2,85 +2,49 @@ package com.example.events.model.models;
 
 public class Evento {
     private int id;
+    private int idOrganizador;
+    private int idEspacio;
     private String nombre;
     private String categoria;
-    private int capacidad;
+    private String descripcion;
+    private int capacidadMaxima;
+    private int capacidadDisponible;
     private String ubicacion;
-    private String fecha;
-    private boolean estado;
+    private String fechaHora;
+    private String estado; // "Borrador", "Disponible", "Cancelado"
 
-    public Evento() {
-    }
+    public Evento() {}
 
-    public Evento(int id, String nombre, String categoria, int capacidad, String ubicacion, String fecha, boolean estado) {
-        this.id = id;
-        this.nombre = nombre;
-        this.categoria = categoria;
-        this.capacidad = capacidad;
-        this.ubicacion = ubicacion;
-        this.fecha = fecha;
-        this.estado = estado;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public int getId() {
-        return id;
-    }
+    public int getIdOrganizador() { return idOrganizador; }
+    public void setIdOrganizador(int idOrganizador) { this.idOrganizador = idOrganizador; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getIdEspacio() { return idEspacio; }
+    public void setIdEspacio(int idEspacio) { this.idEspacio = idEspacio; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public String getCategoria() {
-        return categoria;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+    public int getCapacidadMaxima() { return capacidadMaxima; }
+    public void setCapacidadMaxima(int capacidadMaxima) { this.capacidadMaxima = capacidadMaxima; }
 
-    public int getCapacidad() {
-        return capacidad;
-    }
+    public int getCapacidadDisponible() { return capacidadDisponible; }
+    public void setCapacidadDisponible(int capacidadDisponible) { this.capacidadDisponible = capacidadDisponible; }
 
-    public void setCapacidad(int capacidad) {
-        this.capacidad = capacidad;
-    }
+    public String getUbicacion() { return ubicacion; }
+    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
 
-    public String getUbicacion() {
-        return ubicacion;
-    }
+    public String getFechaHora() { return fechaHora; }
+    public void setFechaHora(String fechaHora) { this.fechaHora = fechaHora; }
 
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
-
-    @Override
-    public String toString() {
-        return id + ',' + nombre + ',' + categoria + ',' + capacidad
-                + ',' + ubicacion + ',' + fecha + ',' + estado;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }

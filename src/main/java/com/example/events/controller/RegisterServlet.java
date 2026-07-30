@@ -7,69 +7,75 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.example.events.model.Usuario;
 import com.example.events.model.dao.UsuarioDao;
+import com.example.events.utils.EmailSender;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
 
-    UsuarioDao dao = new UsuarioDao();
+    private final UsuarioDao dao = new UsuarioDao();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String nombre = request.getParameter("nombre");
+        String nombre          = request.getParameter("nombre");
         String apellidoPaterno = request.getParameter("apellidoPaterno");
         String apellidoMaterno = request.getParameter("apellidoMaterno");
-        String email = request.getParameter("email");
-        String emailConfirmacion = request.getParameter("emailConfirmacion");
-        String contra = request.getParameter("contra");
+        String email           = request.getParameter("email");
+        String emailConf       = request.getParameter("emailConfirmacion");
+        String contra          = request.getParameter("contra");
 
-        if (nombre == null || nombre.trim().isEmpty() ||
-                apellidoPaterno == null || apellidoPaterno.trim().isEmpty() ||
-                apellidoMaterno == null || apellidoMaterno.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                emailConfirmacion == null || emailConfirmacion.trim().isEmpty() ||
-                contra == null || contra.trim().isEmpty()) {
-
-            request.setAttribute("error", "Por favor, completa todos los campos obligatorios.");
+        // ── Validaciones ────────────────────────────────────────────────────
+        if (nombre == null || nombre.isBlank() || apellidoPaterno == null ||
+                email == null || contra == null) {
+            request.setAttribute("error", "Completa todos los campos obligatorios.");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
+        if (!email.equals(emailConf)) {
+            request.setAttribute("error", "Los correos no coinciden.");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
+        if (contra.length() < 8) {
+            request.setAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
             request.getRequestDispatcher("registro.jsp").forward(request, response);
             return;
         }
 
-        String regexNombre = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$";
-        if (!nombre.trim().matches(regexNombre)) {
-            request.setAttribute("error", "El nombre solo puede contener letras y espacios.");
-            request.getRequestDispatcher("registro.jsp").forward(request, response);
-            return;
-        }
+        // ── Crear usuario ────────────────────────────────────────────────────
+        Usuario u = new Usuario();
+        u.setNombre(formatear(nombre));
+        u.setApellidoPaterno(formatear(apellidoPaterno));
+        u.setApellidoMaterno(apellidoMaterno != null ? formatear(apellidoMaterno) : "");
+        u.setEmail(email.trim().toLowerCase());
+        u.setPassword(contra);   // el DAO hace el hash
+        u.setTelefono("");
 
-        String regexApellido = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$";
-        if (!apellidoPaterno.trim().matches(regexApellido) || !apellidoMaterno.trim().matches(regexApellido)) {
-            request.setAttribute("error", "No se permiten espacios ni caracteres especiales.");
-            request.getRequestDispatcher("registro.jsp").forward(request, response);
-            return;
-        }
-
-        if (!email.equals(emailConfirmacion)) {
-            request.setAttribute("error", "Los correos electrónicos no coinciden.");
-            request.getRequestDispatcher("registro.jsp").forward(request, response);
-            return;
-        }
-
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setNombre(formatearTexto(nombre));
-        nuevoUsuario.setApellidoPaterno(formatearTexto(apellidoPaterno));
-        nuevoUsuario.setApellidoMaterno(formatearTexto(apellidoMaterno));
-        nuevoUsuario.setEmail(email.trim().toLowerCase());
-        nuevoUsuario.setPassword(contra);
-        nuevoUsuario.setTelefono("");
-
-        boolean creado = dao.create(nuevoUsuario);
+        boolean creado = dao.create(u);
 
         if (creado) {
-            request.setAttribute("mensaje", "¡Cuenta creada con éxito! Ahora puedes iniciar sesión.");
+            // Enviar correo de bienvenida
+            try {
+                String html = """
+                    <html><body style="font-family:Arial,sans-serif">
+                      <h2 style="color:#003b71">¡Bienvenido a SRAE, {0}!</h2>
+                      <p>Tu cuenta ha sido creada exitosamente.</p>
+                      <p>Ya puedes <a href="{1}/login.jsp">iniciar sesión</a>.</p>
+                    </body></html>
+                    """;
+                String baseUrl = request.getScheme() + "://" + request.getServerName()
+                        + ":" + request.getServerPort() + request.getContextPath();
+                EmailSender.sendMail(u.getEmail(), "Bienvenido a SRAE",
+                        MessageFormat.format(html, u.getNombre(), baseUrl));
+            } catch (Exception ex) {
+                System.err.println("Correo de bienvenida no enviado: " + ex.getMessage());
+            }
+
+            request.setAttribute("mensaje", "¡Cuenta creada! Ahora puedes iniciar sesión.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Ese correo ya está registrado.");
@@ -77,25 +83,14 @@ public class RegisterServlet extends HttpServlet {
         }
     }
 
-
-    private String formatearTexto(String texto) {
-        if (texto == null || texto.trim().isEmpty()) {
-            return texto;
-        }
-
+    private String formatear(String texto) {
+        if (texto == null || texto.isBlank()) return texto;
         texto = texto.trim().toLowerCase();
-
         String[] palabras = texto.split("\\s+");
-        StringBuilder resultado = new StringBuilder();
-
-        for (String palabra : palabras) {
-            if (palabra.length() > 0) {
-                resultado.append(Character.toUpperCase(palabra.charAt(0)))
-                        .append(palabra.substring(1))
-                        .append(" ");
-            }
-        }
-
-        return resultado.toString().trim();
+        StringBuilder sb = new StringBuilder();
+        for (String p : palabras)
+            if (!p.isEmpty()) sb.append(Character.toUpperCase(p.charAt(0)))
+                    .append(p.substring(1)).append(" ");
+        return sb.toString().trim();
     }
 }

@@ -18,7 +18,17 @@ public class OracleConnectApp {
         }
     }
     public static Connection getConnection() throws SQLException {
-        Properties props = new Properties(); props.setProperty("user", USERNAME); props.setProperty("password", PASSWORD);
+        // Forzar a Tomcat a cargar el driver de Oracle
+        try {
+            Class.forName("oracle.jdbc.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("No se encontró el driver de Oracle. Revisa Maven.", e);
+        }
+
+        Properties props = new Properties();
+        props.setProperty("user", USERNAME);
+        props.setProperty("password", PASSWORD);
+
         return DriverManager.getConnection(JDBC_URL, props);
     }
 }

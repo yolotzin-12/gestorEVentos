@@ -20,7 +20,7 @@
 
             <h4 class="fw-bold mb-4 text-dark">Recuperar contraseña</h4>
 
-            <form action="login.jsp" method="POST">
+            <form action="recuperar" method="POST">
 
                 <div class="mb-4 text-start">
                     <label for="email" class="form-label fw-bold label-formulario">Ingresa tu correo</label>
