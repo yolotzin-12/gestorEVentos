@@ -46,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        // ── Crear usuario ────────────────────────────────────────────────────
+        // Crear usuario
         Usuario u = new Usuario();
         u.setNombre(formatear(nombre));
         u.setApellidoPaterno(formatear(apellidoPaterno));
