@@ -10,35 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/utils/EmailSender.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/DB/OracleConnectApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/DB/OracleConnectApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EmailSender.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/LoginServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RegisterServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RegisterServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RestablecerContraServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RestablecerContraServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/Usuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/Usuario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AdministradorDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AdministradorDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDaoEliel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/ReservaDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/ReservaDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/TokenRecuperacionDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/TokenRecuperacionDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Administrador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Administrador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Asistente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Asistente.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Evento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Evento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/EventoEliel.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Organizador.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Organizador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Reserva.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Reserva.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/TokenRecuperacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/TokenRecuperacion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/recuperarContra.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/recuperarContra.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,6 +240,7 @@
       <workItem from="1783133274054" duration="3524000" />
       <workItem from="1783657637976" duration="51000" />
       <workItem from="1785179518709" duration="1673000" />
+      <workItem from="1785457492224" duration="776000" />
     </task>
     <servers />
   </component>
