@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
@@ -24,10 +24,23 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <a href="crearEvent.jsp" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
+            <a href="crearEvento.jsp" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
                 <i class="bi bi-plus-circle"></i> Nuevo Evento
             </a>
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <c:if test="${not empty sessionScope.usuario}">
+                <div class="d-flex align-items-center gap-2">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.usuario.foto}">
+                            <img src="${sessionScope.usuario.foto}" alt="Perfil" class="rounded-circle border border-2 border-primary" style="width: 38px; height: 38px; object-fit: cover;">
+                        </c:when>
+                        <c:otherwise>
+                            <i class="bi bi-person-circle fs-3 text-secondary"></i>
+                        </c:otherwise>
+                    </c:choose>
+                    <span class="fw-bold text-dark fs-6">${sessionScope.usuario.nombre}</span>
+                </div>
+            </c:if>
+            <a href="${pageContext.request.contextPath}/logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar sesión">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -51,7 +64,7 @@
                                     ${evento.categoria}
                             </span>
 
-                            <img src="img/personas.jpg" alt="Auditorio" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
+                            <img src="${not empty evento.foto ? evento.foto : 'img/personas.jpg'}" alt="Evento" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
 
                             <div class="card-body d-flex flex-column">
                                 <h5 class="fw-bold text-dark mb-1">${evento.nombre}</h5>
@@ -63,12 +76,15 @@
                                 </div>
 
                                 <div class="mt-auto pt-3 border-top">
-                                            <button class="btn w-100 fw-bold text-white shadow-sm mb-2" style="background-color: #058971; border-radius: 10px;">
-                                                <i class="bi bi-pencil"></i> Editar Evento
-                                            </button>
-                                            <button class="btn btn-secondary w-100 fw-bold shadow-sm mb-2"  style= "background-color: #C5001A; border-radius: 10px;">
-                                                <i class="bi bi-backspace"></i> Eliminar evento
-                                            </button>
+                                    <a href="editarEvento.jsp?id=${evento.id}" class="btn w-100 fw-bold text-white shadow-sm mb-2" style="background-color: #058971; border-radius: 10px;">
+                                        <i class="bi bi-pencil"></i> Editar Evento
+                                    </a>
+                                    <form action="${pageContext.request.contextPath}/eliminarEvento" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
+                                        <input type="hidden" name="id" value="${evento.id}">
+                                        <button type="submit" class="btn btn-secondary w-100 fw-bold shadow-sm mb-2" style="background-color: #C5001A; border-radius: 10px; border: none;">
+                                            <i class="bi bi-backspace"></i> Eliminar evento
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

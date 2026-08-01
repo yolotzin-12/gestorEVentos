@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,7 +17,7 @@
 <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
 
     <div class="mb-4 text-center">
-        <img src="img/utez.png" alt="Logo UTEZ" style="max-height: 80px;">
+        <img src="img/logo.png" alt="Logo SRAE" style="max-height: 80px;" onerror="this.src='img/utez.png'">
     </div>
 
     <div class="card p-4 shadow-sm border-0 tarjeta-confirmacion text-center mb-4">
@@ -38,15 +39,15 @@
 
                 <div class="d-flex flex-column gap-2 mb-3">
                     <div class="item-dispositivo d-flex align-items-center justify-content-between">
-                        <span><i class="bi bi-laptop me-2"></i> -Escritorio (Actual):</span>
+                        <span><i class="bi bi-laptop me-2"></i> Escritorio:</span>
                         <span class="text-secondary">[FINALIZADA]</span>
                     </div>
                     <div class="item-dispositivo d-flex align-items-center justify-content-between">
-                        <span><i class="bi bi-phone me-2"></i> -Móvil (CDMX):</span>
+                        <span><i class="bi bi-phone me-2"></i> Móvil:</span>
                         <span class="text-secondary">[FINALIZADA]</span>
                     </div>
                     <div class="item-dispositivo d-flex align-items-center justify-content-between">
-                        <span><i class="bi bi-tablet me-2"></i> -Tableta (Cuernavaca):</span>
+                        <span><i class="bi bi-tablet me-2"></i> Tableta:</span>
                         <span class="text-secondary">[FINALIZADA]</span>
                     </div>
                 </div>
@@ -60,7 +61,7 @@
     </div>
 
     <div class="text-center">
-        <a href="index.jsp" class="btn btn-volver-sesion shadow-sm">
+        <a href="login.jsp" class="btn btn-volver-sesion shadow-sm">
             Volver a Iniciar Sesión
         </a>
     </div>

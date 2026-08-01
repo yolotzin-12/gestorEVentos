@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -25,10 +26,23 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <a href="evento" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #162e54;">
+            <a href="${pageContext.request.contextPath}/evento" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #162e54;">
                 <i class="bi bi-eye"></i> Ver Eventos
             </a>
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <c:if test="${not empty sessionScope.usuario}">
+                <div class="d-flex align-items-center gap-2">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.usuario.foto}">
+                            <img src="${sessionScope.usuario.foto}" alt="Perfil" class="rounded-circle border border-2 border-primary" style="width: 38px; height: 38px; object-fit: cover;">
+                        </c:when>
+                        <c:otherwise>
+                            <i class="bi bi-person-circle fs-3 text-secondary"></i>
+                        </c:otherwise>
+                    </c:choose>
+                    <span class="fw-bold text-dark fs-6">${sessionScope.usuario.nombre}</span>
+                </div>
+            </c:if>
+            <a href="${pageContext.request.contextPath}/logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar sesión">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -37,8 +51,15 @@
     <div class="card p-4 shadow-sm border-0 rounded-4">
         <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">CREACIÓN DEL EVENTO</h4>
 
-        <form action="evento" method="post">
-            <input type="hidden" name="estado" value="true">
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger d-flex align-items-center py-2 mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div>${error}</div>
+            </div>
+        </c:if>
+
+        <form action="${pageContext.request.contextPath}/guardarEvento" method="post">
+            <input type="hidden" name="accion" value="crear">
 
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
@@ -61,30 +82,29 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="ubicacion" class="form-label fw-bold text-dark m-1">Ubicación</label>
-                        <input type="text" name="ubicacion" class="form-control p-2 rounded-3" id="ubicacion" placeholder="Ingresa la dirección de la ubicación" required>
+                        <label for="fechaHora" class="form-label fw-bold text-dark m-1">Fecha del evento</label>
+                        <input type="date" name="fechaHora" class="form-control p-2 rounded-3" id="fechaHora" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha del evento</label>
-                        <input type="date" name="fecha" class="form-control p-2 rounded-3" id="fecha" required>
+                        <label for="capacidadMaxima" class="form-label fw-bold text-dark m-1">Capacidad máxima</label>
+                        <input type="number" name="capacidadMaxima" class="form-control p-2 rounded-3" id="capacidadMaxima" placeholder="Ej. 100" required min="1">
                     </div>
 
                     <div class="mb-3">
-                        <label for="capacidad" class="form-label fw-bold text-dark m-1">Capacidad máxima</label>
-                        <input type="number" name="capacidad" class="form-control p-2 rounded-3" id="capacidad" placeholder="Ej. 100" required min="1">
+                        <label for="estado" class="form-label fw-bold text-dark m-1">Estado</label>
+                        <select name="estado" class="form-select p-2 rounded-3" id="estado" required>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Borrador">Borrador</option>
+                        </select>
                     </div>
 
                 </div>
 
                 <div class="col-md-6 d-flex flex-column justify-content-start mt-md-0 mt-3">
-                    <label class="form-label fw-bold text-dark m-1">Imagen del evento <i class="bi bi-calendar4-event"></i></label>
-                    <div class="border text-center p-4 rounded-3 bg-white d-flex flex-column align-items-center justify-content-center flex-grow-1" style="border-style: dashed !important; min-height: 340px;">
-                        <label for="img" class="btn text-white fw-bold px-4 py-2 mb-3 d-inline-flex align-items-center shadow-sm" style="background-color: #0d8a5f; border-radius: 10px; cursor: pointer;">
-                            <i class="bi bi-upload me-2"></i> Seleccionar imagen
-                        </label>
-                        <input type="file" name="img" id="img" accept="image/*" class="d-none">
-                        <small class="text-muted">Formatos permitidos: JPG, PNG, Máx 10MB</small>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label fw-bold text-dark m-1">Descripción del evento</label>
+                        <textarea name="descripcion" class="form-control p-2 rounded-3" id="descripcion" rows="9" placeholder="Describe los detalles del evento, objetivos, actividades, etc." required></textarea>
                     </div>
                 </div>
             </div>

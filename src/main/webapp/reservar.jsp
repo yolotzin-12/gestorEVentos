@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -20,33 +21,51 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="titulo-reserva m-0">FORMULARIO DE RESERVACIÓN</h4>
-            <a href="paginaPrincipal.jsp" class="text-secondary fs-4"><i class="bi bi-x-lg"></i></a>
+            <a href="${pageContext.request.contextPath}/evento" class="text-secondary fs-4"><i class="bi bi-x-lg"></i></a>
         </div>
+
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger d-flex align-items-center py-2 mb-4" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div>${error}</div>
+            </div>
+        </c:if>
 
         <div class="row align-items-stretch">
 
             <div class="col-md-7 pe-md-4 border-end">
-                <form action="#" method="post">
+                <form action="${pageContext.request.contextPath}/crearReserva" method="POST">
+
+                    <!-- Campo oculto con el ID del evento -->
+                    <input type="hidden" name="idEvento" value="${evento.id}">
 
                     <div class="mb-3">
                         <label for="nombre" class="form-label text-muted fw-semibold mb-1">Nombre completo</label>
-                        <input type="text" name="nombre" class="form-control rounded-3" id="nombre" placeholder="Tu nombre:" required>
+                        <input type="text" name="nombre" class="form-control rounded-3" id="nombre"
+                               value="${sessionScope.usuario != null ? sessionScope.usuario.nombre : ''}"
+                               placeholder="Tu nombre:" required>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-6">
                             <label for="matricula" class="form-label text-muted fw-semibold mb-1">Matrícula:</label>
-                            <input type="text" name="matricula" class="form-control rounded-3" id="matricula" placeholder="Matrícula:" required>
+                            <input type="text" name="matricula" class="form-control rounded-3" id="matricula"
+                                   value="${sessionScope.usuario != null ? sessionScope.usuario.matricula : ''}"
+                                   placeholder="Matrícula:" required>
                         </div>
                         <div class="col-6">
                             <label for="carrera" class="form-label text-muted fw-semibold mb-1">Carrera</label>
-                            <input type="text" name="carrera" class="form-control rounded-3" id="carrera" placeholder="Carrera" required>
+                            <input type="text" name="carrera" class="form-control rounded-3" id="carrera"
+                                   value="${sessionScope.usuario != null ? sessionScope.usuario.carrera : ''}"
+                                   placeholder="Carrera" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label text-muted fw-semibold mb-1">Correo electrónico</label>
-                        <input type="email" name="email" class="form-control rounded-3" id="email" placeholder="Tu correo electrónico:" required>
+                        <input type="email" name="email" class="form-control rounded-3" id="email"
+                               value="${sessionScope.usuario != null ? sessionScope.usuario.correo : ''}"
+                               placeholder="Tu correo electrónico:" required>
                     </div>
 
                     <div class="mb-4">
@@ -65,21 +84,26 @@
             <div class="col-md-5 ps-md-4 d-flex flex-column justify-content-between mt-4 mt-md-0 text-center">
 
                 <div class="d-flex flex-column gap-3">
-                    <div class="badge-info-modal">
-                        FECHA: 15/12/26
+                    <div class="badge-info-modal fw-bold">
+                        FECHA: ${evento.fechaHora != null ? evento.fechaHora : 'Por definir'}
                     </div>
 
-                    <div class="badge-info-modal">
-                        Auditorio Principal
+                    <div class="badge-info-modal fw-bold">
+                        <i class="bi bi-geo-alt-fill me-1"></i> ${evento.ubicacion != null ? evento.ubicacion : 'Auditorio Principal'}
                     </div>
                 </div>
 
                 <div class="my-auto pt-4">
+                    <c:set var="ocupados" value="${evento.capacidadMaxima - evento.capacidadDisponible}" />
+                    <c:set var="porcentajeCalculado" value="${evento.capacidadMaxima > 0 ? (ocupados * 100.0 / evento.capacidadMaxima) : 0}" />
+
                     <div class="circulo-progreso-modal" id="circuloProgreso">
                         <div class="fs-4 fw-bold m-0 text-dark pt-4">
-                            <span id="registrados">135</span><span class="fs-5 fw-normal text-muted">/<span id="cupoMaximo">200</span></span>
+                            <span id="registrados">${ocupados}</span><span class="fs-5 fw-normal text-muted">/<span id="cupoMaximo">${evento.capacidadMaxima}</span></span>
                         </div>
-                        <small class="fw-bold text-muted" style="font-size: 0.8rem;"><span id="porcentaje">67.5</span>%</small>
+                        <small class="fw-bold text-muted" style="font-size: 0.8rem;">
+                            <span id="porcentaje">${String.format("%.1f", porcentajeCalculado)}</span>%
+                        </small>
                     </div>
                     <p class="fw-bold text-secondary mt-2 mb-0" style="font-size: 0.9rem;">Aforo actual</p>
                 </div>
@@ -89,7 +113,6 @@
 
     </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

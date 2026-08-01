@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -38,7 +38,7 @@
                 </div>
             </c:if>
 
-            <form action="register" method="post">
+            <form action="${pageContext.request.contextPath}/register" method="post">
 
                 <div class="mb-3 text-start">
                     <label for="txtNombre" class="form-label fw-bold label-formulario">Nombre(s):</label>
@@ -64,7 +64,7 @@
 
                 <div class="mb-3 text-start">
                     <label for="txtCorreoConfirmacion" class="form-label fw-bold label-formulario">Confirmar Correo:</label>
-                    <input type="email" name="emailConfirmacion" value="${param.emailConfirmacion}" class="form-control input-formulario" id="txtCorreoConfirmacion" placeholder="Confirme su correo electronico:" required>
+                    <input type="email" name="emailConfirmacion" value="${param.emailConfirmacion}" class="form-control input-formulario" id="txtCorreoConfirmacion" placeholder="Confirme su correo electrónico:" required>
                 </div>
 
                 <div class="mb-4 text-start">
@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <a href="login.jsp" class="text-decoration-none">¿Ya tienes una cuenta? Inicia sesión</a>
+                    <a href="${pageContext.request.contextPath}/login.jsp" class="text-decoration-none">¿Ya tienes una cuenta? Inicia sesión</a>
                 </div>
 
             </form>

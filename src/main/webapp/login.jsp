@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,29 +19,29 @@
 
             <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
 
-            <% if (request.getAttribute("error") != null) { %>
-            <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <div class="small">
-                    <%= request.getAttribute("error") %>
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="small">
+                            ${error}
+                    </div>
                 </div>
-            </div>
-            <% } %>
+            </c:if>
 
-            <% if (request.getAttribute("mensaje") != null) { %>
-            <div class="alert alert-success d-flex align-items-center py-2 text-start" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                <div class="small">
-                    <%= request.getAttribute("mensaje") %>
+            <c:if test="${not empty mensaje}">
+                <div class="alert alert-success d-flex align-items-center py-2 text-start" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <div class="small">
+                            ${mensaje}
+                    </div>
                 </div>
-            </div>
-            <% } %>
+            </c:if>
 
-            <form action="login" method="POST">
+            <form action="${pageContext.request.contextPath}/login" method="POST">
 
                 <div class="mb-3 text-start">
                     <label for="email" class="form-label fw-bold label-formulario">Correo Electrónico:</label>
-                    <input type="email" name="email" class="form-control input-formulario" id="email" placeholder="Tu correo electrónico:" required>
+                    <input type="email" name="email" value="${param.email}" class="form-control input-formulario" id="email" placeholder="Tu correo electrónico:" required>
                 </div>
 
                 <div class="mb-4 text-start">
