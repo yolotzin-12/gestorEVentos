@@ -24,7 +24,7 @@
 
             <nav class="eventos-nav">
                 <a href="eventos.jsp" class="activo">Eventos</a>
-                <a href="categorias.jsp">Categorias</a>
+
                 <a href="historialReservas.jsp">Mis reservas</a>
             </nav>
 
