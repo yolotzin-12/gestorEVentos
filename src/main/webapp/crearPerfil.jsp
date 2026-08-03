@@ -54,24 +54,24 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nombre" class="form-label fw-bold">Nombre:</label>
-                            <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre:" required>
+                            <input type="text" name="nombre" class="form-control" id="nombre" value="${usuario.nombre}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="apeP" class="form-label fw-bold">Apellido Paterno:</label>
-                            <input type="text" name="apeP" class="form-control" id="apeP" placeholder="Apellido Paterno" required>
+                            <input type="text" name="apeP" class="form-control" id="apeP" value="${usuario.apellidoPaterno}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="apeM" class="form-label fw-bold">Apellido Materno:</label>
-                            <input type="text" name="apeM" class="form-control" id="apeM" placeholder="Apellido Materno:" required>
+                            <input type="text" name="apeM" class="form-control" id="apeM" value="${usuario.apellidoMaterno}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="telefono" class="form-label fw-bold">Teléfono:</label>
-                            <input type="tel" name="telefono" class="form-control" id="telefono" placeholder="777-0000-000">
+                            <input type="tel" name="telefono" class="form-control" id="telefono" value="${usuario.telefono}" placeholder="777-0000-000">
                         </div>
                         <div class="col-md-12 mb-4">
                             <label for="correo" class="form-label fw-bold">Correo Electrónico:</label>
                             <div class="input-group">
-                                <input type="email" name="correo" class="form-control" id="correo" placeholder="correo@utez.edu.mx" required>
+                                <input type="email" name="correo" class="form-control" id="correo" value="${usuario.email}" required>
                                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                             </div>
                         </div>
@@ -112,8 +112,10 @@
 </div>
 
 <br>
+<br>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
