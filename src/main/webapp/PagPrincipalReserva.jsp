@@ -1,5 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -23,24 +22,11 @@
             <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
-                <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
+                <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACION DE EVENTOS</small>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-3">
-            <c:if test="${not empty sessionScope.usuario}">
-                <div class="d-flex align-items-center gap-2">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.usuario.foto}">
-                            <img src="${sessionScope.usuario.foto}" alt="Perfil" class="rounded-circle border border-2 border-primary" style="width: 38px; height: 38px; object-fit: cover;">
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-person-circle fs-3 text-secondary"></i>
-                        </c:otherwise>
-                    </c:choose>
-                    <span class="fw-bold text-dark fs-6">${sessionScope.usuario.nombre}</span>
-                </div>
-            </c:if>
-            <a href="${pageContext.request.contextPath}/logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar sesión">
+        <div class="d-flex align-items-center">
+            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -51,23 +37,23 @@
 
             <div class="col-md-7 d-flex flex-column justify-content-between">
                 <div>
-                    <h4 class="fw-bold text-dark mb-1">${not empty evento ? evento.categoria : 'CONFERENCIA MAGISTRAL:'}</h4>
-                    <h5 class="fw-semibold text-secondary mb-3">${not empty evento ? evento.nombre : 'INNOVACIÓN TECNOLÓGICA'}</h5>
+                    <h4 class="fw-bold text-dark mb-1">CONFERENCIA MAGISTRAL:</h4>
+                    <h5 class="fw-semibold text-secondary mb-3">INNOVACIÓN TECNOLÓGICA</h5>
 
                     <div class="mb-4 text-center">
-                        <img src="${not empty evento.foto ? evento.foto : 'img/personas.jpg'}" alt="Evento" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px; width: 100%; object-fit: cover;">
+                        <img src="img/personas.jpg" alt="Auditorio" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px; width: 100%; object-fit: cover;">
                     </div>
                 </div>
 
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="badge-gris text-dark">
-                            FECHA: ${not empty evento ? evento.fecha : '15/12/26'}
+                            FECHA: 15/12/26
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="badge-gris text-dark">
-                            ${not empty evento ? evento.ubicacion : 'Auditorio Principal'}
+                            Auditorio Principal
                         </div>
                     </div>
                 </div>
@@ -79,18 +65,18 @@
                     <div class="my-3 d-flex align-items-center justify-content-center" style="width: 180px; height: 180px;">
                         <div class="circulo-progreso" id="circuloProgreso">
                             <div class="fs-3 fw-bold m-0 text-dark">
-                                <span id="registrados">${not empty evento ? evento.registrados : '135'}</span><span class="fs-4 fw-normal text-muted">/<span id="cupoMaximo">${not empty evento ? evento.capacidadMaxima : '200'}</span></span>
+                                <span id="registrados">135</span><span class="fs-4 fw-normal text-muted">/<span id="cupoMaximo">200</span></span>
                             </div>
-                            <div class="fw-bold text-muted mt-1" style="font-size: 0.9rem;"><span id="porcentaje">${not empty evento ? evento.porcentaje : '67.5'}</span>%</div>
+                            <div class="fw-bold text-muted mt-1" style="font-size: 0.9rem;"><span id="porcentaje">67.5</span>%</div>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <p class="fw-bold text-dark m-0">Aforo disponible</p>
-                        <small class="text-muted fw-semibold">(${not empty evento ? evento.porcentaje : '67.5'}%)</small>
+                        <small class="text-muted fw-semibold">(67.5%)</small>
                     </div>
 
-                    <a href="reservar.jsp?id=${evento.id}" class="text-decoration-none w-100">
+                    <a href="reservar.jsp" class="text-decoration-none w-100">
                         <button type="button" class="btn fs-5 d-flex align-items-center justify-content-center gap-2" style="background-color: #0d8a5f !important; color: #ffffff !important; font-weight: bold !important; border-radius: 10px !important; width: 100% !important; padding: 10px !important; border: none !important;">
                             <i class="bi bi-calendar-check" style="color: #ffffff !important;"></i> Reservar
                         </button>
@@ -98,7 +84,7 @@
 
                     <br>
 
-                    <a href="cancelar.jsp?id=${evento.id}" class="text-decoration-none w-100">
+                    <a href="cancelar.jsp" class="text-decoration-none w-100">
                         <button type="button" class="btn fs-5 d-flex align-items-center justify-content-center gap-2" style="background-color: #dc3545 !important; color: #ffffff !important; font-weight: bold !important; border-radius: 10px !important; width: 100% !important; padding: 10px !important; border: none !important;">
                             <i class="bi bi-calendar-x" style="color: #ffffff !important;"></i> Cancelar
                         </button>

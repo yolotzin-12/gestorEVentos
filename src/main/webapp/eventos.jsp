@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
@@ -20,40 +20,19 @@
 
             <div class="d-flex align-items-center gap-2">
                 <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-                <img src="img/letras.png" alt="SRAE" style="height:120px;">
-            </div>
+                <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
 
             <nav class="eventos-nav">
                 <a href="eventos.jsp" class="activo">Eventos</a>
                 <a href="categorias.jsp">Categorias</a>
-                <a href="misReservas.jsp">Mis reservas</a>
+                <a href="historialReservas.jsp">Mis reservas</a>
             </nav>
 
-            <div class="d-flex align-items-center gap-3">
-                <c:choose>
-                    <c:when test="${not empty sessionScope.usuario}">
-                        <a href="crearPerfil.jsp" class="d-flex align-items-center gap-2 text-decoration-none">
-                            <c:choose>
-                                <c:when test="${not empty sessionScope.usuario.foto}">
-                                    <img src="${sessionScope.usuario.foto}" alt="Perfil" class="rounded-circle border border-2 border-white" style="width: 38px; height: 38px; object-fit: cover;">
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="icono-usuario">
-                                        <i class="bi bi-person"></i>
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-                            <span class="fw-bold text-white fs-6">${sessionScope.usuario.nombre}</span>
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="crearPerfil.jsp" class="icono-usuario" title="Perfil / Iniciar Sesión">
-                            <i class="bi bi-person"></i>
-                        </a>
-                    </c:otherwise>
-                </c:choose>
-
-                <a href="${pageContext.request.contextPath}/logout" class="btn-logout-eventos" title="Cerrar sesión">
+            <div class="d-flex align-items-center gap-2">
+                <a href="crearPerfil.jsp" class="icono-usuario">
+                    <i class="bi bi-person"></i>
+                </a>
+                <a href="logout" class="btn-logout-eventos">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -86,7 +65,7 @@
                     <%-- Tarjetas de ejemplo mientras no haya datos dinámicos --%>
                     <c:forEach begin="1" end="4">
                         <div class="col-6 col-md-3">
-                            <a href="detalleEvento.jsp" class="tarjeta-evento-link">
+                            <a href="detalle-evento.jsp" class="tarjeta-evento-link">
                                 <div class="tarjeta-evento">
                                     <div class="encabezado-evento">
                                         <h3>Evento Nombre</h3>
@@ -112,7 +91,7 @@
                                         <h3>${evento.nombre}</h3>
                                         <p>${evento.categoria}</p>
                                     </div>
-                                    <img src="${not empty evento.foto ? evento.foto : 'img/personas.jpg'}" alt="Evento" class="imagen-evento">
+                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
                                     <div class="pie-evento">
                                         <div><i class="bi bi-calendar-event"></i> ${evento.fecha}</div>
                                         <div><i class="bi bi-geo-alt-fill"></i> ${evento.ubicacion}</div>
@@ -128,6 +107,7 @@
     </div>
 
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>

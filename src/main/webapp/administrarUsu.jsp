@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -24,21 +23,8 @@
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-3">
-            <c:if test="${not empty sessionScope.usuario}">
-                <div class="d-flex align-items-center gap-2">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.usuario.foto}">
-                            <img src="${sessionScope.usuario.foto}" alt="Perfil" class="rounded-circle border border-2 border-primary" style="width: 38px; height: 38px; object-fit: cover;">
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-person-circle fs-3 text-secondary"></i>
-                        </c:otherwise>
-                    </c:choose>
-                    <span class="fw-bold text-dark fs-6">${sessionScope.usuario.nombre}</span>
-                </div>
-            </c:if>
-            <a href="${pageContext.request.contextPath}/logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar sesión">
+        <div class="d-flex align-items-center">
+            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -61,7 +47,7 @@
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
-                    <a href="${pageContext.request.contextPath}/logout" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
+                    <a href="index.jsp" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
@@ -88,70 +74,90 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:choose>
-                            <c:when test="${empty listaUsuarios}">
-                                <tr>
-                                    <td>
-                                        <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                                    </td>
-                                    <td>
-                                        <div class="fw-semibold text-dark">Nombre Apellido</div>
-                                    </td>
-                                    <td>
-                                        <div class="text-dark">correo@utez.edu.mx</div>
-                                        <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
-                                    </td>
-                                    <td>
-                                        <select class="form-select select-rol-admin">
-                                            <option value="asistente" selected>Asistente</option>
-                                            <option value="admin">Administrador</option>
-                                        </select>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-switch d-inline-block">
-                                            <input class="form-check-input" type="checkbox" role="switch" checked>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-deshabilitar">
-                                            <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
-                                        </button>
-                                    </td>
-                                </tr>
-                            </c:when>
-                            <c:otherwise>
-                                <c:forEach items="${listaUsuarios}" var="user">
-                                    <tr>
-                                        <td>
-                                            <img src="${not empty user.foto ? user.foto : 'img/avatar.png'}" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                                        </td>
-                                        <td>
-                                            <div class="fw-semibold text-dark">${user.nombre} ${user.apellidos}</div>
-                                        </td>
-                                        <td>
-                                            <div class="text-dark">${user.correo}</div>
-                                            <small class="text-muted" style="font-size: 0.75rem;">${user.matricula}</small>
-                                        </td>
-                                        <td>
-                                            <select class="form-select select-rol-admin">
-                                                <option value="asistente" ${user.rol == 'asistente' ? 'selected' : ''}>Asistente</option>
-                                                <option value="admin" ${user.rol == 'admin' ? 'selected' : ''}>Administrador</option>
-                                            </select>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-check form-switch d-inline-block">
-                                                <input class="form-check-input" type="checkbox" role="switch" ${user.estado ? 'checked' : ''}>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-deshabilitar">
-                                                <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:otherwise>
-                        </c:choose>
+                        <tr>
+                            <td>
+                                <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark">Nombre Apellido</div>
+                            </td>
+                            <td>
+                                <div class="text-dark">correo@utez.edu.mx</div>
+                                <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
+                            </td>
+                            <td>
+                                <select class="form-select select-rol-admin">
+                                    <option value="asistente" selected>Asistente</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </td>
+                            <td class="text-center">
+                                <div class="form-check form-switch d-inline-block">
+                                    <input class="form-check-input" type="checkbox" role="switch" checked>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-deshabilitar">
+                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark">Nombre Apellido</div>
+                            </td>
+                            <td>
+                                <div class="text-dark">correo@utez.edu.mx</div>
+                                <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
+                            </td>
+                            <td>
+                                <select class="form-select select-rol-admin">
+                                    <option value="asistente" selected>Asistente</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </td>
+                            <td class="text-center">
+                                <div class="form-check form-switch d-inline-block">
+                                    <input class="form-check-input" type="checkbox" role="switch" checked>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-deshabilitar btn-danger-admin">
+                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark">Nombre Apellido</div>
+                            </td>
+                            <td>
+                                <div class="text-dark">correo@utez.edu.mx</div>
+                                <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
+                            </td>
+                            <td>
+                                <select class="form-select select-rol-admin">
+                                    <option value="asistente" selected>Asistente</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </td>
+                            <td class="text-center">
+                                <div class="form-check form-switch d-inline-block">
+                                    <input class="form-check-input" type="checkbox" role="switch" checked>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-deshabilitar">
+                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
+                                </button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -160,6 +166,8 @@
         </div>
     </div>
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
