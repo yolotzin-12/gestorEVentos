@@ -35,10 +35,10 @@
 
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
-                    <a href="paginaPrincipal.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
+                    <a href="index.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
-                    <a href="misReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold active">
+                    <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold active">
                         <i class="bi bi-calendar-check me-3"></i> Mis reservas
                     </a>
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">

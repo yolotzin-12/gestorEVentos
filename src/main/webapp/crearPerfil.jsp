@@ -33,7 +33,7 @@
 
         <div class="col-md-3 pe-4">
             <div class="d-flex flex-column">
-                <a href="paginaPrincipal.jsp" class="btn sidebar-btn py-3 px-4 fw-bold"><i class="bi bi-house-door me-3"></i> Inicio</a>
+                <a href="index.jsp" class="btn sidebar-btn py-3 px-4 fw-bold"><i class="bi bi-house-door me-3"></i> Inicio</a>
                 <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold"><i class="bi bi-calendar-check me-3"></i> Reservas</a>
                 <a href="administrarUsu.jsp" class="btn sidebar-btn py-3 px-4 fw-bold"><i class="bi bi-people me-3"></i> Usuarios</a>
                 <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold active" style="background-color: #e2e6ea;"><i class="bi bi-person me-3"></i> Mi perfil</a>
@@ -54,7 +54,8 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nombre" class="form-label fw-bold">Nombre:</label>
-                            <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre:" required>
+                            <input type="text" name="nombre" class="form-control" id="nombre"
+                                   placeholder="Nombre:" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="apeP" class="form-label fw-bold">Apellido Paterno:</label>

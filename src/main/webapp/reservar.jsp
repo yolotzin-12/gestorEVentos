@@ -20,7 +20,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="titulo-reserva m-0">FORMULARIO DE RESERVACIÓN</h4>
-            <a href="paginaPrincipal.jsp" class="text-secondary fs-4"><i class="bi bi-x-lg"></i></a>
+            <a href="detalle-evento.jsp" class="text-secondary fs-4"><i class="bi bi-x-lg"></i></a>
         </div>
 
         <div class="row align-items-stretch">
