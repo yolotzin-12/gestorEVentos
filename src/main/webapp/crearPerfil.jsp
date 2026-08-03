@@ -54,12 +54,12 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nombre" class="form-label fw-bold">Nombre:</label>
-<<<<<<< HEAD
+
                             <input type="text" name="nombre" class="form-control" id="nombre"
                                    placeholder="Nombre:" required>
-=======
+
                             <input type="text" name="nombre" class="form-control" id="nombre" value="${usuario.nombre}" required>
->>>>>>> 2ec8cf2f2415ffcd80a584377ce35bbb879c06be
+
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="apeP" class="form-label fw-bold">Apellido Paterno:</label>
