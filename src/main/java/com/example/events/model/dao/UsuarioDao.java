@@ -176,7 +176,7 @@ public class UsuarioDao {
                 "FROM USUARIO WHERE correo_electronico = ?";
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, email.trim().toLowerCase());
+            ps.setString(1, email.trim().toLowerCase());  // ← minúsculas
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Usuario u = new Usuario();

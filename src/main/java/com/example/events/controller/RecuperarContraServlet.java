@@ -22,8 +22,10 @@ public class RecuperarContraServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("¡Sí entró al Servlet de Recuperación!");
 
         String email = request.getParameter("email");
+        System.out.println("Correo recibido desde el formulario: " + email);
 
         if (email == null || email.isBlank()) {
             request.setAttribute("error", "Ingresa tu correo.");
@@ -32,8 +34,8 @@ public class RecuperarContraServlet extends HttpServlet {
         }
 
         Usuario u = usuarioDao.getByEmail(email.trim().toLowerCase());
+        System.out.println("¿Usuario encontrado?: " + (u != null));
 
-        // Siempre mostrar el mismo mensaje (no revelar si el correo existe)
         request.setAttribute("mensaje",
                 "Si ese correo está registrado, recibirás un enlace en los próximos minutos.");
 
@@ -41,19 +43,9 @@ public class RecuperarContraServlet extends HttpServlet {
             String token = UUID.randomUUID().toString();
             boolean guardado = tokenDao.crear(u.getId(), token);
 
-            if (guardado) {
-                String baseUrl = request.getScheme() + "://" + request.getServerName()
-                        + ":" + request.getServerPort() + request.getContextPath();
-                String enlace = baseUrl + "/restablecer?token=" + token;
 
-                String html = """
-                    <html><body style="font-family:Arial,sans-serif">
-                      <h2 style="color:#003b71">Recuperar contraseña - SRAE</h2>
-                      <p>Haz clic en el enlace para restablecer tu contraseña:</p>
-                      <p><a href="{0}">{0}</a></p>
-                      <p style="color:#888;font-size:12px">Este enlace expira en 30 minutos.</p>
-                    </body></html>
-                    """.replace("{0}", enlace);
+            if (guardado) {
+                String html = getString(request, token);
 
                 try {
                     EmailSender.sendMail(u.getEmail(), "Recuperar contraseña - SRAE", html);
@@ -64,5 +56,21 @@ public class RecuperarContraServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher("recuperarContra.jsp").forward(request, response);
+    }
+
+    private static String getString(HttpServletRequest request, String token) {
+        String baseUrl = request.getScheme() + "://" + request.getServerName()
+                + ":" + request.getServerPort() + request.getContextPath();
+        String enlace = baseUrl + "/restablecer?token=" + token;
+
+        String html = """
+            <html><body style="font-family:Arial,sans-serif">
+              <h2 style="color:#003b71">Recuperar contraseña - SRAE</h2>
+              <p>Haz clic en el enlace para restablecer tu contraseña:</p>
+              <p><a href="{0}">{0}</a></p>
+              <p style="color:#888;font-size:12px">Este enlace expira en 30 minutos.</p>
+            </body></html>
+            """.replace("{0}", enlace);
+        return html;
     }
 }
