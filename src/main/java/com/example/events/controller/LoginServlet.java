@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
 
         if (usuario != null) {
             HttpSession session = request.getSession(true);
-            session.setAttribute("usuario", usuario);     // objeto completo
+            session.setAttribute("usuario", usuario);
             session.setAttribute("idRol", usuario.getIdRol());
 
             // SEGUN SU rol: 1=Admin, 2=Organizador, 3=Asistente
