@@ -1,0 +1,28 @@
+Index: src/main/java/com/example/events/model/models/Evento.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.events.model.models;\r\n\r\npublic class Evento {\r\n    private int id;\r\n    private int idOrganizador;\r\n    private int idEspacio;\r\n    private int idCategoria;\r\n    private String nombre;\r\n    private String nombreCategoria;\r\n    private String imagenUrl;\r\n    private int idCategoria;\r\n    private String descripcion;\r\n    private int capacidadMaxima;\r\n    private int capacidadDisponible;\r\n    private String ubicacion;\r\n    private String fechaHora;\r\n    private String estado; // \"Borrador\", \"Disponible\", \"Cancelado\"\r\n\r\n    public Evento() {}\r\n\r\n    public int getId() { return id; }\r\n    public void setId(int id) { this.id = id; }\r\n\r\n    public int getIdOrganizador() { return idOrganizador; }\r\n    public void setIdOrganizador(int idOrganizador) { this.idOrganizador = idOrganizador; }\r\n\r\n    public int getIdEspacio() { return idEspacio; }\r\n    public void setIdEspacio(int idEspacio) { this.idEspacio = idEspacio; }\r\n\r\n    public int getIdCategoria() { return idCategoria; }\r\n    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }\r\n\r\n    public String getNombre() { return nombre; }\r\n    public void setNombre(String nombre) { this.nombre = nombre; }\r\n\r\n    public String getNombreCategoria() { return nombreCategoria; }\r\n    public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }\r\n\r\n    public int getIdCategoria() { return idCategoria; }\r\n    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }\r\n\r\n    public String getDescripcion() { return descripcion; }\r\n    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }\r\n\r\n    public int getCapacidadMaxima() { return capacidadMaxima; }\r\n    public void setCapacidadMaxima(int capacidadMaxima) { this.capacidadMaxima = capacidadMaxima; }\r\n\r\n    public int getCapacidadDisponible() { return capacidadDisponible; }\r\n    public void setCapacidadDisponible(int capacidadDisponible) { this.capacidadDisponible = capacidadDisponible; }\r\n\r\n    public String getUbicacion() { return ubicacion; }\r\n    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }\r\n\r\n    public String getFechaHora() { return fechaHora; }\r\n    public void setFechaHora(String fechaHora) { this.fechaHora = fechaHora; }\r\n\r\n    public String getEstado() { return estado; }\r\n    public void setEstado(String estado) { this.estado = estado; }\r\n\r\n    public String getImagenUrl() {return imagenUrl;}\r\n\r\n    public void setImagenUrl(String imagenUrl) {this.imagenUrl = imagenUrl;}\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/events/model/models/Evento.java b/src/main/java/com/example/events/model/models/Evento.java
+--- a/src/main/java/com/example/events/model/models/Evento.java	(revision e2653cb3826f70c1769c0a5194ed2b44ec78169b)
++++ b/src/main/java/com/example/events/model/models/Evento.java	(date 1786081101176)
+@@ -8,7 +8,6 @@
+     private String nombre;
+     private String nombreCategoria;
+     private String imagenUrl;
+-    private int idCategoria;
+     private String descripcion;
+     private int capacidadMaxima;
+     private int capacidadDisponible;
+@@ -27,8 +26,7 @@
+     public int getIdEspacio() { return idEspacio; }
+     public void setIdEspacio(int idEspacio) { this.idEspacio = idEspacio; }
+ 
+-    public int getIdCategoria() { return idCategoria; }
+-    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
++
+ 
+     public String getNombre() { return nombre; }
+     public void setNombre(String nombre) { this.nombre = nombre; }
