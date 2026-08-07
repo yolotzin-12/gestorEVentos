@@ -33,7 +33,7 @@ public class RestablecerContraServlet extends HttpServlet {
         }
 
         request.setAttribute("token", token);
-        request.getRequestDispatcher("nueva-contrasena.jsp").forward(request, response);
+        request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
     }
 
     // POST — guarda la nueva contraseña
@@ -42,13 +42,14 @@ public class RestablecerContraServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String token = request.getParameter("token");
-        String nueva = request.getParameter("nueva");
-        String confirma = request.getParameter("confirma");
+        // Nombres corregidos según los inputs de nuevaContra.jsp
+        String nueva = request.getParameter("nuevaContra");
+        String confirma = request.getParameter("confirmarContra");
 
         if (nueva == null || !nueva.equals(confirma) || nueva.length() < 8) {
-            request.setAttribute("error", "Las contraseñas no coinciden o son muy cortas.");
+            request.setAttribute("error", "Las contraseñas no coinciden o deben tener al menos 8 caracteres.");
             request.setAttribute("token", token);
-            request.getRequestDispatcher("nueva-contrasena.jsp").forward(request, response);
+            request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
             return;
         }
 
@@ -62,7 +63,7 @@ public class RestablecerContraServlet extends HttpServlet {
         usuarioDao.actualizarContrasena(t.getIdUsuario(), nueva);
         tokenDao.marcarUsado(t.getId());
 
-        request.setAttribute("mensaje", "Contraseña actualizada. Ya puedes iniciar sesión.");
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        // Redirección a la vista de confirmación que creaste
+        request.getRequestDispatcher("contraActualizada.jsp").forward(request, response);
     }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 
 public class UsuarioDao {
 
-
     public static String hashSHA256(String texto) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -213,11 +212,16 @@ public class UsuarioDao {
             con = OracleConnectApp.getConnection();
             con.setAutoCommit(false);
 
+            // 1. Desactivar contraseña previa
             try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
                 ps1.setInt(1, idUsuario);
                 ps1.executeUpdate();
             }
 
+            // Commit intermedio para prevenir ORA-12838 en Oracle
+            con.commit();
+
+            // 2. Insertar nueva contraseña activa
             try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
                 ps2.setInt(1, idUsuario);
                 ps2.setString(2, hashSHA256(nuevaContrasena));
