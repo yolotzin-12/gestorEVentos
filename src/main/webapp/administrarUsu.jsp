@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -41,9 +42,12 @@
                     <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-calendar-check me-3"></i> Reservas
                     </a>
-                    <a href="administrarUsu.jsp" class="btn sidebar-btn py-3 px-4 fw-bold active">
+
+                    <!-- ENLACE CORREGIDO: Apunta directo al Servlet -->
+                    <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold active">
                         <i class="bi bi-people me-3"></i> Usuarios
                     </a>
+
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
@@ -58,11 +62,11 @@
 
                 <div class="position-relative mb-4">
                     <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted fs-5"></i>
-                    <input type="text" class="form-control input-busqueda-admin" placeholder="Buscar por nombre o matrícula...">
+                    <input type="text" id="inputBusqueda" class="form-control input-busqueda-admin" placeholder="Buscar por nombre o correo...">
                 </div>
 
                 <div class="table-responsive shadow-sm tabla-admin">
-                    <table class="table table-hover m-0">
+                    <table class="table table-hover m-0" id="tablaUsuarios">
                         <thead>
                         <tr>
                             <th scope="col">Foto de perfil</th>
@@ -74,90 +78,70 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>
-                                <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                            </td>
-                            <td>
-                                <div class="fw-semibold text-dark">Nombre Apellido</div>
-                            </td>
-                            <td>
-                                <div class="text-dark">correo@utez.edu.mx</div>
-                                <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
-                            </td>
-                            <td>
-                                <select class="form-select select-rol-admin">
-                                    <option value="asistente" selected>Asistente</option>
-                                    <option value="admin">Administrador</option>
-                                </select>
-                            </td>
-                            <td class="text-center">
-                                <div class="form-check form-switch d-inline-block">
-                                    <input class="form-check-input" type="checkbox" role="switch" checked>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-deshabilitar">
-                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                            </td>
-                            <td>
-                                <div class="fw-semibold text-dark">Nombre Apellido</div>
-                            </td>
-                            <td>
-                                <div class="text-dark">correo@utez.edu.mx</div>
-                                <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
-                            </td>
-                            <td>
-                                <select class="form-select select-rol-admin">
-                                    <option value="asistente" selected>Asistente</option>
-                                    <option value="admin">Administrador</option>
-                                </select>
-                            </td>
-                            <td class="text-center">
-                                <div class="form-check form-switch d-inline-block">
-                                    <input class="form-check-input" type="checkbox" role="switch" checked>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-deshabilitar btn-danger-admin">
-                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                            </td>
-                            <td>
-                                <div class="fw-semibold text-dark">Nombre Apellido</div>
-                            </td>
-                            <td>
-                                <div class="text-dark">correo@utez.edu.mx</div>
-                                <small class="text-muted" style="font-size: 0.75rem;">20233ti000</small>
-                            </td>
-                            <td>
-                                <select class="form-select select-rol-admin">
-                                    <option value="asistente" selected>Asistente</option>
-                                    <option value="admin">Administrador</option>
-                                </select>
-                            </td>
-                            <td class="text-center">
-                                <div class="form-check form-switch d-inline-block">
-                                    <input class="form-check-input" type="checkbox" role="switch" checked>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-deshabilitar">
-                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
-                                </button>
-                            </td>
-                        </tr>
+                        <c:forEach var="u" items="${listaUsuarios}">
+                            <tr class="fila-usuario">
+                                <td>
+                                    <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark item-nombre">
+                                            ${u.nombre} ${u.apellidoPaterno} ${u.apellidoMaterno != null ? u.apellidoMaterno : ''}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-dark item-correo">${u.email}</div>
+                                </td>
+                                <td>
+                                    <!-- Selección de Rol -->
+                                    <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0">
+                                        <input type="hidden" name="action" value="asignarRol">
+                                        <input type="hidden" name="idUsuario" value="${u.id}">
+                                        <select name="idRol" class="form-select select-rol-admin" onchange="this.form.submit()">
+                                            <option value="3" ${u.idRol == 3 ? 'selected' : ''}>Asistente</option>
+                                            <option value="2" ${u.idRol == 2 ? 'selected' : ''}>Organizador</option>
+                                            <option value="1" ${u.idRol == 1 ? 'selected' : ''}>Administrador</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Switch de Estado (Activo/Inactivo) -->
+                                    <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0 d-inline-block">
+                                        <input type="hidden" name="action" value="cambiarEstado">
+                                        <input type="hidden" name="idUsuario" value="${u.id}">
+                                        <input type="hidden" name="estado" value="${!u.activo}">
+                                        <div class="form-check form-switch d-inline-block">
+                                            <input class="form-check-input" type="checkbox" role="switch" ${u.activo ? 'checked' : ''} onchange="this.form.submit()">
+                                        </div>
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Botón dinámico según el estado actual -->
+                                    <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0">
+                                        <input type="hidden" name="action" value="cambiarEstado">
+                                        <input type="hidden" name="idUsuario" value="${u.id}">
+                                        <input type="hidden" name="estado" value="${!u.activo}">
+
+                                        <c:choose>
+                                            <c:when test="${u.activo}">
+                                                <button type="submit" class="btn btn-deshabilitar btn-danger-admin">
+                                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="submit" class="btn btn-deshabilitar btn-success">
+                                                    <i class="bi bi-person-check me-1"></i> Habilitar usuario
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </form>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        <c:if test="${empty listaUsuarios}">
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">No hay usuarios registrados en la base de datos.</td>
+                            </tr>
+                        </c:if>
                         </tbody>
                     </table>
                 </div>
@@ -167,8 +151,26 @@
     </div>
 </div>
 
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para el buscador -->
+<script>
+    document.getElementById('inputBusqueda').addEventListener('keyup', function() {
+        let filtro = this.value.toLowerCase();
+        let filas = document.querySelectorAll('#tablaUsuarios tbody tr.fila-usuario');
+
+        filas.forEach(fila => {
+            let nombre = fila.querySelector('.item-nombre').textContent.toLowerCase();
+            let correo = fila.querySelector('.item-correo').textContent.toLowerCase();
+
+            if (nombre.includes(filtro) || correo.includes(filtro)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
