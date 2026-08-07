@@ -41,13 +41,11 @@
     border: none !important;
     border-radius: 10px !important;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.15) !important;
+    transition: background-color 0.3s ease !important;
 }
 
-.btn-ingresar:hover {
-    background-color: #007058 !important;
-    color: #ffffff !important;
-}
-
-.btn-ingresar i {
-    color: #ffffff !important;
+.btn-ingresar:hover,
+.btn-ingresar:active,
+.btn-ingresar:focus {
+    background-color: #09b294 !important;
 }
