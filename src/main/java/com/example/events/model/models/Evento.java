@@ -4,7 +4,6 @@ public class Evento {
     private int id;
     private int idOrganizador;
     private int idEspacio;
-    private int idCategoria;
     private String nombre;
     private String nombreCategoria;
     private String imagenUrl;
@@ -25,9 +24,6 @@ public class Evento {
 
     public int getIdEspacio() { return idEspacio; }
     public void setIdEspacio(int idEspacio) { this.idEspacio = idEspacio; }
-
-    public int getIdCategoria() { return idCategoria; }
-    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -56,4 +52,7 @@ public class Evento {
     public String getImagenUrl() {return imagenUrl;}
 
     public void setImagenUrl(String imagenUrl) {this.imagenUrl = imagenUrl;}
+
+    public int getIdCategoria() {
+    }
 }
