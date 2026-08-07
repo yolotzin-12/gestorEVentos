@@ -1,6 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    String token = request.getParameter("token");
+    String token = (String) request.getAttribute("token");
+    if (token == null || token.isEmpty()) {
+        token = request.getParameter("token");
+    }
     if (token == null) {
         token = "";
     }
