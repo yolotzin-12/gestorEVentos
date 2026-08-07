@@ -10,6 +10,7 @@ import java.util.List;
 
 public class UsuarioDao {
 
+    // ── Función para encriptar contraseñas ───────────────────────────────────
     public static String hashSHA256(String texto) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -73,7 +74,7 @@ public class UsuarioDao {
             if (con != null) {
                 try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
-            System.err.println("Error al registrar usuario: " + e.getMessage());
+            System.err.println("❌ Error al registrar usuario: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
@@ -113,34 +114,49 @@ public class UsuarioDao {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error en login: " + e.getMessage());
+            System.err.println("❌ Error en login: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
-    // ── Obtener todos los usuarios (para Admin) ──────────────────────────────
+    // ── Obtener todos los usuarios (Con logs de depuración para la consola) ──
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT id_usuario, id_rol, nombre, apellido_paterno, " +
-                "apellido_materno, correo_electronico, activo FROM USUARIO";
+        String sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, ACTIVO FROM USUARIO ORDER BY ID_USUARIO ASC";
 
-        try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        System.out.println("=== 🔍 INTENTANDO OBTENER USUARIOS DE LA BD ===");
 
-            while (rs.next()) {
-                Usuario u = new Usuario();
-                u.setId(rs.getInt("id_usuario"));
-                u.setIdRol(rs.getInt("id_rol"));
-                u.setNombre(rs.getString("nombre"));
-                u.setApellidoPaterno(rs.getString("apellido_paterno"));
-                u.setApellidoMaterno(rs.getString("apellido_materno"));
-                u.setEmail(rs.getString("correo_electronico"));
-                u.setActivo(rs.getInt("activo") == 1);
-                lista.add(u);
+        try (Connection con = OracleConnectApp.getConnection()) {
+
+            if (con == null) {
+                System.err.println("❌ ERROR: OracleConnectApp.getConnection() devolvió NULL.");
+                return lista;
+            }
+
+            System.out.println("✅ Conexión establecida con Oracle. Ejecutando SQL...");
+
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+
+                int contador = 0;
+                while (rs.next()) {
+                    contador++;
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("ID_USUARIO"));
+                    u.setIdRol(rs.getInt("ID_ROL"));
+                    u.setNombre(rs.getString("NOMBRE"));
+                    u.setApellidoPaterno(rs.getString("APELLIDO_PATERNO"));
+                    u.setApellidoMaterno(rs.getString("APELLIDO_MATERNO"));
+                    u.setEmail(rs.getString("CORREO_ELECTRONICO"));
+                    u.setActivo(rs.getInt("ACTIVO") == 1);
+                    lista.add(u);
+                }
+                System.out.println("✅ TOTAL DE USUARIOS EXTRAÍDOS DE LA BD: " + contador);
             }
         } catch (SQLException e) {
+            System.err.println("❌ ERROR AL EJECUTAR LA CONSULTA SQL EN getAll():");
+            System.err.println("Detalle del error: " + e.getMessage());
             e.printStackTrace();
         }
         return lista;
@@ -152,6 +168,20 @@ public class UsuarioDao {
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ── Cambiar estado (Habilitar / Deshabilitar dinámicamente) ─────────────
+    public boolean cambiarEstado(int idUsuario, boolean estado) {
+        String sql = "UPDATE USUARIO SET activo = ? WHERE id_usuario = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, estado ? 1 : 0);
+            ps.setInt(2, idUsuario);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

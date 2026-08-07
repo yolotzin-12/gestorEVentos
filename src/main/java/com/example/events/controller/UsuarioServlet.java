@@ -18,7 +18,8 @@ public class UsuarioServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("listaUsuarios", dao.getAll());
-        request.getRequestDispatcher("dashboard-admin.jsp").forward(request, response);
+        // CORREGIDO: Redirige a administrarUsu.jsp para que pinte la lista real
+        request.getRequestDispatcher("administrarUsu.jsp").forward(request, response);
     }
 
     @Override
@@ -26,13 +27,19 @@ public class UsuarioServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 
-        if ("deshabilitar".equals(action)) {
-            dao.deshabilitar(idUsuario);
-        } else if ("asignarRol".equals(action)) {
-            int idRol = Integer.parseInt(request.getParameter("idRol"));
-            dao.asignarRol(idUsuario, idRol);
+        if (action != null && request.getParameter("idUsuario") != null) {
+            int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
+
+            if ("deshabilitar".equals(action)) {
+                dao.deshabilitar(idUsuario);
+            } else if ("cambiarEstado".equals(action)) { // Para reactivar o alternar estado
+                boolean nuevoEstado = Boolean.parseBoolean(request.getParameter("estado"));
+                dao.cambiarEstado(idUsuario, nuevoEstado);
+            } else if ("asignarRol".equals(action)) {
+                int idRol = Integer.parseInt(request.getParameter("idRol"));
+                dao.asignarRol(idUsuario, idRol);
+            }
         }
 
         response.sendRedirect(request.getContextPath() + "/usuarios");
