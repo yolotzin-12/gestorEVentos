@@ -6,7 +6,9 @@ public class Evento {
     private int idEspacio;
     private int idCategoria;
     private String nombre;
-    private String categoria;
+    private String nombreCategoria;
+    private String imagenUrl;
+    private int idCategoria;
     private String descripcion;
     private int capacidadMaxima;
     private int capacidadDisponible;
@@ -31,8 +33,11 @@ public class Evento {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public String getNombreCategoria() { return nombreCategoria; }
+    public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }
+
+    public int getIdCategoria() { return idCategoria; }
+    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
@@ -51,4 +56,8 @@ public class Evento {
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    public String getImagenUrl() {return imagenUrl;}
+
+    public void setImagenUrl(String imagenUrl) {this.imagenUrl = imagenUrl;}
 }
