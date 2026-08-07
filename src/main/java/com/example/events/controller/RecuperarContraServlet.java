@@ -22,10 +22,8 @@ public class RecuperarContraServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("¡Sí entró al Servlet de Recuperación!");
 
         String email = request.getParameter("email");
-        System.out.println("Correo recibido desde el formulario: " + email);
 
         if (email == null || email.isBlank()) {
             request.setAttribute("error", "Ingresa tu correo.");
@@ -34,7 +32,6 @@ public class RecuperarContraServlet extends HttpServlet {
         }
 
         Usuario u = usuarioDao.getByEmail(email.trim().toLowerCase());
-        System.out.println("¿Usuario encontrado?: " + (u != null));
 
         request.setAttribute("mensaje",
                 "Si ese correo está registrado, recibirás un enlace en los próximos minutos.");
@@ -42,7 +39,6 @@ public class RecuperarContraServlet extends HttpServlet {
         if (u != null) {
             String token = UUID.randomUUID().toString();
             boolean guardado = tokenDao.crear(u.getId(), token);
-
 
             if (guardado) {
                 String html = getString(request, token);
@@ -61,16 +57,22 @@ public class RecuperarContraServlet extends HttpServlet {
     private static String getString(HttpServletRequest request, String token) {
         String baseUrl = request.getScheme() + "://" + request.getServerName()
                 + ":" + request.getServerPort() + request.getContextPath();
+
+        // Enlace correcto enviando la petición al Servlet de restablecer
         String enlace = baseUrl + "/restablecer?token=" + token;
 
         String html = """
-            <html><body style="font-family:Arial,sans-serif">
-              <h2 style="color:#003b71">Recuperar contraseña - SRAE</h2>
-              <p>Haz clic en el enlace para restablecer tu contraseña:</p>
-              <p><a href="{0}">{0}</a></p>
-              <p style="color:#888;font-size:12px">Este enlace expira en 30 minutos.</p>
-            </body></html>
-            """.replace("{0}", enlace);
+    <html><body style="font-family:Arial,sans-serif; text-align: center; padding: 20px;">
+      <h2 style="color:#003b71;">Recuperar contraseña - SRAE</h2>
+      <p style="color:#333;">Hemos recibido una solicitud para restablecer tu contraseña.</p>
+      <p style="margin: 30px 0;">
+        <a href="{0}" style="background-color: #003b71; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+          Restablecer Contraseña
+        </a>
+      </p>
+      <p style="color:#888; font-size:12px;">Este enlace expira en 30 minutos. Si no solicitaste este cambio, ignora este correo.</p>
+    </body></html>
+    """.replace("{0}", enlace);
         return html;
     }
 }
