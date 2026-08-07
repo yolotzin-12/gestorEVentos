@@ -29,7 +29,7 @@ public class EspacioServlet extends HttpServlet {
             BufferedReader reader = request.getReader();
             Espacio nuevoEspacio = gson.fromJson(reader, Espacio.class);
 
-            if (nuevoEspacio != null && nuevoEspacio.getNombreEspacio() != null && !nuevoEspacio.getNombreEspacio().trim().isEmpty()) {
+            if (nuevoEspacio != null && nuevoEspacio.getNombre() != null && !nuevoEspacio.getNombre().trim().isEmpty()) {
                 boolean exito = espacioDao.insertEspacio(nuevoEspacio);
                 if (exito) {
                     jsonResponse.addProperty("status", "success");

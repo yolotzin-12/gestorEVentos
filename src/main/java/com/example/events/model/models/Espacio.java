@@ -3,7 +3,7 @@ package com.example.events.model.models;
 public class Espacio {
     private int id;
     private String nombre;
-    private int capacidad;
+    private Integer capacidad;
     private String ubicacion;
     private String horario;
 
@@ -15,8 +15,8 @@ public class Espacio {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public int getCapacidad() { return capacidad; }
-    public void setCapacidad(int capacidad) { this.capacidad = capacidad; }
+    public Integer getCapacidad() { return capacidad; }
+    public void setCapacidad(Integer capacidad) { this.capacidad = capacidad; }
 
     public String getUbicacion() { return ubicacion; }
     public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }

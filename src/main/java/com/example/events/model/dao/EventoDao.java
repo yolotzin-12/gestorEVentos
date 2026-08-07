@@ -11,17 +11,17 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     private static final String SELECT_BASE =
             "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.id_categoria, e.nombre, " +
-            "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-            "e.fecha_hora, e.estado, esp.ubicacion, cat.nombre AS categoria " +
-            "FROM EVENTO e " +
-            "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
-            "JOIN CATEGORIA cat ON e.id_categoria = cat.id_categoria ";
+                    "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                    "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, cat.nombre AS categoria " +
+                    "FROM EVENTO e " +
+                    "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                    "JOIN CATEGORIA cat ON e.id_categoria = cat.id_categoria ";
 
     @Override
     public boolean create(Evento e) {
         String sql = "INSERT INTO EVENTO(id_organizador, id_espacio, id_categoria, nombre, descripcion, " +
-                "capacidad_maxima, capacidad_disponible, fecha_hora, estado) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD'), ?)";
+                "capacidad_maxima, capacidad_disponible, fecha_hora, estado, imagen_url) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD'), ?, ?)";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, new String[]{"ID_EVENTO"})) {
@@ -35,6 +35,7 @@ public class EventoDao implements Dao<Evento, Integer> {
             ps.setInt(7, e.getCapacidadMaxima()); // disponible = máxima al crear
             ps.setString(8, e.getFechaHora());
             ps.setString(9, e.getEstado() != null ? e.getEstado() : "Borrador");
+            ps.setString(10, e.getImagenUrl());
 
             int filas = ps.executeUpdate();
             if (filas > 0) {
@@ -67,7 +68,6 @@ public class EventoDao implements Dao<Evento, Integer> {
         return lista;
     }
 
-    // Obtener todos los eventos de un organizador (panel del organizador)
     public List<Evento> getByOrganizador(int idOrganizador) {
         List<Evento> lista = new ArrayList<>();
         String sql = SELECT_BASE + "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
@@ -103,7 +103,7 @@ public class EventoDao implements Dao<Evento, Integer> {
     @Override
     public boolean update(Evento e) {
         String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, id_categoria=?, id_espacio=?, capacidad_maxima=?, " +
-                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD'), estado=? WHERE id_evento=?";
+                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD'), estado=?, imagen_url=? WHERE id_evento=?";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -114,7 +114,8 @@ public class EventoDao implements Dao<Evento, Integer> {
             ps.setInt(5, e.getCapacidadMaxima());
             ps.setString(6, e.getFechaHora());
             ps.setString(7, e.getEstado());
-            ps.setInt(8, e.getId());
+            ps.setString(8, e.getImagenUrl());
+            ps.setInt(9, e.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -135,7 +136,6 @@ public class EventoDao implements Dao<Evento, Integer> {
         }
     }
 
-    // Decrementar disponibilidad al reservar
     public boolean decrementarDisponibilidad(int idEvento, Connection con) throws SQLException {
         String sql = "UPDATE EVENTO SET capacidad_disponible = capacidad_disponible - 1 " +
                 "WHERE id_evento = ? AND capacidad_disponible > 0";
@@ -145,7 +145,6 @@ public class EventoDao implements Dao<Evento, Integer> {
         }
     }
 
-    // Incrementar disponibilidad al cancelar
     public boolean incrementarDisponibilidad(int idEvento, Connection con) throws SQLException {
         String sql = "UPDATE EVENTO SET capacidad_disponible = capacidad_disponible + 1 " +
                 "WHERE id_evento = ?";
@@ -169,6 +168,13 @@ public class EventoDao implements Dao<Evento, Integer> {
         e.setEstado(rs.getString("estado"));
         e.setUbicacion(rs.getString("ubicacion"));
         e.setCategoria(rs.getString("categoria"));
+
+        try {
+            e.setImagenUrl(rs.getString("imagen_url"));
+        } catch (SQLException ex) {
+            // columna imagen_url aún no existe en la tabla: se ignora sin romper la app
+        }
+
         return e;
     }
 }
