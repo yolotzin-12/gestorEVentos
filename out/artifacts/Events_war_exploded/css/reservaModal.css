@@ -1,0 +1,49 @@
+
+.modal-reservacion {
+    border-radius: 20px !important;
+    background-color: #ffffff;
+}
+
+.titulo-reserva {
+    color: #0d8a5f;
+    font-weight: bold;
+}
+
+
+.btn-confirmar {
+    background-color: #0d8a5f !important;
+    color: white !important;
+    border-radius: 10px !important;
+    border: none !important;
+    transition: background-color 0.2s ease;
+}
+
+.btn-confirmar:hover {
+    background-color: #0a6b4a !important;
+}
+
+
+.badge-info-modal {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    font-weight: bold;
+    padding: 12px;
+    text-align: center;
+    font-size: 1rem;
+    color: #212529;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.02);
+}
+
+.circulo-progreso-modal {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+    conic-gradient(#00f0c2 67.5%, #162e54 0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
