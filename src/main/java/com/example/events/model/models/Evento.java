@@ -8,7 +8,6 @@ public class Evento {
     private String nombre;
     private String nombreCategoria;
     private String imagenUrl;
-    private int idCategoria;
     private String descripcion;
     private int capacidadMaxima;
     private int capacidadDisponible;
@@ -35,9 +34,6 @@ public class Evento {
 
     public String getNombreCategoria() { return nombreCategoria; }
     public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }
-
-    public int getIdCategoria() { return idCategoria; }
-    public void setIdCategoria(int idCategoria) { this.idCategoria = idCategoria; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
