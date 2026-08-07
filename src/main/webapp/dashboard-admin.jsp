@@ -25,6 +25,7 @@
             <nav class="eventos-nav">
                 <a href="eventos.jsp" class="activo">Eventos</a>
                 <a href="categorias.jsp">Categorias</a>
+                <a href="${pageContext.request.contextPath}/evento?action=crear">Crear Evento</a>
                 <a href="historialReservas.jsp">Mis reservas</a>
             </nav>
 

@@ -9,12 +9,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/filters/FiltroAutenticacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/filters/FiltroAutenticacion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/recuperarContra.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/recuperarContra.jsp" afterDir="false" />
+=======
+    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="Merge branch 'EMELY'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;src/main/webapp/crearPerfil.jsp">
+      <change afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/CategoriaServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EspacioServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/CategoriaDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EspacioDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Categoria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Espacio.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/crearEventAdmin.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/js/categorias.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Evento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Evento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/dashboard-admin.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/dashboard-admin.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/dashboard-organizador.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/dashboard-organizador.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +49,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
+        <option value="JavaScript File" />
         <option value="Class" />
         <option value="Jsp File" />
       </list>
@@ -72,6 +97,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.testconnection.executor&quot;: &quot;Run&quot;,
@@ -91,11 +117,40 @@
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.testconnection.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Tomcat Server.Tomcat 10.1.56.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/emely/Desktop/xccxvc/gestorEVentos/src/main/webapp",
+    "list.type.of.created.stylesheet": "CSS",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "service.view.auto.scroll.to.source": "true",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> Stashed changes
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+<<<<<<< Updated upstream
       <recent name="C:\Users\emely\Desktop\xccxvc\gestorEVentos\src\main\resources\wallet" />
+=======
+      <recent name="C:\Users\emely\Desktop\xccxvc\gestorEVentos\src\main\webapp" />
+>>>>>>> Stashed changes
       <recent name="C:\Users\emely\Desktop\xccxvc\gestorEVentos\src\main\java\com\example\events" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -348,8 +403,14 @@
       <workItem from="1783133274054" duration="3524000" />
       <workItem from="1783657637976" duration="51000" />
       <workItem from="1785179518709" duration="1673000" />
+<<<<<<< Updated upstream
       <workItem from="1785457492224" duration="776000" />
       <workItem from="1785900257408" duration="1265000" />
+=======
+      <workItem from="1785771253506" duration="176000" />
+      <workItem from="1785771448105" duration="2863000" />
+      <workItem from="1786048026606" duration="22240000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>

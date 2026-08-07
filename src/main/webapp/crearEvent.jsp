@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -37,8 +38,9 @@
     <div class="card p-4 shadow-sm border-0 rounded-4">
         <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">CREACIÓN DEL EVENTO</h4>
 
-        <form action="evento" method="post">
-            <input type="hidden" name="estado" value="true">
+        <form action="evento" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" name="action" value="publicar">
 
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
@@ -47,11 +49,11 @@
                         <label for="categoria" class="form-label fw-bold text-dark m-1">Categoría</label>
                         <select name="categoria" class="form-select p-2 rounded-3" id="categoria" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
-                            <option value="Academicos">Académicos</option>
-                            <option value="Deportivos">Deportivos</option>
-                            <option value="Culturales">Culturales</option>
-                            <option value="Conferencias">Conferencias</option>
-                            <option value="Otros">Otros</option>
+
+                            <c:forEach items="${listaCategorias}" var="cat">
+                                <option value="${cat.idCategoria}">${cat.nombre}</option>
+                            </c:forEach>
+
                         </select>
                     </div>
 
@@ -61,8 +63,15 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="ubicacion" class="form-label fw-bold text-dark m-1">Ubicación</label>
-                        <input type="text" name="ubicacion" class="form-control p-2 rounded-3" id="ubicacion" placeholder="Ingresa la dirección de la ubicación" required>
+                        <label for="espacio" class="form-label fw-bold text-dark m-1">Espacio / Ubicación</label>
+                        <select name="idEspacio" class="form-select p-2 rounded-3" id="espacio" required>
+                            <option value="" disabled selected>Selecciona un espacio</option>
+
+                            <c:forEach items="${listaEspacios}" var="esp">
+                                <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
+                            </c:forEach>
+
+                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -89,9 +98,20 @@
                 </div>
             </div>
 
+            <div class="mb-3">
+                <label for="descripcion" class="form-label fw-bold text-dark m-1">Descripción del evento</label>
+                <textarea name="descripcion" class="form-control p-2 rounded-3" id="descripcion"
+                          rows="3" placeholder="Describe el evento..." required></textarea>
+            </div>
+
             <div class="d-flex justify-content-end mt-4">
-                <button type="submit" class="btn text-white fw-bold py-2 px-4 shadow-sm d-inline-flex align-items-center" style="background-color: #0d8a5f; border-radius: 10px;">
+                <button type="submit" name="action" value="publicar" class="btn text-white fw-bold py-2 px-4"
+                        style="background-color: #0d8a5f; border-radius: 10px;">
                     <i class="bi bi-send-fill me-2"></i> Publicar evento
+                </button>
+                <button type="submit" name="action" value="borrador" class="btn fw-bold py-2 px-4"
+                        style="background-color: #6c757d; border-radius: 10px; color: white;">
+                    <i class="bi bi-floppy me-2"></i> Guardar borrador
                 </button>
             </div>
         </form>
