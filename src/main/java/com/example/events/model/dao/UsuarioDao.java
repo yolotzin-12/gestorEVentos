@@ -27,13 +27,9 @@ public class UsuarioDao {
     public boolean create(Usuario usuario) {
         if (usuario == null) return false;
 
-        // id_rol 3 = Asistente por defecto al registrarse
         String sqlUsuario = "INSERT INTO USUARIO(id_rol, nombre, apellido_paterno, " +
                 "apellido_materno, correo_electronico, activo) " +
                 "VALUES(3, ?, ?, ?, ?, 1)";
-
-        String sqlAsistente = "INSERT INTO ASISTENTE(id_usuario, telefono) " +
-                "VALUES(SEQ_ASISTENTE.CURRVAL, ?)";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             con.setAutoCommit(false);
@@ -47,7 +43,6 @@ public class UsuarioDao {
                 ps.setString(4, usuario.getEmail());
                 ps.executeUpdate();
 
-                // Obtener el ID generado
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     usuario.setId(rs.getInt(1));
@@ -88,12 +83,12 @@ public class UsuarioDao {
                 "u.apellido_materno, u.correo_electronico, u.activo " +
                 "FROM USUARIO u " +
                 "JOIN CONTRASENA c ON c.id_usuario = u.id_usuario AND c.activa = 1 " +
-                "WHERE u.correo_electronico = ? AND c.hash_contrasena = ? AND u.activo = 1";
+                "WHERE LOWER(u.correo_electronico) = LOWER(?) AND c.hash_contrasena = ? AND u.activo = 1";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, email.trim().toLowerCase());
+            ps.setString(1, email.trim());
             ps.setString(2, hashSHA256(password));
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -143,7 +138,7 @@ public class UsuarioDao {
         return lista;
     }
 
-    // ── Deshabilitar usuario (Admin - HU-04) ─────────────────────────────────
+    // ── Deshabilitar usuario (Admin) ─────────────────────────────────────────
     public boolean deshabilitar(int idUsuario) {
         String sql = "UPDATE USUARIO SET activo = 0 WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -156,7 +151,7 @@ public class UsuarioDao {
         }
     }
 
-    // ── Asignar rol (Admin - HU-04) ──────────────────────────────────────────
+    // ── Asignar rol (Admin) ──────────────────────────────────────────────────
     public boolean asignarRol(int idUsuario, int idRol) {
         String sql = "UPDATE USUARIO SET id_rol = ? WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -170,13 +165,13 @@ public class UsuarioDao {
         }
     }
 
-    // ── Buscar por correo (para recuperación de contraseña) ──────────────────
+    // ── Buscar por correo (para recuperación) ────────────────────────────────
     public Usuario getByEmail(String email) {
         String sql = "SELECT id_usuario, id_rol, nombre, correo_electronico, activo " +
-                "FROM USUARIO WHERE correo_electronico = ?";
+                "FROM USUARIO WHERE LOWER(correo_electronico) = LOWER(?)";
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, email.trim().toLowerCase());  // ← minúsculas
+            ps.setString(1, email.trim());
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Usuario u = new Usuario();
@@ -196,25 +191,33 @@ public class UsuarioDao {
 
     // ── Actualizar contraseña (después de recuperación) ──────────────────────
     public boolean actualizarContrasena(int idUsuario, String nuevaContrasena) {
-        // Desactivar contraseña anterior
         String sqlDesact = "UPDATE CONTRASENA SET activa = 0 WHERE id_usuario = ?";
-        // Insertar nueva
         String sqlNueva = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             con.setAutoCommit(false);
+
+            // 1. Desactivar contraseña anterior
             try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
                 ps1.setInt(1, idUsuario);
                 ps1.executeUpdate();
             }
+
+            // Commit intermedio para evitar error ORA-12838 en Oracle
+            con.commit();
+
+            // 2. Insertar nueva contraseña
             try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
                 ps2.setInt(1, idUsuario);
                 ps2.setString(2, hashSHA256(nuevaContrasena));
                 ps2.executeUpdate();
             }
+
             con.commit();
             return true;
+
         } catch (SQLException e) {
+            System.err.println("Error actualizando contraseña: " + e.getMessage());
             e.printStackTrace();
             return false;
         }

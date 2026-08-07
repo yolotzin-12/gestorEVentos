@@ -33,7 +33,7 @@
             </div>
             <% } %>
 
-            <form action="contraActualizada.jsp" method="GET">
+            <form action="restablecer" method="POST">
 
                 <input type="hidden" name="token" value="<%= token %>">
 

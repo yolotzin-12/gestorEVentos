@@ -12,8 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RecuperarContraServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/filters/FiltroAutenticacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/filters/FiltroAutenticacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RestablecerContraServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/RestablecerContraServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/UsuarioDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/nuevaContra.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/nuevaContra.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -265,7 +265,7 @@
       <workItem from="1785771253506" duration="176000" />
       <workItem from="1785771448105" duration="2863000" />
       <workItem from="1785945988272" duration="1550000" />
-      <workItem from="1786059530699" duration="5486000" />
+      <workItem from="1786059530699" duration="7224000" />
     </task>
     <servers />
   </component>
