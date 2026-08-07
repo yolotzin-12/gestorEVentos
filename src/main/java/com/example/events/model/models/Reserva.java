@@ -8,6 +8,11 @@ public class Reserva {
     private String estado;
     private String fechaHoraReserva;
 
+    // Campos auxiliares para la vista de Historial (obtenidos mediante JOIN)
+    private String nombreEvento;
+    private String fechaEvento;
+    private String lugar;
+
     public Reserva() {}
 
     public int getId() { return id; }
@@ -27,4 +32,13 @@ public class Reserva {
 
     public String getFechaHoraReserva() { return fechaHoraReserva; }
     public void setFechaHoraReserva(String fechaHoraReserva) { this.fechaHoraReserva = fechaHoraReserva; }
+
+    public String getNombreEvento() { return nombreEvento; }
+    public void setNombreEvento(String nombreEvento) { this.nombreEvento = nombreEvento; }
+
+    public String getFechaEvento() { return fechaEvento; }
+    public void setFechaEvento(String fechaEvento) { this.fechaEvento = fechaEvento; }
+
+    public String getLugar() { return lugar; }
+    public void setLugar(String lugar) { this.lugar = lugar; }
 }

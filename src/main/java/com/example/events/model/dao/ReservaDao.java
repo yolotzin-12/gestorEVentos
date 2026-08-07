@@ -3,7 +3,10 @@ package com.example.events.model.dao;
 import com.example.events.model.models.Reserva;
 import com.example.events.DB.OracleConnectApp;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,29 +15,24 @@ public class ReservaDao implements Dao<Reserva, Integer> {
 
     private final EventoDao eventoDao = new EventoDao();
 
-    // Genera código único
     private String generarCodigo() {
-        return "SRAE-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-    @Override
     public boolean create(Reserva r) {
-        String sqlReserva = "INSERT INTO RESERVA(id_evento, id_asistente, codigo_reserva, estado) " +
+        String sqlReserva = "INSERT INTO RESERVA (id_evento, id_asistente, codigo_reserva, estado) " +
                 "VALUES(?, ?, ?, 'Reservado')";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             con.setAutoCommit(false);
 
-            // 1. Verificar y decrementar disponibilidad
             if (!eventoDao.decrementarDisponibilidad(r.getIdEvento(), con)) {
                 con.rollback();
-                return false; // sin disponibilidad
+                return false;
             }
 
-            // 2. Insertar reserva
             r.setCodigoReserva(generarCodigo());
-            try (PreparedStatement ps = con.prepareStatement(sqlReserva,
-                    new String[]{"ID_RESERVA"})) {
+            try (PreparedStatement ps = con.prepareStatement(sqlReserva, new String[]{"ID_RESERVA"})) {
                 ps.setInt(1, r.getIdEvento());
                 ps.setInt(2, r.getIdAsistente());
                 ps.setString(3, r.getCodigoReserva());
@@ -53,14 +51,12 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         }
     }
 
-    // Cancelar reserva (cambia estado + incrementa disponibilidad)
     public boolean cancelar(int idReserva) {
         String sqlCancelar = "UPDATE RESERVA SET estado = 'Cancelado' WHERE id_reserva = ? AND estado = 'Reservado'";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             con.setAutoCommit(false);
 
-            // Obtener idEvento antes de cancelar
             Reserva r = getById(idReserva);
             if (r == null || !"Reservado".equals(r.getEstado())) {
                 return false;
@@ -69,7 +65,10 @@ public class ReservaDao implements Dao<Reserva, Integer> {
             try (PreparedStatement ps = con.prepareStatement(sqlCancelar)) {
                 ps.setInt(1, idReserva);
                 int filas = ps.executeUpdate();
-                if (filas == 0) { con.rollback(); return false; }
+                if (filas == 0) {
+                    con.rollback();
+                    return false;
+                }
             }
 
             eventoDao.incrementarDisponibilidad(r.getIdEvento(), con);
@@ -82,18 +81,58 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         }
     }
 
-    // Historial de reservas por asistente
-    public List<Reserva> getByAsistente(int idAsistente) {
+    // Método para obtener el historial con JOIN y filtros
+    public List<Reserva> getHistorialByAsistente(int idAsistente, String estado, String fecha) {
         List<Reserva> lista = new ArrayList<>();
-        String sql = "SELECT r.id_reserva, r.id_evento, r.id_asistente, " +
-                "r.codigo_reserva, r.estado, r.fecha_hora_reserva " +
-                "FROM RESERVA r WHERE r.id_asistente = ? ORDER BY r.fecha_hora_reserva DESC";
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT r.id_reserva, r.id_evento, r.id_asistente, r.codigo_reserva, r.estado, " +
+                        "TO_CHAR(r.fecha_hora_reserva, 'DD/MM/YY') AS fecha_hora_reserva, " +
+                        "e.nombre AS nombre_evento, " +
+                        "TO_CHAR(e.fecha_hora, 'DD/MM/YY') AS fecha_evento, " +
+                        "esp.nombre_espacio AS lugar " +
+                        "FROM RESERVA r " +
+                        "JOIN EVENTO e ON r.id_evento = e.id_evento " +
+                        "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                        "WHERE r.id_asistente = ? "
+        );
+
+        if (estado != null && !estado.trim().isEmpty()) {
+            sql.append("AND r.estado = ? ");
+        }
+        if (fecha != null && !fecha.trim().isEmpty()) {
+            sql.append("AND TRUNC(e.fecha_hora) = TO_DATE(?, 'YYYY-MM-DD') ");
+        }
+
+        sql.append("ORDER BY r.fecha_hora_reserva DESC");
 
         try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idAsistente);
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, idAsistente);
+
+            if (estado != null && !estado.trim().isEmpty()) {
+                ps.setString(paramIndex++, estado);
+            }
+            if (fecha != null && !fecha.trim().isEmpty()) {
+                ps.setString(paramIndex++, fecha);
+            }
+
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) lista.add(mapear(rs));
+                while (rs.next()) {
+                    Reserva r = new Reserva();
+                    r.setId(rs.getInt("id_reserva"));
+                    r.setIdEvento(rs.getInt("id_evento"));
+                    r.setIdAsistente(rs.getInt("id_asistente"));
+                    r.setCodigoReserva(rs.getString("codigo_reserva"));
+                    r.setEstado(rs.getString("estado"));
+                    r.setFechaHoraReserva(rs.getString("fecha_hora_reserva"));
+                    r.setNombreEvento(rs.getString("nombre_evento"));
+                    r.setFechaEvento(rs.getString("fecha_evento"));
+                    r.setLugar(rs.getString("lugar"));
+                    lista.add(r);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,11 +140,15 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         return lista;
     }
 
+    public List<Reserva> getByAsistente(int idAsistente) {
+        return getHistorialByAsistente(idAsistente, null, null);
+    }
+
     @Override
     public List<Reserva> getAll() {
         List<Reserva> lista = new ArrayList<>();
         String sql = "SELECT id_reserva, id_evento, id_asistente, codigo_reserva, " +
-                "estado, fecha_hora_reserva FROM RESERVA ORDER BY fecha_hora_reserva DESC";
+                "estado, TO_CHAR(fecha_hora_reserva, 'DD/MM/YY') AS fecha_hora_reserva FROM RESERVA ORDER BY fecha_hora_reserva DESC";
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -117,7 +160,7 @@ public class ReservaDao implements Dao<Reserva, Integer> {
     @Override
     public Reserva getById(Integer id) {
         String sql = "SELECT id_reserva, id_evento, id_asistente, codigo_reserva, " +
-                "estado, fecha_hora_reserva FROM RESERVA WHERE id_reserva = ?";
+                "estado, TO_CHAR(fecha_hora_reserva, 'DD/MM/YY') AS fecha_hora_reserva FROM RESERVA WHERE id_reserva = ?";
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);

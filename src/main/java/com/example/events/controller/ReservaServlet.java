@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import com.example.events.model.Usuario;
 import com.example.events.model.models.Evento;
 import com.example.events.model.models.Reserva;
@@ -28,12 +29,25 @@ public class ReservaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Usuario u = (Usuario) request.getSession(false).getAttribute("usuario");
+        // Validación segura de sesión (evita NullPointerException)
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("usuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        Usuario u = (Usuario) session.getAttribute("usuario");
         int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
 
-        List<Reserva> misReservas = reservaDao.getByAsistente(idAsistente);
+        String estado = request.getParameter("estado");
+        String fecha = request.getParameter("fecha");
+
+        List<Reserva> misReservas = reservaDao.getHistorialByAsistente(idAsistente, estado, fecha);
         request.setAttribute("misReservas", misReservas);
-        request.getRequestDispatcher("mis-reservas.jsp").forward(request, response);
+
+        // ¡IMPORTANTE! Asegúrate de que apunte al nombre real de tu archivo JSP.
+        // Si tu vista se llama "reservar.jsp", cámbialo aquí:
+        request.getRequestDispatcher("reservar.jsp").forward(request, response);
     }
 
     @Override
@@ -42,7 +56,15 @@ public class ReservaServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
-        Usuario u = (Usuario) request.getSession(false).getAttribute("usuario");
+
+        // Validación segura de sesión
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("usuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        Usuario u = (Usuario) session.getAttribute("usuario");
         int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
 
         if ("reservar".equals(action)) {
@@ -56,7 +78,6 @@ public class ReservaServlet extends HttpServlet {
             boolean ok = reservaDao.create(r);
 
             if (ok) {
-                // Enviar correo de confirmación (HU-14)
                 try {
                     String html = """
                         <html><body style="font-family:Arial,sans-serif">
@@ -74,9 +95,6 @@ public class ReservaServlet extends HttpServlet {
                 } catch (Exception ex) {
                     System.err.println("Correo de reserva no enviado: " + ex.getMessage());
                 }
-                request.setAttribute("mensaje", "Reserva exitosa. Código: " + r.getCodigoReserva());
-            } else {
-                request.setAttribute("error", "No hay disponibilidad para este evento.");
             }
             response.sendRedirect(request.getContextPath() + "/reserva");
 
