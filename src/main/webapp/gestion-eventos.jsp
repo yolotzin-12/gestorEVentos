@@ -24,10 +24,10 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <a href="crearEvent.jsp" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
+            <a href="evento?action=nuevo" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
                 <i class="bi bi-plus-circle"></i> Nuevo Evento
             </a>
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -57,9 +57,9 @@
                                 <h5 class="fw-bold text-dark mb-1">${evento.nombre}</h5>
 
                                 <div class="mt-3 text-secondary text-sm">
-                                    <p class="mb-2"><i class="bi bi-calendar-event me-2" style="color: #0d8a5f;"></i> <strong>Fecha:</strong> ${evento.fecha}</p>
+                                    <p class="mb-2"><i class="bi bi-calendar-event me-2" style="color: #0d8a5f;"></i> <strong>Fecha:</strong> ${evento.fechaHora}</p>
                                     <p class="mb-2"><i class="bi bi-geo-alt-fill me-2" style="color: #0d8a5f;"></i> <strong>Lugar:</strong> ${evento.ubicacion}</p>
-                                    <p class="mb-2"><i class="bi bi-people-fill me-2" style="color: #0d8a5f;"></i> <strong>Aforo Max:</strong> ${evento.capacidad} personas</p>
+                                    <p class="mb-2"><i class="bi bi-people-fill me-2" style="color: #0d8a5f;"></i> <strong>Aforo Max:</strong> ${evento.capacidadMaxima} personas</p>
                                 </div>
 
                                 <div class="mt-auto pt-3 border-top">

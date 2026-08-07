@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -35,7 +35,7 @@
 
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
-                    <a href="index.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
+                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
                     <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
@@ -47,7 +47,7 @@
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
-                    <a href="index.jsp" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
+                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>

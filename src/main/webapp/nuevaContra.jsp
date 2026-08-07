@@ -1,10 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    String token = request.getParameter("token");
-    if (token == null) {
-        token = "";
-    }
-%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,9 +27,7 @@
             </div>
             <% } %>
 
-            <form action="restablecer" method="POST">
-
-                <input type="hidden" name="token" value="<%= token %>">
+            <form action="contraActualizada.jsp" method="GET">
 
                 <div class="mb-3 text-start">
                     <label for="nuevaContra" class="form-label fw-bold label-formulario">Nueva Contraseña:</label>

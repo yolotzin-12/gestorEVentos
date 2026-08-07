@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>

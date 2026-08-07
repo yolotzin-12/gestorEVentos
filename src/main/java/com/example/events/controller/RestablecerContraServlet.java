@@ -17,6 +17,7 @@ public class RestablecerContraServlet extends HttpServlet {
     private final TokenRecuperacionDao tokenDao = new TokenRecuperacionDao();
     private final UsuarioDao usuarioDao = new UsuarioDao();
 
+    // GET — muestra el formulario de nueva contraseña
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -32,21 +33,22 @@ public class RestablecerContraServlet extends HttpServlet {
         }
 
         request.setAttribute("token", token);
-        request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
+        request.getRequestDispatcher("nueva-contrasena.jsp").forward(request, response);
     }
 
+    // POST — guarda la nueva contraseña
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String token = request.getParameter("token");
-        String nueva = request.getParameter("nuevaContra");
-        String confirma = request.getParameter("confirmarContra");
+        String nueva = request.getParameter("nueva");
+        String confirma = request.getParameter("confirma");
 
         if (nueva == null || !nueva.equals(confirma) || nueva.length() < 8) {
-            request.setAttribute("error", "Las contraseñas no coinciden o deben tener al menos 8 caracteres.");
+            request.setAttribute("error", "Las contraseñas no coinciden o son muy cortas.");
             request.setAttribute("token", token);
-            request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
+            request.getRequestDispatcher("nueva-contrasena.jsp").forward(request, response);
             return;
         }
 
@@ -60,6 +62,7 @@ public class RestablecerContraServlet extends HttpServlet {
         usuarioDao.actualizarContrasena(t.getIdUsuario(), nueva);
         tokenDao.marcarUsado(t.getId());
 
-        response.sendRedirect("contraActualizada.jsp");
+        request.setAttribute("mensaje", "Contraseña actualizada. Ya puedes iniciar sesión.");
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 }

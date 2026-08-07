@@ -61,7 +61,7 @@ public class RecuperarContraServlet extends HttpServlet {
     private static String getString(HttpServletRequest request, String token) {
         String baseUrl = request.getScheme() + "://" + request.getServerName()
                 + ":" + request.getServerPort() + request.getContextPath();
-        String enlace = baseUrl + "/nuevaContra.jsp?token=" + token;
+        String enlace = baseUrl + "/restablecer?token=" + token;
 
         String html = """
             <html><body style="font-family:Arial,sans-serif">

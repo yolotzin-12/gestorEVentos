@@ -32,19 +32,13 @@ public class FiltroAutenticacion extends HttpFilter {
         boolean isLoginJsp = requestURI.endsWith("login.jsp");
         boolean isRegistroJsp = requestURI.endsWith("registro.jsp");
         boolean isRecuperarJsp = requestURI.endsWith("recuperarContra.jsp");
-
-        boolean isNuevaContraJsp = requestURI.endsWith("nuevaContra.jsp");
-        boolean isContraActualizadaJsp = requestURI.endsWith("contraActualizada.jsp");
-
         boolean isRecuperarServlet  = requestURI.equals(contextPath + "/recuperar");
         boolean isRestablecerServlet = requestURI.equals(contextPath + "/restablecer");
         boolean isLoginServlet = requestURI.equals(contextPath + "/login");
         boolean isRegisterServlet = requestURI.equals(contextPath + "/register");
         boolean isStaticResource = requestURI.contains("/css/") || requestURI.contains("/img/") || requestURI.contains("/js/") || requestURI.contains("/assets/");
 
-        boolean esRutaPublica = isLoginJsp || isRegistroJsp || isRecuperarJsp
-                || isNuevaContraJsp || isContraActualizadaJsp // <--- Incluidas en la lista de públicas
-                || isLoginServlet || isRegisterServlet || isStaticResource || isRecuperarServlet
+        boolean esRutaPublica = isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet || isStaticResource  || isRecuperarServlet
                 || isRestablecerServlet;
 
         if (loggedIn) {

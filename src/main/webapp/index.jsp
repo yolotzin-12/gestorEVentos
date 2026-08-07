@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -23,7 +24,7 @@
                 <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
 
             <nav class="eventos-nav">
-                <a href="eventos.jsp" class="activo">Eventos</a>
+                <a href="evento" class="activo">Eventos</a>
                 <a href="historialReservas.jsp">Mis reservas</a>
             </nav>
 
@@ -54,36 +55,22 @@
 
             <div class="buscador-evento">
                 <i class="bi bi-search"></i>
-                <input type="text" name="buscar" placeholder="Buscar evento">
+                <input type="text" name="buscar" placeholder="Buscar evento" autocomplete="off">
             </div>
         </div>
 
-        <div class="row g-4 mb-4">
-            <c:choose>
-                <c:when test="${empty listaEventos}">
-                    <%-- Tarjetas de ejemplo mientras no haya datos dinámicos --%>
-                    <c:forEach begin="1" end="4">
-                        <div class="col-6 col-md-3">
-                            <a href="detalle-evento.jsp" class="tarjeta-evento-link">
-                                <div class="tarjeta-evento">
-                                    <div class="encabezado-evento">
-                                        <h3>Evento Nombre</h3>
-                                        <p>Desc desc desc desc</p>
-                                    </div>
-                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
-                                    <div class="pie-evento">
-                                        <div><i class="bi bi-calendar-event"></i> 4 JUL | 11:00 AM</div>
-                                        <div><i class="bi bi-geo-alt-fill"></i> Auditorio Pacheco UTEZ</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </c:forEach>
-                </c:when>
+        <c:choose>
+            <c:when test="${empty listaEventos}">
+                <div class="alert alert-info text-center rounded-4 shadow-sm">
+                    <i class="bi bi-info-circle-fill fs-4 d-block mb-2"></i>
+                    Todavía no hay eventos disponibles.
+                </div>
+            </c:when>
 
-                <c:otherwise>
+            <c:otherwise>
+                <div class="row g-4 mb-4" id="listaEventosGrid">
                     <c:forEach items="${listaEventos}" var="evento">
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-md-3" data-nombre-evento="${fn:toLowerCase(evento.nombre)}">
                             <a href="evento?id=${evento.id}" class="tarjeta-evento-link">
                                 <div class="tarjeta-evento">
                                     <div class="encabezado-evento">
@@ -92,16 +79,19 @@
                                     </div>
                                     <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
                                     <div class="pie-evento">
-                                        <div><i class="bi bi-calendar-event"></i> ${evento.fecha}</div>
+                                        <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
                                         <div><i class="bi bi-geo-alt-fill"></i> ${evento.ubicacion}</div>
                                     </div>
                                 </div>
                             </a>
                         </div>
                     </c:forEach>
-                </c:otherwise>
-            </c:choose>
-        </div>
+                </div>
+                <div id="sinResultadosBusqueda" class="alert alert-secondary text-center rounded-4 shadow-sm" style="display:none;">
+                    <i class="bi bi-search"></i> No se encontraron eventos con ese nombre.
+                </div>
+            </c:otherwise>
+        </c:choose>
 
     </div>
 
@@ -115,10 +105,6 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function quitarUbicacion() {
-        document.getElementById('filtroUbicacion').style.display = 'none';
-    }
-</script>
+<script src="js/buscador.js"></script>
 </body>
 </html>

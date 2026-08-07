@@ -30,12 +30,8 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("usuario", usuario);
             session.setAttribute("idRol", usuario.getIdRol());
 
-            // SEGUN SU rol: 1=Admin, 2=Organizador, 3=Asistente
-            switch (usuario.getIdRol()) {
-                case 1 -> response.sendRedirect(request.getContextPath() + "/dashboard-admin.jsp");
-                case 2 -> response.sendRedirect(request.getContextPath() + "/dashboard-organizador.jsp");
-                default -> response.sendRedirect(request.getContextPath() + "/index.jsp");
-            }
+            // El servlet /evento decide la vista correcta según el rol (1=Admin, 2=Organizador, 3=Asistente)
+            response.sendRedirect(request.getContextPath() + "/evento");
         } else {
             request.setAttribute("error", "Correo o contraseña incorrectos.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
