@@ -1,11 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos - SRAE</title>
+    <title>Mis Eventos - SRAE</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -23,9 +24,8 @@
                 <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
 
             <nav class="eventos-nav">
-                <a href="eventos.jsp" class="activo">Eventos</a>
-                <a href="eventos.jsp">Mis eventos</a>
-                <a href="editarEvent.jsp">Crear Evento</a>
+                <a href="evento" class="activo">Mis Eventos</a>
+                <a href="evento?action=nuevo">Crear Evento</a>
             </nav>
 
             <div class="d-flex align-items-center gap-2">
@@ -55,54 +55,51 @@
 
             <div class="buscador-evento">
                 <i class="bi bi-search"></i>
-                <input type="text" name="buscar" placeholder="Buscar evento">
+                <input type="text" name="buscar" placeholder="Buscar en mis eventos" autocomplete="off">
             </div>
         </div>
 
-        <div class="row g-4 mb-4">
-            <c:choose>
-                <c:when test="${empty listaEventos}">
-                    <%-- Tarjetas de ejemplo mientras no haya datos dinámicos --%>
-                    <c:forEach begin="1" end="4">
-                        <div class="col-6 col-md-3">
-                            <a href="detalle-evento.jsp" class="tarjeta-evento-link">
-                                <div class="tarjeta-evento">
-                                    <div class="encabezado-evento">
-                                        <h3>Evento Nombre</h3>
-                                        <p>Desc desc desc desc</p>
-                                    </div>
-                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
-                                    <div class="pie-evento">
-                                        <div><i class="bi bi-calendar-event"></i> 4 JUL | 11:00 AM</div>
-                                        <div><i class="bi bi-geo-alt-fill"></i> Auditorio Pacheco UTEZ</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </c:forEach>
-                </c:when>
+        <c:choose>
+            <c:when test="${empty listaEventos}">
+                <div class="alert alert-info text-center rounded-4 shadow-sm">
+                    <i class="bi bi-info-circle-fill fs-4 d-block mb-2"></i>
+                    Aún no has creado ningún evento.
+                    <a href="evento?action=nuevo" class="d-block mt-2 fw-bold">Crea tu primer evento</a>
+                </div>
+            </c:when>
 
-                <c:otherwise>
+            <c:otherwise>
+                <div class="row g-4 mb-4" id="listaEventosGrid">
                     <c:forEach items="${listaEventos}" var="evento">
-                        <div class="col-6 col-md-3">
-                            <a href="evento?id=${evento.id}" class="tarjeta-evento-link">
-                                <div class="tarjeta-evento">
+                        <div class="col-6 col-md-3" data-nombre-evento="${fn:toLowerCase(evento.nombre)}">
+                            <div class="tarjeta-evento">
+                                <a href="evento?id=${evento.id}" class="tarjeta-evento-link">
                                     <div class="encabezado-evento">
                                         <h3>${evento.nombre}</h3>
-                                        <p>${evento.categoria}</p>
+                                        <p>${evento.categoria} &middot; ${evento.estado}</p>
                                     </div>
                                     <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
                                     <div class="pie-evento">
-                                        <div><i class="bi bi-calendar-event"></i> ${evento.fecha}</div>
+                                        <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
                                         <div><i class="bi bi-geo-alt-fill"></i> ${evento.ubicacion}</div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                                <form action="evento" method="post" onsubmit="return confirm('¿Eliminar este evento?');" class="p-2">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="${evento.id}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </c:forEach>
-                </c:otherwise>
-            </c:choose>
-        </div>
+                </div>
+                <div id="sinResultadosBusqueda" class="alert alert-secondary text-center rounded-4 shadow-sm" style="display:none;">
+                    <i class="bi bi-search"></i> No se encontraron eventos con ese nombre.
+                </div>
+            </c:otherwise>
+        </c:choose>
 
     </div>
 
@@ -116,10 +113,6 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function quitarUbicacion() {
-        document.getElementById('filtroUbicacion').style.display = 'none';
-    }
-</script>
+<script src="js/buscador.js"></script>
 </body>
 </html>

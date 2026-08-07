@@ -58,6 +58,7 @@ public class RecuperarContraServlet extends HttpServlet {
         String baseUrl = request.getScheme() + "://" + request.getServerName()
                 + ":" + request.getServerPort() + request.getContextPath();
 
+        // Enlace correcto enviando la petición al Servlet de restablecer
         String enlace = baseUrl + "/restablecer?token=" + token;
 
         String html = """

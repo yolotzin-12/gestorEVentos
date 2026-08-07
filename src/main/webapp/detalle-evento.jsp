@@ -24,7 +24,7 @@
                 <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
 
             <nav class="eventos-nav">
-                <a href="eventos.jsp">Eventos</a>
+                <a href="evento">Eventos</a>
 
                 <a href="historialReservas.jsp">Mis reservas</a>
             </nav>
@@ -45,7 +45,7 @@
 
     <div class="container">
 
-        <a href="eventos.jsp" class="btn btn-sm mb-3" style="background-color:#e4e4e6; color:#162e54; font-weight:700; border-radius:10px;">
+        <a href="evento" class="btn btn-sm mb-3" style="background-color:#e4e4e6; color:#162e54; font-weight:700; border-radius:10px;">
             <i class="bi bi-arrow-left"></i> Volver a eventos
         </a>
 
@@ -60,9 +60,9 @@
                             <div>
                                 <span class="badge mb-2" style="background-color:#0d8a5f;">${evento.categoria}</span>
                                 <h3 class="fw-bold" style="color:#162e54;">${evento.nombre}</h3>
-                                <p class="text-secondary mb-1"><i class="bi bi-calendar-event me-2" style="color:#0d8a5f;"></i>${evento.fecha}</p>
+                                <p class="text-secondary mb-1"><i class="bi bi-calendar-event me-2" style="color:#0d8a5f;"></i>${evento.fechaHora}</p>
                                 <p class="text-secondary mb-1"><i class="bi bi-geo-alt-fill me-2" style="color:#0d8a5f;"></i>${evento.ubicacion}</p>
-                                <p class="text-secondary mb-3"><i class="bi bi-people-fill me-2" style="color:#0d8a5f;"></i>Aforo máximo: ${evento.capacidad} personas</p>
+                                <p class="text-secondary mb-3"><i class="bi bi-people-fill me-2" style="color:#0d8a5f;"></i>Aforo máximo: ${evento.capacidadDisponible} / ${evento.capacidadMaxima} personas</p>
                             </div>
                             <a href="reservar.jsp" class="text-decoration-none w-100">
                                 <button type="button" class="btn fs-5 w-100 d-flex align-items-center justify-content-center gap-2" style="background-color:#0d8a5f; color:#fff; font-weight:bold; border-radius:10px; padding:10px; border:none;">

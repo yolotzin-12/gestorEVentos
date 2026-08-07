@@ -91,6 +91,13 @@ body.eventos-body {
     display: flex;
     align-items: center;
     gap: 10px;
+    transition: opacity 0.15s ease;
+}
+
+.filtro-ubicacion.oculto {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
 }
 
 .pin-ubicacion {
@@ -171,7 +178,8 @@ body.eventos-body {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.tarjeta-evento-link:hover .tarjeta-evento {
+.tarjeta-evento-link:hover .tarjeta-evento,
+.tarjeta-evento:has(.tarjeta-evento-link:hover) {
     transform: translateY(-4px);
     box-shadow: 0 8px 18px rgba(0,0,0,0.18);
 }
