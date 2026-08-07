@@ -1,0 +1,29 @@
+*{
+    font-family: 'Montserrat', sans-serif;
+}
+
+footer{
+    background: #193653;
+    color:white;
+    display:flex;
+    justify-content: space-around;
+    padding: 20px;
+    border-radius: 0 0 15px 15px;
+}
+
+footer div{
+    display:flex;
+    align-content: center;
+    gap: 15px;
+    font-weight: bold;
+}
+
+header{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: 3px solid #3ac7a7;
+}
