@@ -24,10 +24,10 @@
             </div>
         </div>
         <div class="d-flex align-items-center gap-3">
-            <a href="crearEvent.jsp" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
+            <a href="evento?action=nuevo" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #0d8a5f;">
                 <i class="bi bi-plus-circle"></i> Nuevo Evento
             </a>
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>

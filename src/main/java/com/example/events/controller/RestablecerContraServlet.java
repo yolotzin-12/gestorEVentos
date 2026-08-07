@@ -17,6 +17,7 @@ public class RestablecerContraServlet extends HttpServlet {
     private final TokenRecuperacionDao tokenDao = new TokenRecuperacionDao();
     private final UsuarioDao usuarioDao = new UsuarioDao();
 
+    // GET — muestra el formulario de nueva contraseña
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -35,15 +36,17 @@ public class RestablecerContraServlet extends HttpServlet {
         request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
     }
 
+    // POST — guarda la nueva contraseña
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String token = request.getParameter("token");
+        // Nombres corregidos según los inputs de nuevaContra.jsp
         String nueva = request.getParameter("nuevaContra");
         String confirma = request.getParameter("confirmarContra");
 
-        if (nueva == null || !nueva.equals(confirma) || nueva.trim().length() < 8) {
+        if (nueva == null || !nueva.equals(confirma) || nueva.length() < 8) {
             request.setAttribute("error", "Las contraseñas no coinciden o deben tener al menos 8 caracteres.");
             request.setAttribute("token", token);
             request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
@@ -57,15 +60,10 @@ public class RestablecerContraServlet extends HttpServlet {
             return;
         }
 
-        boolean actualizado = usuarioDao.actualizarContrasena(t.getIdUsuario(), nueva.trim());
+        usuarioDao.actualizarContrasena(t.getIdUsuario(), nueva);
+        tokenDao.marcarUsado(t.getId());
 
-        if (actualizado) {
-            tokenDao.marcarUsado(t.getId());
-            request.getRequestDispatcher("contraActualizada.jsp").forward(request, response);
-        } else {
-            request.setAttribute("error", "Ocurrió un error al guardar tu nueva contraseña.");
-            request.setAttribute("token", token);
-            request.getRequestDispatcher("nuevaContra.jsp").forward(request, response);
-        }
+        // Redirección a la vista de confirmación que creaste
+        request.getRequestDispatcher("contraActualizada.jsp").forward(request, response);
     }
 }

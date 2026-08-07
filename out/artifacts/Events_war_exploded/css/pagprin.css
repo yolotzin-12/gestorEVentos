@@ -1,0 +1,53 @@
+*{
+    font-family:'Montserrat', sans-serif;
+}
+
+
+.contenedor {
+    display: grid;
+    grid-template-columns: 73% 25%;
+    column-gap: 2%;
+    width: 100%;
+}
+
+.principal {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.principal img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    display: block;
+}
+
+.informacion {
+    background: #062a4d;
+    color: white;
+    padding: 25px;
+    flex-grow: 1;
+}
+
+.detalle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lateral {
+    background: #18b29d;
+    padding: 80px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.tarjeta {
+    background: #062a4d;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}

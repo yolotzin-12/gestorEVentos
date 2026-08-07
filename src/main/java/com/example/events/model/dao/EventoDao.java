@@ -9,30 +9,38 @@ import java.util.List;
 
 public class EventoDao implements Dao<Evento, Integer> {
 
+    private static final String SELECT_BASE =
+            "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.id_categoria, e.nombre, " +
+            "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+            "e.fecha_hora, e.estado, esp.ubicacion, cat.nombre AS categoria " +
+            "FROM EVENTO e " +
+            "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+            "JOIN CATEGORIA cat ON e.id_categoria = cat.id_categoria ";
+
     @Override
     public boolean create(Evento e) {
         String sql = "INSERT INTO EVENTO(id_organizador, id_espacio, id_categoria, nombre, descripcion, " +
-                "capacidad_maxima, capacidad_disponible, fecha_hora, estado, imagen_url) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD'), ?, ?)";
+                "capacidad_maxima, capacidad_disponible, fecha_hora, estado) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD'), ?)";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, new String[]{"ID_EVENTO"})) {
 
             ps.setInt(1, e.getIdOrganizador());
-            ps.setInt(2, e.getIdEspacio() > 0 ? e.getIdEspacio() : 1);
+            ps.setInt(2, e.getIdEspacio());
             ps.setInt(3, e.getIdCategoria());
             ps.setString(4, e.getNombre());
             ps.setString(5, e.getDescripcion());
             ps.setInt(6, e.getCapacidadMaxima());
-            ps.setInt(7, e.getCapacidadMaxima());
+            ps.setInt(7, e.getCapacidadMaxima()); // disponible = máxima al crear
             ps.setString(8, e.getFechaHora());
             ps.setString(9, e.getEstado() != null ? e.getEstado() : "Borrador");
-            ps.setString(10, e.getImagenUrl()); // Guarda la ruta de la imagen
 
             int filas = ps.executeUpdate();
             if (filas > 0) {
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) e.setId(rs.getInt(1));
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) e.setId(rs.getInt(1));
+                }
                 return true;
             }
         } catch (SQLException ex) {
@@ -44,17 +52,12 @@ public class EventoDao implements Dao<Evento, Integer> {
     @Override
     public List<Evento> getAll() {
         List<Evento> lista = new ArrayList<>();
-        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
-                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria " +
-                "FROM EVENTO e " +
-                "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
-                "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
-                "WHERE e.estado = 'Disponible' ORDER BY e.fecha_hora";
+        String sql = SELECT_BASE + "WHERE e.estado = 'Disponible' ORDER BY e.fecha_hora";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 lista.add(mapear(rs));
             }
@@ -64,15 +67,10 @@ public class EventoDao implements Dao<Evento, Integer> {
         return lista;
     }
 
+    // Obtener todos los eventos de un organizador (panel del organizador)
     public List<Evento> getByOrganizador(int idOrganizador) {
         List<Evento> lista = new ArrayList<>();
-        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
-                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria " +
-                "FROM EVENTO e " +
-                "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
-                "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
-                "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
+        String sql = SELECT_BASE + "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -88,11 +86,7 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     @Override
     public Evento getById(Integer id) {
-        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
-                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion " +
-                "FROM EVENTO e JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
-                "WHERE e.id_evento = ?";
+        String sql = SELECT_BASE + "WHERE e.id_evento = ?";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -108,18 +102,19 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     @Override
     public boolean update(Evento e) {
-        String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, capacidad_maxima=?, " +
-                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD'), estado=?, imagen_url=? WHERE id_evento=?";
+        String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, id_categoria=?, id_espacio=?, capacidad_maxima=?, " +
+                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD'), estado=? WHERE id_evento=?";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, e.getNombre());
             ps.setString(2, e.getDescripcion());
-            ps.setInt(3, e.getCapacidadMaxima());
-            ps.setString(4, e.getFechaHora());
-            ps.setString(5, e.getEstado());
-            ps.setString(6, e.getImagenUrl());
-            ps.setInt(7, e.getId());
+            ps.setInt(3, e.getIdCategoria());
+            ps.setInt(4, e.getIdEspacio());
+            ps.setInt(5, e.getCapacidadMaxima());
+            ps.setString(6, e.getFechaHora());
+            ps.setString(7, e.getEstado());
+            ps.setInt(8, e.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -140,6 +135,7 @@ public class EventoDao implements Dao<Evento, Integer> {
         }
     }
 
+    // Decrementar disponibilidad al reservar
     public boolean decrementarDisponibilidad(int idEvento, Connection con) throws SQLException {
         String sql = "UPDATE EVENTO SET capacidad_disponible = capacidad_disponible - 1 " +
                 "WHERE id_evento = ? AND capacidad_disponible > 0";
@@ -149,6 +145,7 @@ public class EventoDao implements Dao<Evento, Integer> {
         }
     }
 
+    // Incrementar disponibilidad al cancelar
     public boolean incrementarDisponibilidad(int idEvento, Connection con) throws SQLException {
         String sql = "UPDATE EVENTO SET capacidad_disponible = capacidad_disponible + 1 " +
                 "WHERE id_evento = ?";
@@ -163,6 +160,7 @@ public class EventoDao implements Dao<Evento, Integer> {
         e.setId(rs.getInt("id_evento"));
         e.setIdOrganizador(rs.getInt("id_organizador"));
         e.setIdEspacio(rs.getInt("id_espacio"));
+        e.setIdCategoria(rs.getInt("id_categoria"));
         e.setNombre(rs.getString("nombre"));
         e.setDescripcion(rs.getString("descripcion"));
         e.setCapacidadMaxima(rs.getInt("capacidad_maxima"));
@@ -170,17 +168,7 @@ public class EventoDao implements Dao<Evento, Integer> {
         e.setFechaHora(rs.getString("fecha_hora"));
         e.setEstado(rs.getString("estado"));
         e.setUbicacion(rs.getString("ubicacion"));
-
-        try {
-            e.setNombreCategoria(rs.getString("nombre_categoria"));
-        } catch (SQLException ex) {
-        }
-
-        try {
-            e.setImagenUrl(rs.getString("imagen_url"));
-        } catch (SQLException ex) {
-        }
-
+        e.setCategoria(rs.getString("categoria"));
         return e;
     }
 }

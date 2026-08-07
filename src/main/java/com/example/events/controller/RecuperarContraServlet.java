@@ -19,6 +19,14 @@ public class RecuperarContraServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final TokenRecuperacionDao tokenDao = new TokenRecuperacionDao();
 
+    // Muestra la vista del formulario si se entra directo desde la URL por GET
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("recuperarContra.jsp").forward(request, response);
+    }
+
+    // Procesa el envío del correo cuando se manda el formulario por POST
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -58,21 +66,15 @@ public class RecuperarContraServlet extends HttpServlet {
         String baseUrl = request.getScheme() + "://" + request.getServerName()
                 + ":" + request.getServerPort() + request.getContextPath();
 
-        // Enlace correcto enviando la petición al Servlet de restablecer
         String enlace = baseUrl + "/restablecer?token=" + token;
 
-        String html = """
-    <html><body style="font-family:Arial,sans-serif; text-align: center; padding: 20px;">
-      <h2 style="color:#003b71;">Recuperar contraseña - SRAE</h2>
-      <p style="color:#333;">Hemos recibido una solicitud para restablecer tu contraseña.</p>
-      <p style="margin: 30px 0;">
-        <a href="{0}" style="background-color: #003b71; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-          Restablecer Contraseña
-        </a>
-      </p>
-      <p style="color:#888; font-size:12px;">Este enlace expira en 30 minutos. Si no solicitaste este cambio, ignora este correo.</p>
-    </body></html>
-    """.replace("{0}", enlace);
-        return html;
+        return """
+            <html><body style="font-family:Arial,sans-serif">
+              <h2 style="color:#003b71">Recuperar contraseña - SRAE</h2>
+              <p>Haz clic en el enlace para restablecer tu contraseña:</p>
+              <p><a href="{0}">{0}</a></p>
+              <p style="color:#888;font-size:12px">Este enlace expira en 30 minutos.</p>
+            </body></html>
+            """.replace("{0}", enlace);
     }
 }

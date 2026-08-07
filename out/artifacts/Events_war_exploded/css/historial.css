@@ -1,0 +1,48 @@
+
+.sidebar-btn {
+    text-align: left !important;
+    border: none !important;
+    background: transparent;
+    color: #495057;
+    font-size: 1.05rem;
+    border-radius: 10px !important;
+    margin-bottom: 5px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    border: 1px solid #e9ecef !important;
+    background-color: #ffffff;
+}
+
+.sidebar-btn:hover, .sidebar-btn.active {
+    background-color: #162e54 !important;
+    color: #ffffff !important;
+}
+
+.sidebar-btn.text-danger:hover {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+
+.input-busqueda {
+    border-radius: 20px !important;
+    padding-left: 40px !important;
+    border: 1px solid #ced4da;
+}
+
+.tabla-panel {
+    background-color: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+}
+
+.tabla-panel thead {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.tabla-panel th, .tabla-panel td {
+    padding: 15px !important;
+    vertical-align: middle;
+}

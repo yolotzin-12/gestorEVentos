@@ -1,42 +1,17 @@
 package com.example.events.model.dao;
 
-import com.example.events.DB.OracleConnectApp;
 import com.example.events.model.models.Espacio;
+import com.example.events.DB.OracleConnectApp;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EspacioDao {
 
-    public boolean insertEspacio(Espacio espacio) {
-        String sql = "INSERT INTO Espacio (nombre_espacio, capacidad, ubicacion, horario, imagen_url) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, espacio.getNombreEspacio());
-
-            // Manejo de nulos para los campos opcionales según el script[cite: 5]
-            if (espacio.getCapacidad() != null) ps.setInt(2, espacio.getCapacidad());
-            else ps.setNull(2, java.sql.Types.NUMERIC);
-
-            ps.setString(3, espacio.getUbicacion());
-            ps.setString(4, espacio.getHorario());
-            ps.setString(5, espacio.getImagenUrl());
-
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public List<Espacio> getAllEspacios() {
+    public List<Espacio> getAll() {
         List<Espacio> lista = new ArrayList<>();
-        String sql = "SELECT id_espacio, nombre_espacio, ubicacion FROM Espacio ORDER BY nombre_espacio";
+        String sql = "SELECT id_espacio, nombre_espacio, capacidad, ubicacion, horario FROM ESPACIO ORDER BY nombre_espacio";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -44,13 +19,15 @@ public class EspacioDao {
 
             while (rs.next()) {
                 Espacio esp = new Espacio();
-                esp.setIdEspacio(rs.getInt("id_espacio"));
-                esp.setNombreEspacio(rs.getString("nombre_espacio"));
+                esp.setId(rs.getInt("id_espacio"));
+                esp.setNombre(rs.getString("nombre_espacio"));
+                esp.setCapacidad(rs.getInt("capacidad"));
                 esp.setUbicacion(rs.getString("ubicacion"));
+                esp.setHorario(rs.getString("horario"));
                 lista.add(esp);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return lista;
     }
