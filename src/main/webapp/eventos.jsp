@@ -20,15 +20,34 @@
 
             <div class="d-flex align-items-center gap-2">
                 <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-                <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
+                <img src="img/letras.png" alt="SRAE" style="height:120px;">
+            </div>
 
             <nav class="eventos-nav">
-                <a href="eventos.jsp" class="activo">Eventos</a>
+                <!-- Texto dinámico según el Rol del usuario -->
+                <a href="${pageContext.request.contextPath}/evento" class="activo">
+                    <c:choose>
+                        <c:when test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
+                            Mis eventos
+                        </c:when>
+                        <c:otherwise>
+                            Eventos
+                        </c:otherwise>
+                    </c:choose>
+                </a>
 
-                <a href="historialReservas.jsp">Mis reservas</a>
+                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+                    <!-- Redirección directa al Servlet -->
+                    <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
+                </c:if>
             </nav>
 
             <div class="d-flex align-items-center gap-2">
+                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+                    <a href="evento?action=crear" class="btn btn-success btn-sm fw-bold me-2" style="background-color: #0d8a5f; border: none;">
+                        <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
+                    </a>
+                </c:if>
                 <a href="crearPerfil.jsp" class="icono-usuario">
                     <i class="bi bi-person"></i>
                 </a>
@@ -45,15 +64,7 @@
     <div class="container">
 
         <div class="barra-filtros">
-            <div class="filtro-ubicacion" id="filtroUbicacion">
-                <div class="pin-ubicacion"><i class="bi bi-geo-alt-fill"></i></div>
-                <div class="chip-ubicacion">
-                    Campus UTEZ
-                    <i class="bi bi-x-lg" onclick="quitarUbicacion()" title="Quitar filtro"></i>
-                </div>
-            </div>
-
-            <div class="buscador-evento">
+            <div class="buscador-evento w-100">
                 <i class="bi bi-search"></i>
                 <input type="text" name="buscar" placeholder="Buscar evento">
             </div>
@@ -62,39 +73,34 @@
         <div class="row g-4 mb-4">
             <c:choose>
                 <c:when test="${empty listaEventos}">
-                    <%-- Tarjetas de ejemplo mientras no haya datos dinámicos --%>
-                    <c:forEach begin="1" end="4">
-                        <div class="col-6 col-md-3">
-                            <a href="detalle-evento.jsp" class="tarjeta-evento-link">
-                                <div class="tarjeta-evento">
-                                    <div class="encabezado-evento">
-                                        <h3>Evento Nombre</h3>
-                                        <p>Desc desc desc desc</p>
-                                    </div>
-                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
-                                    <div class="pie-evento">
-                                        <div><i class="bi bi-calendar-event"></i> 4 JUL | 11:00 AM</div>
-                                        <div><i class="bi bi-geo-alt-fill"></i> Auditorio Pacheco UTEZ</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </c:forEach>
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-calendar-x text-muted fs-1"></i>
+                        <p class="mt-2 text-muted fw-bold">No hay eventos disponibles por el momento.</p>
+                    </div>
                 </c:when>
 
                 <c:otherwise>
                     <c:forEach items="${listaEventos}" var="evento">
                         <div class="col-6 col-md-3">
-                            <a href="evento?id=${evento.id}" class="tarjeta-evento-link">
+                            <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link">
                                 <div class="tarjeta-evento">
                                     <div class="encabezado-evento">
                                         <h3>${evento.nombre}</h3>
-                                        <p>${evento.categoria}</p>
+                                        <p><c:out value="${evento.nombreCategoria}" default="General"/></p>
                                     </div>
-                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
+
+                                    <c:choose>
+                                        <c:when test="${not empty evento.imagenUrl}">
+                                            <img src="${evento.imagenUrl}" alt="${evento.nombre}" class="imagen-evento">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
+                                        </c:otherwise>
+                                    </c:choose>
+
                                     <div class="pie-evento">
-                                        <div><i class="bi bi-calendar-event"></i> ${evento.fecha}</div>
-                                        <div><i class="bi bi-geo-alt-fill"></i> ${evento.ubicacion}</div>
+                                        <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
+                                        <div><i class="bi bi-geo-alt-fill"></i> <c:out value="${evento.ubicacion}" default="Sin ubicación"/></div>
                                     </div>
                                 </div>
                             </a>
@@ -108,12 +114,6 @@
 
 </main>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function quitarUbicacion() {
-        document.getElementById('filtroUbicacion').style.display = 'none';
-    }
-</script>
 </body>
 </html>

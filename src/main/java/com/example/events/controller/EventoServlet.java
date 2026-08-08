@@ -16,8 +16,6 @@ import com.example.events.model.dao.OrganizadorDao;
 import java.io.IOException;
 import java.util.List;
 
-
-
 @WebServlet(name = "EventoServlet", value = "/evento")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
@@ -36,7 +34,7 @@ public class EventoServlet extends HttpServlet {
         String action = request.getParameter("action");
         Usuario usuarioSesion = (Usuario) request.getSession(false).getAttribute("usuario");
 
-        // 1. Si el usuario quiere ver la pantalla de CREAR EVENTO
+        // 1. Mostrar pantalla para CREAR EVENTO
         if ("crear".equals(action)) {
             EspacioDao espDao = new EspacioDao();
             request.setAttribute("listaEspacios", espDao.getAllEspacios());
@@ -53,8 +51,22 @@ public class EventoServlet extends HttpServlet {
                 request.getRequestDispatcher("crearEvent.jsp").forward(request, response);
             }
         }
+        // 2. MOSTRAR DETALLE DEL EVENTO (Al hacer clic en una tarjeta)
+        else if ("detalle".equals(action)) {
+            String idParam = request.getParameter("id");
+            if (idParam != null && !idParam.isEmpty()) {
+                int idEvento = Integer.parseInt(idParam);
+                Evento evento = eventoDao.getById(idEvento); // Método que busca por id en tu EventoDao
+                request.setAttribute("evento", evento);
+                request.getRequestDispatcher("detalle-evento.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/evento");
+            }
+        }
+        // 3. LISTADO GENERAL O DE ORGANIZADOR
         else {
             List<Evento> lista;
+
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
                 int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                 lista = eventoDao.getByOrganizador(idOrg);
@@ -63,7 +75,7 @@ public class EventoServlet extends HttpServlet {
             }
 
             request.setAttribute("listaEventos", lista);
-            request.getRequestDispatcher("gestion-eventos.jsp").forward(request, response);
+            request.getRequestDispatcher("eventos.jsp").forward(request, response);
         }
     }
 
@@ -84,13 +96,25 @@ public class EventoServlet extends HttpServlet {
                 Evento ev = new Evento();
                 ev.setNombre(request.getParameter("nombre"));
                 ev.setDescripcion(request.getParameter("descripcion"));
-                ev.setIdCategoria(Integer.parseInt(request.getParameter("categoria")));
+
+                String strCat = request.getParameter("idCategoria");
+                if (strCat != null && !strCat.isEmpty()) {
+                    ev.setIdCategoria(Integer.parseInt(strCat));
+                }
+
                 ev.setCapacidadMaxima(Integer.parseInt(request.getParameter("capacidad")));
-                ev.setFechaHora(request.getParameter("fecha"));
+
+                // Formateo de fecha y hora proveniente de datetime-local (YYYY-MM-DDTHH:MM -> YYYY-MM-DD HH:MM:00)
+                String fechaRaw = request.getParameter("fecha");
+                if (fechaRaw != null && fechaRaw.contains("T")) {
+                    fechaRaw = fechaRaw.replace("T", " ") + ":00";
+                }
+                ev.setFechaHora(fechaRaw);
+
                 ev.setEstado("publicar".equals(action) ? "Disponible" : "Borrador");
                 ev.setIdEspacio(Integer.parseInt(request.getParameter("idEspacio")));
 
-
+                // Procesamiento de la imagen
                 jakarta.servlet.http.Part filePart = request.getPart("img");
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -105,20 +129,16 @@ public class EventoServlet extends HttpServlet {
                     ev.setImagenUrl("img/eventos/" + fileName);
                 }
 
-                // --- NUEVA LÓGICA DE ASIGNACIÓN DE ORGANIZADOR ---
-                if (usuarioSesion.getIdRol() == 1) {
-                    // Si es Administrador: toma el ID del organizador seleccionado en el formulario
+                if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
                     ev.setIdOrganizador(Integer.parseInt(request.getParameter("idOrganizador")));
-                } else {
-                    // Si es Organizador: busca su propio ID a partir de su sesión
+                } else if (usuarioSesion != null) {
                     int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                     ev.setIdOrganizador(idOrg);
                 }
-                // -------------------------------------------------
 
                 eventoDao.create(ev);
             } catch (NumberFormatException e) {
-                System.err.println("Error en datos del evento: " + e.getMessage());
+                System.err.println("Error procesando datos del evento: " + e.getMessage());
             }
         }
 

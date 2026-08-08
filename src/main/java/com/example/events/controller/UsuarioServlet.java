@@ -18,7 +18,6 @@ public class UsuarioServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("listaUsuarios", dao.getAll());
-        // CORREGIDO: Redirige a administrarUsu.jsp para que pinte la lista real
         request.getRequestDispatcher("administrarUsu.jsp").forward(request, response);
     }
 
@@ -33,7 +32,7 @@ public class UsuarioServlet extends HttpServlet {
 
             if ("deshabilitar".equals(action)) {
                 dao.deshabilitar(idUsuario);
-            } else if ("cambiarEstado".equals(action)) { // Para reactivar o alternar estado
+            } else if ("cambiarEstado".equals(action)) { // Alternar estado mediante el switch
                 boolean nuevoEstado = Boolean.parseBoolean(request.getParameter("estado"));
                 dao.cambiarEstado(idUsuario, nuevoEstado);
             } else if ("asignarRol".equals(action)) {
@@ -42,6 +41,7 @@ public class UsuarioServlet extends HttpServlet {
             }
         }
 
+        // Redirige de vuelta a la lista para ver los cambios
         response.sendRedirect(request.getContextPath() + "/usuarios");
     }
 }

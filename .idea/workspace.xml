@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
+      <artifact name="Events:war" />
       <artifact name="Events:war exploded" />
     </artifacts-to-build>
   </component>
@@ -9,7 +10,110 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="" />
+    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/PagPrincipalReserva.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/DB/OracleConnectApp.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/HelloServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/EventoServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/LoginServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/LogoutServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/RecuperarContraServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/RegisterServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/ReservaServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/RestablecerContraServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/UsuarioServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/controller/filters/FiltroAutenticacion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/Usuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/AdministradorDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/AsistenteDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/CategoriaDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/Dao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/EspacioDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/EventoDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/OrganizadorDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/ReservaDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/TokenRecuperacionDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/dao/UsuarioDao.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Administrador.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Asistente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Categoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Espacio.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Evento.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Organizador.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Reserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/Rol.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/model/models/TokenRecuperacion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/testconnection.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/utils/EmailSender$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/com/example/events/utils/EmailSender.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/credentials.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/cwallet.sso" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/ewallet.p12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/ewallet.pem" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/keystore.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/ojdbc.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/sqlnet.ora" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/tnsnames.ora" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/classes/wallet/truststore.jks" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/jakarta.activation-2.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/jakarta.el-api-5.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/jakarta.mail-2.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/jakarta.servlet.jsp.jstl-3.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-3.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/ojdbc11-23.4.0.24.05.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/oraclepki-23.4.0.24.05.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/osdt_cert-21.13.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/lib/osdt_core-21.13.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/WEB-INF/web.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/actualizarContra.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/administrarUsu.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/contraActualizada.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/crearEvent.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/crearPerfil.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/administrarUsuarios.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/confirmacion.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/eventos.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/footer.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/fooyini.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/historial.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/misReservas.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/pagprin.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/perfil.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/registro.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/reservaModal.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/reservas.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/sidebar.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/dashboard-admin.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/dashboard-organizador.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/detalle-evento.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/editarEvent.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/eventos.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/gestion-eventos.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/historialReservas.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/img/letras.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/img/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/img/personas.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/img/utez.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/index.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/js/buscador.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/layout/footer.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/layout/header.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/login.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/nuevaContra.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/recuperarContra.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/registro.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Events_war_exploded/reservar.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/detalle-evento.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/detalle-evento.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,7 +187,7 @@
     "Tomcat Server.Tomcat 10.1.56.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "vanessa",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -116,7 +220,6 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 10.1.55" value="FAILED" />
               <entry key="Tomcat 10.1.56" value="STOPPED" />
             </map>
           </value>
@@ -131,6 +234,11 @@
         <artifact name="Events:war exploded">
           <settings>
             <option name="CONTEXT_PATH" value="/Events_war_exploded" />
+          </settings>
+        </artifact>
+        <artifact name="Events:war">
+          <settings>
+            <option name="CONTEXT_PATH" value="/Events_war" />
           </settings>
         </artifact>
       </deployment>
@@ -209,6 +317,7 @@
         <option name="Make" enabled="true" />
         <option name="BuildArtifacts" enabled="true">
           <artifact name="Events:war exploded" />
+          <artifact name="Events:war" />
         </option>
       </method>
     </configuration>
@@ -236,6 +345,7 @@
       <workItem from="1785945988272" duration="1550000" />
       <workItem from="1786059530699" duration="7224000" />
       <workItem from="1786078129206" duration="4148000" />
+      <workItem from="1786131213329" duration="7891000" />
     </task>
     <servers />
   </component>

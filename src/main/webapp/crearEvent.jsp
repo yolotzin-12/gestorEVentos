@@ -45,7 +45,7 @@
             </div>
         </c:if>
 
-        <form action="evento" method="post">
+        <form action="evento" method="post" enctype="multipart/form-data">
 
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
@@ -55,7 +55,7 @@
                         <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
                             <c:forEach items="${listaCategorias}" var="cat">
-                                <option value="${cat.id}">${cat.nombre}</option>
+                                <option value="${not empty cat.idCategoria ? cat.idCategoria : cat.id}">${cat.nombre}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -70,14 +70,18 @@
                         <select name="idEspacio" class="form-select p-2 rounded-3" id="idEspacio" required>
                             <option value="" disabled selected>Selecciona un espacio</option>
                             <c:forEach items="${listaEspacios}" var="esp">
-                                <option value="${esp.id}">${esp.nombre} &mdash; ${esp.ubicacion}</option>
+                                <option value="${not empty esp.idEspacio ? esp.idEspacio : esp.id}">
+                                    <c:out value="${not empty esp.nombreEspacio ? esp.nombreEspacio : esp.nombre}"/>
+                                    <c:if test="${not empty esp.ubicacion}"> &mdash; ${esp.ubicacion}</c:if>
+                                </option>
                             </c:forEach>
                         </select>
                     </div>
 
+                    <!-- SE MODIFICÓ A type="datetime-local" PARA PERMITIR SELECCIONAR LA HORA -->
                     <div class="mb-3">
-                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha del evento</label>
-                        <input type="date" name="fecha" class="form-control p-2 rounded-3" id="fecha" required>
+                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha y hora del evento</label>
+                        <input type="datetime-local" name="fecha" class="form-control p-2 rounded-3" id="fecha" required>
                     </div>
 
                     <div class="mb-3">
