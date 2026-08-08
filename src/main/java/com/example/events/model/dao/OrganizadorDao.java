@@ -9,6 +9,32 @@ import java.util.List;
 
 public class OrganizadorDao implements Dao<Organizador, Integer> {
 
+    public List<Organizador> getAllOrganizadores() {
+        List<Organizador> lista = new ArrayList<>();
+        String sql = "SELECT o.id_organizador, o.organizacion, u.nombre, u.apellido_paterno " +
+                "FROM Organizador o JOIN Usuario u ON o.id_usuario = u.id_usuario";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Organizador org = new Organizador();
+                // Nota: Usamos setId porque así se llama en tu modelo
+                org.setId(rs.getInt("id_organizador"));
+                org.setNombre(rs.getString("nombre"));
+                org.setApellidoPaterno(rs.getString("apellido_paterno"));
+                org.setOrganizacion(rs.getString("organizacion"));
+
+                lista.add(org);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+
     // Obtener id_organizador a partir del id_usuario (lo usa EventoServlet)
     public int getIdOrganizadorByUsuario(int idUsuario) {
         String sql = "SELECT id_organizador FROM ORGANIZADOR WHERE id_usuario = ?";

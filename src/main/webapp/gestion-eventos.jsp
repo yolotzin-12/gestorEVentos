@@ -48,11 +48,9 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="card shadow-sm border-0 rounded-4 h-100 bg-white">
                             <span class="badge position-absolute top-0 start-0 m-3 p-2 shadow-sm" style="background-color: #162e54; z-index: 1;">
-                                    ${evento.categoria}
-                            </span>
+                                    ${evento.nombreCategoria}                            </span>
 
-                            <img src="img/personas.jpg" alt="Auditorio" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
-
+                            <img src="${not empty evento.imagenUrl ? evento.imagenUrl : 'img/personas.jpg'}" alt="Imagen del evento" class="card-img-top rounded-top-4" style="height: 200px; object-fit: cover;">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="fw-bold text-dark mb-1">${evento.nombre}</h5>
 
@@ -61,7 +59,6 @@
                                     <p class="mb-2"><i class="bi bi-geo-alt-fill me-2" style="color: #0d8a5f;"></i> <strong>Lugar:</strong> ${evento.ubicacion}</p>
                                     <p class="mb-2"><i class="bi bi-people-fill me-2" style="color: #0d8a5f;"></i> <strong>Aforo Max:</strong> ${evento.capacidadMaxima} personas</p>
                                 </div>
-
                                 <div class="mt-auto pt-3 border-top">
                                             <button class="btn w-100 fw-bold text-white shadow-sm mb-2" style="background-color: #058971; border-radius: 10px;">
                                                 <i class="bi bi-pencil"></i> Editar Evento

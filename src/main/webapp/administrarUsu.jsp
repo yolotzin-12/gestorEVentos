@@ -43,7 +43,7 @@
                         <i class="bi bi-calendar-check me-3"></i> Reservas
                     </a>
 
-                    <!-- ENLACE CORREGIDO: Apunta directo al Servlet -->
+                    <!-- Apunta directo al Servlet /usuarios (Evita doble clic) -->
                     <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold active">
                         <i class="bi bi-people me-3"></i> Usuarios
                     </a>
@@ -74,7 +74,6 @@
                             <th scope="col">Correo electrónico</th>
                             <th scope="col">Rol</th>
                             <th scope="col" class="text-center">Estado</th>
-                            <th scope="col" class="text-center">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -104,7 +103,7 @@
                                     </form>
                                 </td>
                                 <td class="text-center">
-                                    <!-- Switch de Estado (Activo/Inactivo) -->
+                                    <!-- Switch de Estado (Activar/Deshabilitar con un solo clic) -->
                                     <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0 d-inline-block">
                                         <input type="hidden" name="action" value="cambiarEstado">
                                         <input type="hidden" name="idUsuario" value="${u.id}">
@@ -114,32 +113,11 @@
                                         </div>
                                     </form>
                                 </td>
-                                <td class="text-center">
-                                    <!-- Botón dinámico según el estado actual -->
-                                    <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0">
-                                        <input type="hidden" name="action" value="cambiarEstado">
-                                        <input type="hidden" name="idUsuario" value="${u.id}">
-                                        <input type="hidden" name="estado" value="${!u.activo}">
-
-                                        <c:choose>
-                                            <c:when test="${u.activo}">
-                                                <button type="submit" class="btn btn-deshabilitar btn-danger-admin">
-                                                    <i class="bi bi-person-x me-1"></i> Deshabilitar usuario
-                                                </button>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <button type="submit" class="btn btn-deshabilitar btn-success">
-                                                    <i class="bi bi-person-check me-1"></i> Habilitar usuario
-                                                </button>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </form>
-                                </td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty listaUsuarios}">
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">No hay usuarios registrados en la base de datos.</td>
+                                <td colspan="5" class="text-center py-4 text-muted">No hay usuarios registrados en la base de datos.</td>
                             </tr>
                         </c:if>
                         </tbody>
