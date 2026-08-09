@@ -5,67 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - SRAE</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="bg-light">
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-
-    <div class="card p-4 shadow-sm tarjeta-personalizada">
-        <div class="card-body text-center">
-
-            <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
-
-            <% if (request.getAttribute("error") != null) { %>
-            <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <div class="small">
-                    <%= request.getAttribute("error") %>
-                </div>
-            </div>
-            <% } %>
-
-            <% if (request.getAttribute("mensaje") != null) { %>
-            <div class="alert alert-success d-flex align-items-center py-2 text-start" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                <div class="small">
-                    <%= request.getAttribute("mensaje") %>
-                </div>
-            </div>
-            <% } %>
-
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+    <img src="img/utez.png" alt="Logo SRAE" class="mb-4" style="max-height: 150px;">
+    <div class="card p-4 shadow-lg tarjeta-personalizada">
+        <div class="card-body text-center px-4">
+            <input type="hidden" id="serverError"
+                   value="<%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %>">
+            <input type="hidden" id="serverMensaje"
+                   value="<%= request.getAttribute("mensaje") != null ? request.getAttribute("mensaje") : "" %>">
+            <div id="alertasContainer"></div>
             <form action="login" method="POST">
-
                 <div class="mb-3 text-start">
-                    <label for="email" class="form-label fw-bold label-formulario">Correo Electrónico:</label>
-                    <input type="email" name="email" class="form-control input-formulario" id="email" placeholder="Tu correo electrónico:" required>
+                    <label for="email" class="form-label fw-bold label-formulario mb-1">Correo electrónico</label>
+                    <input type="email" name="email" class="form-control input-formulario py-2 px-3" id="email"
+                           placeholder="Correo electrónico:" required>
                 </div>
-
                 <div class="mb-4 text-start">
-                    <label for="contra" class="form-label fw-bold label-formulario">Contraseña:</label>
-                    <input type="password" name="contra" class="form-control input-formulario" id="contra" placeholder="Tu contraseña:" required>
-                </div>
 
-                <div class="text-center mt-2">
-                    <button type="submit" class="btn btn-ingresar text-white fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
-                        <i class="bi bi-cursor me-2" style="font-size: 1.2rem;"></i> Iniciar Sesión
+                    <label for="contra" class="form-label fw-bold label-formulario mb-1">Contraseña</label>
+
+                    <input type="password" name="contra" class="form-control input-formulario py-2 px-3" id="contra"
+                           placeholder="Contraseña:" required>
+                </div>
+                <div class="text-center mb-4 mt-2">
+
+                    <a href="recuperarContra.jsp" class="text-decoration-none enlace-oscuro fs-6">¿Olvidaste tu
+                        contraseña?</a>
+                </div>
+                <div class="text-center mb-4">
+
+                    <button type="submit"
+                            class="btn btn-ingresar text-white fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
+
+                        <i class="bi bi-box-arrow-in-right me-2" style="font-size: 1.3rem;"></i> Iniciar sesión
                     </button>
                 </div>
-
-                <div class="text-center mt-3">
-                    <a href="registro.jsp" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
-                </div>
                 <div class="text-center mt-2">
-                    <a href="recuperarContra.jsp" class="text-decoration-none">Recuperar contraseña</a>
-                </div>
 
+                    <span class="fw-bold" style="color: #1b365d;">¿No tienes cuenta?</span>
+
+                    <a href="registro.jsp" class="text-decoration-none enlace-oscuro" style="color: #2895d3;">Regístrate
+                        aquí</a>
+                </div>
             </form>
         </div>
     </div>
 </div>
-
+<script src="js/validaciones.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html>  
+

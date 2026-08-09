@@ -1,9 +1,26 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+}
+
 .tarjeta-personalizada {
+    background-color: #E9EEED !important;
+    border-radius: 30px !important;
+    max-width: 650px; 
     width: 100%;
-    max-width: 650px;
-    border-radius: 15px;
-    background-color: #f1f4f4;
-    border: none;
+}
+
+.btn-srae-rec {
+    background-color: #172F53;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.15);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-srae-rec:hover {
+    background-color: #2B4F86;
+    color: white;
 }
 
 .btn-srae {
@@ -19,15 +36,18 @@
 }
 
 .label-formulario {
-    font-size: 0.9rem;
-    color: #333333;
+    color: #4a4a4a;
+    font-size: 0.85rem;
 }
 
 .input-formulario {
-    border-radius: 10px;
-    padding: 10px;
-    border: 1px solid #ced4da;
-    background-color: #ffffff;
+    border-radius: 50px !important;
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.05) !important;
+    border: 1px solid #d1d5db !important;
+}
+
+.input-formulario::placeholder {
+    color: #a0aab5;
 }
 
 .input-formulario:focus {
@@ -48,4 +68,12 @@
 .btn-ingresar:active,
 .btn-ingresar:focus {
     background-color: #09b294 !important;
+}
+
+.enlace-oscuro {
+    color: #1b365d;
+    font-weight: 700;
+}
+.enlace-oscuro:hover {
+    color: #0f2240;
 }
