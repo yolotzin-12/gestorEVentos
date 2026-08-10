@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="text-center mt-2">
-                    <button type="submit" class="btn btn-primary fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center carga">
+                    <button type="submit" class="btn btn-ingresar text-white fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
                         <i class="bi bi-person-plus-fill me-2" style="font-size: 1.2rem;"></i> Registrarme
                     </button>
                 </div>
