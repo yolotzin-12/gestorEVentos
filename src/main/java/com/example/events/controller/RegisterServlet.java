@@ -18,6 +18,12 @@ public class RegisterServlet extends HttpServlet {
     private final UsuarioDao dao = new UsuarioDao();
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("registro.jsp").forward(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -28,37 +34,38 @@ public class RegisterServlet extends HttpServlet {
         String emailConf       = request.getParameter("emailConfirmacion");
         String contra          = request.getParameter("contra");
 
-        // ── Validaciones ────────────────────────────────────────────────────
         if (nombre == null || nombre.isBlank() || apellidoPaterno == null ||
                 email == null || contra == null) {
             request.setAttribute("error", "Completa todos los campos obligatorios.");
             request.getRequestDispatcher("registro.jsp").forward(request, response);
             return;
         }
+
         if (!email.equals(emailConf)) {
             request.setAttribute("error", "Los correos no coinciden.");
-            request.getRequestDispatcher("registro.jsp").forward(request, response);
-            return;
-        }
-        if (contra.length() < 8) {
-            request.setAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
+            request.setAttribute("errorEmail", true); // Bandera para pintar inputs de correo
             request.getRequestDispatcher("registro.jsp").forward(request, response);
             return;
         }
 
-        // Crear usuario
+        if (contra.length() < 8) {
+            request.setAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
+            request.setAttribute("errorContra", true); // Bandera para pintar input de contraseña
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
+
         Usuario u = new Usuario();
         u.setNombre(formatear(nombre));
         u.setApellidoPaterno(formatear(apellidoPaterno));
         u.setApellidoMaterno(apellidoMaterno != null ? formatear(apellidoMaterno) : "");
         u.setEmail(email.trim().toLowerCase());
-        u.setPassword(contra);   // el DAO hace el hash
+        u.setPassword(contra);
         u.setTelefono("");
 
         boolean creado = dao.create(u);
 
         if (creado) {
-            // Enviar correo de bienvenida
             try {
                 String html = """
                     <html><body style="font-family:Arial,sans-serif">
@@ -79,6 +86,7 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Ese correo ya está registrado.");
+            request.setAttribute("errorEmail", true); // Bandera para pintar inputs de correo
             request.getRequestDispatcher("registro.jsp").forward(request, response);
         }
     }

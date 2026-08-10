@@ -17,6 +17,13 @@ public class LoginServlet extends HttpServlet {
     private final UsuarioDao dao = new UsuarioDao();
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+    }
+    // -----------------------------------------------------------
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -30,7 +37,6 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("usuario", usuario);
             session.setAttribute("idRol", usuario.getIdRol());
 
-            // El servlet /evento decide la vista correcta según el rol (1=Admin, 2=Organizador, 3=Asistente)
             response.sendRedirect(request.getContextPath() + "/evento");
         } else {
             request.setAttribute("error", "Correo o contraseña incorrectos.");
