@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import com.example.events.model.Usuario;
 import com.example.events.model.models.Evento;
 import com.example.events.model.dao.EventoDao;
@@ -32,7 +33,8 @@ public class EventoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        Usuario usuarioSesion = (Usuario) request.getSession(false).getAttribute("usuario");
+        HttpSession session = request.getSession(false);
+        Usuario usuarioSesion = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
 
         // 1. Mostrar pantalla para CREAR EVENTO
         if ("crear".equals(action)) {
@@ -51,28 +53,36 @@ public class EventoServlet extends HttpServlet {
                 request.getRequestDispatcher("crearEvent.jsp").forward(request, response);
             }
         }
-        // 2. MOSTRAR DETALLE DEL EVENTO (Al hacer clic en una tarjeta)
+        // 2. MOSTRAR DETALLE DEL EVENTO
         else if ("detalle".equals(action)) {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
                 int idEvento = Integer.parseInt(idParam);
-                Evento evento = eventoDao.getById(idEvento); // Método que busca por id en tu EventoDao
+                Evento evento = eventoDao.getById(idEvento);
                 request.setAttribute("evento", evento);
                 request.getRequestDispatcher("detalle-evento.jsp").forward(request, response);
             } else {
                 response.sendRedirect(request.getContextPath() + "/evento");
             }
         }
-        // 3. LISTADO GENERAL O DE ORGANIZADOR
-        else {
+        // 3. GESTIONAR MIS EVENTOS (Redirige a gestion-eventos.jsp)
+        else if ("misEventos".equals(action)) {
             List<Evento> lista;
 
-            if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
+            if (usuarioSesion != null) {
+                // Si es organizador o usuario, traemos solo los eventos que él creó
                 int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                 lista = eventoDao.getByOrganizador(idOrg);
             } else {
                 lista = eventoDao.getAll();
             }
+
+            request.setAttribute("listaEventos", lista);
+            request.getRequestDispatcher("gestion-eventos.jsp").forward(request, response);
+        }
+        // 4. LISTADO GENERAL / CATÁLOGO PÚBLICO (eventos.jsp)
+        else {
+            List<Evento> lista = eventoDao.getAll();
 
             request.setAttribute("listaEventos", lista);
             request.getRequestDispatcher("eventos.jsp").forward(request, response);
@@ -85,11 +95,20 @@ public class EventoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
-        Usuario usuarioSesion = (Usuario) request.getSession(false).getAttribute("usuario");
+        HttpSession session = request.getSession(false);
+        Usuario usuarioSesion = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
 
         if ("delete".equals(action)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            eventoDao.delete(id);
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                eventoDao.delete(id);
+            } catch (NumberFormatException e) {
+                System.err.println("Error al parsear ID de evento a eliminar: " + e.getMessage());
+            }
+
+            // Al eliminar, redirigimos de vuelta a Mis Eventos
+            response.sendRedirect(request.getContextPath() + "/evento?action=misEventos");
+            return;
 
         } else if ("publicar".equals(action) || "borrador".equals(action)) {
             try {
@@ -104,7 +123,7 @@ public class EventoServlet extends HttpServlet {
 
                 ev.setCapacidadMaxima(Integer.parseInt(request.getParameter("capacidad")));
 
-                // Formateo de fecha y hora proveniente de datetime-local (YYYY-MM-DDTHH:MM -> YYYY-MM-DD HH:MM:00)
+                // Formateo de fecha y hora proveniente de datetime-local
                 String fechaRaw = request.getParameter("fecha");
                 if (fechaRaw != null && fechaRaw.contains("T")) {
                     fechaRaw = fechaRaw.replace("T", " ") + ":00";
@@ -121,7 +140,7 @@ public class EventoServlet extends HttpServlet {
 
                     String uploadPath = getServletContext().getRealPath("") + java.io.File.separator + "img" + java.io.File.separator + "eventos";
                     java.io.File uploadDir = new java.io.File(uploadPath);
-                    if (!uploadDir.exists()) uploadDir.mkdir();
+                    if (!uploadDir.exists()) uploadDir.mkdirs();
 
                     String filePath = uploadPath + java.io.File.separator + fileName;
                     filePart.write(filePath);
@@ -137,9 +156,13 @@ public class EventoServlet extends HttpServlet {
                 }
 
                 eventoDao.create(ev);
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 System.err.println("Error procesando datos del evento: " + e.getMessage());
             }
+
+            // Redirigir a mis eventos tras crear o guardar borrador
+            response.sendRedirect(request.getContextPath() + "/evento?action=misEventos");
+            return;
         }
 
         response.sendRedirect(request.getContextPath() + "/evento");
