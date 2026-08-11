@@ -85,7 +85,12 @@
                             <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link">
                                 <div class="tarjeta-evento">
                                     <div class="encabezado-evento">
-                                        <h3>${evento.nombre}</h3>
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <h3>${evento.nombre}</h3>
+                                            <c:if test="${evento.estado == 'Borrador'}">
+                                                <span class="badge bg-warning text-dark flex-shrink-0">Borrador</span>
+                                            </c:if>
+                                        </div>
                                         <p><c:out value="${evento.nombreCategoria}" default="General"/></p>
                                     </div>
 

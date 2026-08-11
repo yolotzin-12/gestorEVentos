@@ -14,8 +14,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Evento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Evento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/misEventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/misEventos.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -254,7 +254,7 @@
       <workItem from="1786078129206" duration="4148000" />
       <workItem from="1786131213329" duration="8527000" />
       <workItem from="1786407715434" duration="1245000" />
-      <workItem from="1786419752570" duration="745000" />
+      <workItem from="1786419752570" duration="2701000" />
     </task>
     <servers />
   </component>
@@ -268,11 +268,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java</url>
-          <line>140</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/webapp/eventos.jsp</url>
           <line>121</line>

@@ -103,6 +103,9 @@
                                     <a href="evento?action=detalle&id=${evento.id}" class="btn btn-sm btn-outline-secondary">
                                         Ver
                                     </a>
+                                    <a href="evento?action=editar&id=${evento.id}" class="btn btn-sm btn-outline-primary">
+                                        Editar
+                                    </a>
                                 </td>
                             </tr>
                         </c:forEach>
