@@ -13,7 +13,7 @@ public class EventoDao implements Dao<Evento, Integer> {
     public boolean create(Evento e) {
         String sql = "INSERT INTO EVENTO(id_organizador, id_espacio, id_categoria, nombre, descripcion, " +
                 "capacidad_maxima, capacidad_disponible, fecha_hora, estado, imagen_url) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD'), ?, ?)";
+                "VALUES(?, ?, ?, ?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?)";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, new String[]{"ID_EVENTO"})) {
@@ -109,7 +109,7 @@ public class EventoDao implements Dao<Evento, Integer> {
     @Override
     public boolean update(Evento e) {
         String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, capacidad_maxima=?, " +
-                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD'), estado=?, imagen_url=? WHERE id_evento=?";
+                "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS'), estado=?, imagen_url=? WHERE id_evento=?";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

@@ -6,7 +6,8 @@ function quitarUbicacion() {
     }
 }
 
-// Filtro en vivo: oculta las tarjetas de evento que no coincidan con el texto escrito
+// Filtro en vivo: oculta las tarjetas de evento que no coincidan con el texto escrito,
+// comparando tanto el nombre del evento como su ubicación (coincidencia parcial).
 document.addEventListener('DOMContentLoaded', function () {
     var input = document.querySelector('.buscador-evento input[name="buscar"]');
     var contenedor = document.getElementById('listaEventosGrid');
@@ -23,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         tarjetas.forEach(function (tarjeta) {
             var nombre = tarjeta.getAttribute('data-nombre-evento') || '';
-            var coincide = nombre.indexOf(texto) !== -1;
+            var ubicacion = tarjeta.getAttribute('data-ubicacion-evento') || '';
+            var coincide = nombre.indexOf(texto) !== -1 || ubicacion.indexOf(texto) !== -1;
             tarjeta.style.display = coincide ? '' : 'none';
             if (coincide) visibles++;
         });
