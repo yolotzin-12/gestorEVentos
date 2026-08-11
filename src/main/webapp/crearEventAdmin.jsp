@@ -45,12 +45,18 @@
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
 
+                    <!-- SECCIÓN CATEGORÍA CON BOTONES NUEVA / ELIMINAR -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idCategoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
-                            <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCategoria">
-                                <i class="bi bi-plus-lg"></i> Nueva Categoría
-                            </button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+                                    <i class="bi bi-plus-lg"></i> Nueva
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </div>
                         </div>
                         <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
@@ -65,12 +71,18 @@
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
+                    <!-- SECCIÓN ESPACIO CON BOTONES NUEVO / ELIMINAR -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idEspacio" class="form-label fw-bold text-dark mb-0">Espacio / Ubicación</label>
-                            <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEspacio">
-                                <i class="bi bi-plus-lg"></i> Nuevo Espacio
-                            </button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEspacio">
+                                    <i class="bi bi-plus-lg"></i> Nuevo
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modalEliminarEspacio">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </div>
                         </div>
                         <select name="idEspacio" id="idEspacio" class="form-select p-2 rounded-3" required>
                             <option value="" disabled selected>Selecciona un espacio</option>
@@ -146,7 +158,7 @@
     </div>
 </div>
 
-<!-- MODAL CATEGORÍA -->
+<!-- ================= MODALES DE CATEGORÍAS ================= -->
 <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -167,6 +179,32 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalEliminarCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white bg-danger">
+                <h5 class="modal-title fw-bold">Eliminar Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p>Selecciona la categoría a eliminar. No se pueden eliminar si ya tienen eventos asignados.</p>
+                <select id="selectEliminarCat" class="form-select p-2">
+                    <option value="" disabled selected>Seleccione...</option>
+                    <c:forEach items="${listaCategorias}" var="cat">
+                        <option value="${cat.idCategoria}">${cat.nombre}</option>
+                    </c:forEach>
+                </select>
+                <div id="mensajeEliminarCat" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="borrarCategoria()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODALES DE ESPACIOS ================= -->
 <div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -188,6 +226,31 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="guardarEspacio()">Guardar Espacio</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEliminarEspacio" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white bg-danger">
+                <h5 class="modal-title fw-bold">Eliminar Espacio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p>Selecciona el espacio a eliminar. No se puede eliminar si ya tiene eventos programados.</p>
+                <select id="selectEliminarEsp" class="form-select p-2">
+                    <option value="" disabled selected>Seleccione...</option>
+                    <c:forEach items="${listaEspacios}" var="esp">
+                        <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
+                    </c:forEach>
+                </select>
+                <div id="mensajeEliminarEsp" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="borrarEspacio()">Eliminar</button>
             </div>
         </div>
     </div>
