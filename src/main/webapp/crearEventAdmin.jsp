@@ -36,27 +36,23 @@
         </div>
     </div>
 
-    <!-- FORMULARIO PRINCIPAL DE EVENTO -->
     <div class="card p-4 shadow-sm border-0 rounded-4">
         <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">CREACIÓN DEL EVENTO</h4>
 
-        <!-- NOTA: Se agregó enctype="multipart/form-data" para permitir subida de archivos -->
         <form action="evento" method="post" enctype="multipart/form-data">
             <input type="hidden" name="action" value="publicar">
 
             <div class="row">
-                <!-- COLUMNA IZQUIERDA -->
                 <div class="col-md-6 d-flex flex-column justify-content-between">
 
-                    <!-- CATEGORÍA CON BOTÓN MODAL -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
-                            <label for="categoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
+                            <label for="idCategoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
                             <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCategoria">
                                 <i class="bi bi-plus-lg"></i> Nueva Categoría
                             </button>
                         </div>
-                        <select name="categoria" class="form-select p-2 rounded-3" id="categoria" required>
+                        <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
                             <c:forEach items="${listaCategorias}" var="cat">
                                 <option value="${cat.idCategoria}">${cat.nombre}</option>
@@ -64,13 +60,11 @@
                         </select>
                     </div>
 
-                    <!-- NOMBRE -->
                     <div class="mb-3">
                         <label for="nombre" class="form-label fw-bold text-dark m-1">Nombre del evento</label>
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
-                    <!-- ESPACIO CON BOTÓN MODAL -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idEspacio" class="form-label fw-bold text-dark mb-0">Espacio / Ubicación</label>
@@ -86,7 +80,6 @@
                         </select>
                     </div>
 
-                    <!-- ORGANIZADOR -->
                     <div class="mb-3">
                         <label for="organizador" class="form-label fw-bold text-dark m-1">Asignar a Organizador</label>
                         <select name="idOrganizador" class="form-select p-2 rounded-3" id="organizador" required>
@@ -97,13 +90,11 @@
                         </select>
                     </div>
 
-                    <!-- FECHA -->
                     <div class="mb-3">
                         <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha del evento</label>
                         <input type="date" name="fecha" class="form-control p-2 rounded-3" id="fecha" required>
                     </div>
 
-                    <!-- CAPACIDAD -->
                     <div class="mb-3">
                         <label for="capacidad" class="form-label fw-bold text-dark m-1">Capacidad máxima</label>
                         <input type="number" name="capacidad" class="form-control p-2 rounded-3" id="capacidad" placeholder="Ej. 100" required min="1">
@@ -111,17 +102,13 @@
 
                 </div>
 
-                <!-- COLUMNA DERECHA (IMAGEN Y DESCRIPCIÓN) -->
                 <div class="col-md-6 d-flex flex-column">
 
-                    <!-- SECCIÓN DE IMAGEN -->
                     <label class="form-label fw-bold text-dark m-1">Imagen del evento <i class="bi bi-image"></i></label>
                     <div class="border text-center p-4 rounded-3 bg-white d-flex flex-column align-items-center justify-content-center mb-3" style="border-style: dashed !important; min-height: 250px;">
 
-                        <!-- Previsualización -->
                         <img id="preview" src="" alt="Previsualización" class="img-fluid rounded-3 mb-3 d-none" style="max-height: 200px; object-fit: cover; width: 100%;">
 
-                        <!-- Botón original -->
                         <div id="cajaBoton">
                             <label for="img" class="btn text-white fw-bold px-4 py-2 mb-2 shadow-sm" style="background-color: #0d8a5f; border-radius: 10px; cursor: pointer;">
                                 <i class="bi bi-upload me-2"></i> Seleccionar imagen
@@ -130,16 +117,13 @@
                             <small class="text-muted">Formatos permitidos: JPG, PNG, Máx 10MB</small>
                         </div>
 
-                        <!-- Input de archivo (nota el cambio a 'this') -->
                         <input type="file" name="img" id="img" accept="image/*" class="d-none" onchange="previsualizarImagen(this)">
 
-                        <!-- Botón de cambiar -->
                         <label for="img" id="btnCambiar" class="btn btn-sm btn-outline-secondary mt-2 d-none" style="cursor: pointer;">
                             Cambiar imagen
                         </label>
                     </div>
 
-                    <!-- SECCIÓN DE DESCRIPCIÓN -->
                     <div class="mb-3 flex-grow-1 d-flex flex-column">
                         <label for="descripcion" class="form-label fw-bold text-dark m-1">Descripción del evento</label>
                         <textarea name="descripcion" id="descripcion" class="form-control p-2 rounded-3 flex-grow-1" placeholder="Describe el evento..." required style="min-height: 120px;"></textarea>
@@ -148,7 +132,6 @@
                 </div>
             </div>
 
-            <!-- BOTONES DE GUARDAR EVENTO -->
             <div class="d-flex justify-content-end mt-4">
                 <button type="submit" name="action" value="publicar" class="btn text-white fw-bold py-2 px-4"
                         style="background-color: #0d8a5f; border-radius: 10px;">
@@ -184,7 +167,6 @@
     </div>
 </div>
 
-<!-- MODAL ESPACIO -->
 <div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -210,7 +192,6 @@
         </div>
     </div>
 </div>
-
 
 <script src="${pageContext.request.contextPath}/js/categorias.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
