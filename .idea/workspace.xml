@@ -10,13 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="Cambio visual incios de sesion y validaciones">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/EventoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/EventoDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearEvent.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/misEventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/misEventos.jsp" afterDir="false" />
-    </list>
+    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,12 +39,12 @@
     &quot;assignee&quot;: &quot;axel-ds&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/yolotzin-12/gestorEVentos.git&quot;,
-    &quot;accountId&quot;: &quot;1fe932dc-1701-4a26-83a3-802721af334a&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/yolotzin-12/gestorEVentos.git",
+    "accountId": "96a951a3-ccab-42bb-a1a7-c3ce24049651"
   }
-}</component>
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -80,23 +74,19 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.testconnection.executor&quot;: &quot;Run&quot;,
-    &quot;JavaScript Debug.login.jsp.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Events [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.Events [install].executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;Tomcat Server.Tomcat 10.1.55.executor&quot;: &quot;Run&quot;,
     &quot;Tomcat Server.Tomcat 10.1.56.executor&quot;: &quot;Run&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;silvana&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/emely/Desktop/repo/gestorEVentos/src/main/webapp/css&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/yolo_/OneDrive/Desktop/integradora/gestorEVentos&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -104,8 +94,8 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -113,8 +103,6 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\emely\Desktop\repo\gestorEVentos\src\main\webapp\css" />
-      <recent name="C:\Users\emely\Desktop\repo\gestorEVentos\src\main\webapp\js" />
       <recent name="C:\Users\emely\Desktop\xccxvc\gestorEVentos\src\main\java\com\example\events" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -127,7 +115,7 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 10.1.55" value="STOPPED" />
+              <entry key="Tomcat 10.1.56" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -135,7 +123,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="Tomcat 10.1.55" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.55" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+    <configuration name="Tomcat 10.1.56" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.56" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
         <artifact name="Events:war exploded">
@@ -150,7 +138,7 @@
         </artifact>
       </deployment>
       <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="160bf611-e899-49fa-a9e7-885b623751b4" />
+        <option name="BASE_DIRECTORY_NAME" value="9a15aa76-833f-4321-9725-1b65d3e639a4" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -158,7 +146,7 @@
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="62847" />
+        <option name="DEBUG_PORT" value="51638" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />
@@ -232,8 +220,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.25134.95" />
-        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.25134.95" />
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
       </set>
     </attachedChunks>
   </component>
@@ -251,29 +239,11 @@
       <workItem from="1785771448105" duration="2863000" />
       <workItem from="1785945988272" duration="1550000" />
       <workItem from="1786059530699" duration="7224000" />
-      <workItem from="1786078129206" duration="4148000" />
-      <workItem from="1786131213329" duration="8527000" />
-      <workItem from="1786407715434" duration="1245000" />
-      <workItem from="1786419752570" duration="2701000" />
+      <workItem from="1786125930812" duration="1829000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Cambio visual incios de sesion y validaciones" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cambio visual incios de sesion y validaciones" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/webapp/eventos.jsp</url>
-          <line>121</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
