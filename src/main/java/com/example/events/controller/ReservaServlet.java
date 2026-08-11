@@ -102,6 +102,7 @@ public class ReservaServlet extends HttpServlet {
             boolean ok = reservaDao.create(r);
 
             if (ok) {
+                // Enviar correo de confirmación (HU-14)
                 try {
                     String html = """
                         <html><body style="font-family:Arial,sans-serif">
