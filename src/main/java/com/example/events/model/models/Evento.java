@@ -4,7 +4,7 @@ public class Evento {
     private int id;
     private int idOrganizador;
     private int idEspacio;
-    private int idCategoria; // <- Agregado
+    private int idCategoria;
     private String nombre;
     private String nombreCategoria;
     private String imagenUrl;
@@ -13,7 +13,8 @@ public class Evento {
     private int capacidadDisponible;
     private String ubicacion;
     private String fechaHora;
-    private String estado; // "Borrador", "Disponible", "Cancelado"
+    private String estado;
+    private int totalReservas;
 
     public Evento() {
     }
@@ -120,5 +121,13 @@ public class Evento {
 
     public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
+    }
+
+    public int getTotalReservas() {
+        return totalReservas;
+    }
+
+    public void setTotalReservas(int totalReservas) {
+        this.totalReservas = totalReservas;
     }
 }
