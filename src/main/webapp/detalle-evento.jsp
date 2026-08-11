@@ -103,6 +103,10 @@
                                     <c:when test="${sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2}">
                                         <div class="d-flex gap-2">
 
+                                            <a href="evento?action=editar&id=${evento.id}" class="btn btn-outline-success w-50 fw-bold py-2 rounded-3">
+                                                <i class="bi bi-pencil-square me-1"></i> Editar
+                                            </a>
+
                                             <form action="evento" method="post" class="w-50" onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="id" value="${evento.id}">

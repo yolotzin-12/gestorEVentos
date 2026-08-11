@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    // ---------------------------------------------------------------------------
+
     const serverError = document.getElementById('serverError').value.trim();
     const serverMensaje = document.getElementById('serverMensaje').value.trim();
     const alertasContainer = document.getElementById('alertasContainer');
@@ -14,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('email').classList.add('is-invalid');
         document.getElementById('contra').classList.add('is-invalid');
+
+        // Poner labels en rojo
+        document.querySelector('label[for="email"]').classList.add('text-danger');
+        document.querySelector('label[for="contra"]').classList.add('text-danger');
     }
 
     if (serverMensaje !== "") {

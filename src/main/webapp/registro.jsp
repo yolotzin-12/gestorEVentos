@@ -17,8 +17,9 @@
     <div class="card p-4 shadow-sm tarjeta-personalizada">
         <div class="card-body text-center">
 
-            <img src="img/logo.png" alt="Logo SRAE" class="mb-4" style="max-height: 100px;">
-            <h4 class="fw-bold mb-4 text-dark">Crear Cuenta</h4>
+            <div class="d-flex flex-column align-items-center mb-4">
+                <img src="img/LOGOOO.png" alt="Logo SRAE" style="max-height: 150px;">
+            </div>
 
             <c:if test="${not empty error}">
                 <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
@@ -58,18 +59,23 @@
                 </div>
 
                 <div class="mb-3 text-start">
-                    <label for="txtCorreo" class="form-label fw-bold label-formulario">Correo Electrónico:</label>
-                    <input type="email" name="email" value="${param.email}" class="form-control input-formulario" id="txtCorreo" placeholder="Tu correo electrónico:" required>
+                    <label for="txtCorreo" class="form-label fw-bold label-formulario ${not empty errorEmail ? 'text-danger' : ''}">Correo Electrónico:</label>
+                    <input type="email" name="email" value="${param.email}" class="form-control input-formulario ${not empty errorEmail ? 'is-invalid' : ''}" id="txtCorreo" placeholder="Tu correo electrónico:" required>
                 </div>
 
                 <div class="mb-3 text-start">
-                    <label for="txtCorreoConfirmacion" class="form-label fw-bold label-formulario">Confirmar Correo:</label>
-                    <input type="email" name="emailConfirmacion" value="${param.emailConfirmacion}" class="form-control input-formulario" id="txtCorreoConfirmacion" placeholder="Confirme su correo electronico:" required>
+                    <label for="txtCorreoConfirmacion" class="form-label fw-bold label-formulario ${not empty errorEmail ? 'text-danger' : ''}">Confirmar Correo:</label>
+                    <input type="email" name="emailConfirmacion" value="${param.emailConfirmacion}" class="form-control input-formulario ${not empty errorEmail ? 'is-invalid' : ''}" id="txtCorreoConfirmacion" placeholder="Confirme su correo electronico:" required>
                 </div>
 
                 <div class="mb-4 text-start">
-                    <label for="txtPassword" class="form-label fw-bold label-formulario">Contraseña:</label>
-                    <input type="password" name="contra" class="form-control input-formulario" id="txtPassword" placeholder="Crea una contraseña:" required>
+                    <label for="txtPassword" class="form-label fw-bold label-formulario ${not empty errorContra ? 'text-danger' : ''}">Contraseña:</label>
+                    <div class="input-group">
+                        <input type="password" name="contra" class="form-control input-formulario ${not empty errorContra ? 'is-invalid' : ''}" id="txtPassword" placeholder="Crea una contraseña:" required>
+                        <button class="btn btn-outline-secondary btn-ver-password" type="button" onclick="togglePassword('txtPassword', this)">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="text-center mt-2">
@@ -79,7 +85,7 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <a href="login.jsp" class="text-decoration-none">¿Ya tienes una cuenta? Inicia sesión</a>
+                    <a href="login.jsp" class="text-decoration-none enlace-oscuro">¿Ya tienes una cuenta? Inicia sesión</a>
                 </div>
 
             </form>
@@ -88,5 +94,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/utilidades.js"></script>
 </body>
 </html>
