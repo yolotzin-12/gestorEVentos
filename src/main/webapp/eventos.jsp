@@ -25,20 +25,17 @@
             </div>
 
             <nav class="eventos-nav">
-                <!-- Texto dinámico según el Rol del usuario -->
                 <a href="${pageContext.request.contextPath}/evento" class="activo">
-                    <c:choose>
-                        <c:when test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                            Mis eventos
-                        </c:when>
-                        <c:otherwise>
-                            Eventos
-                        </c:otherwise>
-                    </c:choose>
+                    Eventos
                 </a>
 
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                    <!-- Redirección directa al Servlet -->
+                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
+                    <!-- Solo organizador: su panel de HU-07 -->
+                    <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
+                </c:if>
+
+                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
+                    <!-- Solo admin -->
                     <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
                 </c:if>
             </nav>
@@ -88,7 +85,12 @@
                             <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link">
                                 <div class="tarjeta-evento">
                                     <div class="encabezado-evento">
-                                        <h3>${evento.nombre}</h3>
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <h3>${evento.nombre}</h3>
+                                            <c:if test="${evento.estado == 'Borrador'}">
+                                                <span class="badge bg-warning text-dark flex-shrink-0">Borrador</span>
+                                            </c:if>
+                                        </div>
                                         <p><c:out value="${evento.nombreCategoria}" default="General"/></p>
                                     </div>
 

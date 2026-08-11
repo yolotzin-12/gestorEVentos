@@ -63,7 +63,53 @@ public class EventoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/evento");
             }
         }
-        // 3. LISTADO GENERAL O DE ORGANIZADOR
+        // 2.1 MOSTRAR FORMULARIO PARA EDITAR UN EVENTO EXISTENTE (incluye borradores)
+        else if ("editar".equals(action)) {
+            String idParam = request.getParameter("id");
+            if (idParam == null || idParam.isEmpty()) {
+                response.sendRedirect(request.getContextPath() + "/evento?action=misEventos");
+                return;
+            }
+
+            int idEvento = Integer.parseInt(idParam);
+            Evento evento = eventoDao.getById(idEvento);
+
+            if (evento == null) {
+                response.sendRedirect(request.getContextPath() + "/evento?action=misEventos");
+                return;
+            }
+
+            boolean esAdmin = usuarioSesion != null && usuarioSesion.getIdRol() == 1;
+            boolean esDueño = usuarioSesion != null && usuarioSesion.getIdRol() == 2
+                    && evento.getIdOrganizador() == orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+
+            // Solo el admin o el organizador dueño del evento pueden editarlo
+            if (!esAdmin && !esDueño) {
+                response.sendRedirect(request.getContextPath() + "/evento?action=misEventos");
+                return;
+            }
+
+            EspacioDao espDao = new EspacioDao();
+            request.setAttribute("listaEspacios", espDao.getAllEspacios());
+
+            CategoriaDao catDao = new CategoriaDao();
+            request.setAttribute("listaCategorias", catDao.getCategoriasActivas());
+
+            request.setAttribute("evento", evento);
+            request.getRequestDispatcher("crearEvent.jsp").forward(request, response);
+        }
+        // 3. PANEL "MIS EVENTOS" DEL ORGANIZADOR (HU-07)
+        else if ("misEventos".equals(action)) {
+            if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
+                int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+                List<Evento> lista = eventoDao.getByOrganizadorConReservas(idOrg);
+                request.setAttribute("listaEventos", lista);
+                request.getRequestDispatcher("misEventos.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/evento");
+            }
+        }
+        // 4. LISTADO GENERAL (ADMIN / USUARIO)
         else {
             List<Evento> lista;
 
@@ -93,7 +139,21 @@ public class EventoServlet extends HttpServlet {
 
         } else if ("publicar".equals(action) || "borrador".equals(action)) {
             try {
+                // Si viene "idEvento" en el formulario, estamos EDITANDO un evento
+                // (por ejemplo, un borrador guardado antes) en vez de crear uno nuevo.
+                String idEventoParam = request.getParameter("idEvento");
+                boolean esEdicion = idEventoParam != null && !idEventoParam.isEmpty();
+
+                Evento eventoExistente = null;
+                if (esEdicion) {
+                    eventoExistente = eventoDao.getById(Integer.parseInt(idEventoParam));
+                }
+
                 Evento ev = new Evento();
+                if (esEdicion && eventoExistente != null) {
+                    ev.setId(eventoExistente.getId());
+                }
+
                 ev.setNombre(request.getParameter("nombre"));
                 ev.setDescripcion(request.getParameter("descripcion"));
 
@@ -114,7 +174,13 @@ public class EventoServlet extends HttpServlet {
                 ev.setEstado("publicar".equals(action) ? "Disponible" : "Borrador");
                 ev.setIdEspacio(Integer.parseInt(request.getParameter("idEspacio")));
 
-                // Procesamiento de la imagen
+                // Por defecto se conserva la imagen que ya tenía el evento (si es edición)
+                if (eventoExistente != null) {
+                    ev.setImagenUrl(eventoExistente.getImagenUrl());
+                }
+
+                // Procesamiento de la imagen: si el usuario sube una nueva, se reemplaza.
+                // Si no sube ninguna, se conserva la anterior (ver arriba).
                 jakarta.servlet.http.Part filePart = request.getPart("img");
                 if (filePart != null && filePart.getSize() > 0) {
                     String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -130,13 +196,22 @@ public class EventoServlet extends HttpServlet {
                 }
 
                 if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
-                    ev.setIdOrganizador(Integer.parseInt(request.getParameter("idOrganizador")));
+                    if (eventoExistente != null) {
+                        // El admin conserva al organizador original del evento al editarlo
+                        ev.setIdOrganizador(eventoExistente.getIdOrganizador());
+                    } else {
+                        ev.setIdOrganizador(Integer.parseInt(request.getParameter("idOrganizador")));
+                    }
                 } else if (usuarioSesion != null) {
                     int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                     ev.setIdOrganizador(idOrg);
                 }
 
-                eventoDao.create(ev);
+                if (esEdicion && eventoExistente != null) {
+                    eventoDao.update(ev);
+                } else {
+                    eventoDao.create(ev);
+                }
             } catch (NumberFormatException e) {
                 System.err.println("Error procesando datos del evento: " + e.getMessage());
             }

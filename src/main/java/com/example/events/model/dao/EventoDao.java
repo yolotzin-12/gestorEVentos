@@ -50,7 +50,10 @@ public class EventoDao implements Dao<Evento, Integer> {
                 "FROM EVENTO e " +
                 "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
                 "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
-                "WHERE e.estado = 'Disponible' ORDER BY e.fecha_hora";
+                "WHERE e.estado = 'Disponible' " +
+                "ORDER BY CASE WHEN e.fecha_hora >= SYSTIMESTAMP THEN 0 ELSE 1 END, " +
+                "CASE WHEN e.fecha_hora >= SYSTIMESTAMP THEN e.fecha_hora END ASC, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN e.fecha_hora END DESC";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -72,7 +75,10 @@ public class EventoDao implements Dao<Evento, Integer> {
                 "FROM EVENTO e " +
                 "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
                 "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
-                "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
+                "WHERE e.id_organizador = ? " +
+                "ORDER BY CASE WHEN e.fecha_hora >= SYSTIMESTAMP THEN 0 ELSE 1 END, " +
+                "CASE WHEN e.fecha_hora >= SYSTIMESTAMP THEN e.fecha_hora END ASC, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN e.fecha_hora END DESC";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -86,12 +92,43 @@ public class EventoDao implements Dao<Evento, Integer> {
         return lista;
     }
 
-    @Override
-    public Evento getById(Integer id) {
+    // HU-07: Panel "Mis eventos" del organizador -> nombre, estado, lugares
+    // disponibles y cuántas reservas tiene cada evento.
+    public List<Evento> getByOrganizadorConReservas(int idOrganizador) {
+        List<Evento> lista = new ArrayList<>();
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
                 "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria, " +
+                "(SELECT COUNT(*) FROM RESERVA r WHERE r.id_evento = e.id_evento " +
+                " AND r.estado = 'Reservado') AS total_reservas " +
+                "FROM EVENTO e " +
+                "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
+                "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idOrganizador);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Evento e = mapear(rs);
+                    e.setTotalReservas(rs.getInt("total_reservas"));
+                    lista.add(e);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+    }
+
+    @Override
+    public Evento getById(Integer id) {
+        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.id_categoria, e.nombre, " +
+                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria " +
                 "FROM EVENTO e JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
                 "WHERE e.id_evento = ?";
 
         try (Connection con = OracleConnectApp.getConnection();
@@ -108,18 +145,25 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     @Override
     public boolean update(Evento e) {
-        String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, capacidad_maxima=?, " +
+        // Se actualizan también categoría, espacio y capacidad disponible
+        // (esta última se iguala a la máxima, ya que solo se llega aquí
+        // editando un evento que todavía no tiene reservas confirmadas).
+        String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, id_categoria=?, id_espacio=?, " +
+                "capacidad_maxima=?, capacidad_disponible=?, " +
                 "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS'), estado=?, imagen_url=? WHERE id_evento=?";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, e.getNombre());
             ps.setString(2, e.getDescripcion());
-            ps.setInt(3, e.getCapacidadMaxima());
-            ps.setString(4, e.getFechaHora());
-            ps.setString(5, e.getEstado());
-            ps.setString(6, e.getImagenUrl());
-            ps.setInt(7, e.getId());
+            ps.setInt(3, e.getIdCategoria());
+            ps.setInt(4, e.getIdEspacio());
+            ps.setInt(5, e.getCapacidadMaxima());
+            ps.setInt(6, e.getCapacidadMaxima());
+            ps.setString(7, e.getFechaHora());
+            ps.setString(8, e.getEstado());
+            ps.setString(9, e.getImagenUrl());
+            ps.setInt(10, e.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -170,6 +214,11 @@ public class EventoDao implements Dao<Evento, Integer> {
         e.setFechaHora(rs.getString("fecha_hora"));
         e.setEstado(rs.getString("estado"));
         e.setUbicacion(rs.getString("ubicacion"));
+
+        try {
+            e.setIdCategoria(rs.getInt("id_categoria"));
+        } catch (SQLException ex) {
+        }
 
         try {
             e.setNombreCategoria(rs.getString("nombre_categoria"));
