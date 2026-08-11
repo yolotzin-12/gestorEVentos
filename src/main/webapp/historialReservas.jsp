@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -38,7 +39,7 @@
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
-                    <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold active">
+                    <a href="reserva" class="btn sidebar-btn py-3 px-4 fw-bold active">
                         <i class="bi bi-calendar-check me-3"></i> Mis reservas
                     </a>
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
@@ -88,51 +89,46 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="text-muted">0001</td>
-                            <td class="fw-semibold">INNOVACIÓN TECNOLÓGICA</td>
-                            <td class="text-muted">10/12/26</td>
-                            <td class="text-muted">15/12/26</td>
-                            <td>Auditorio Principal</td>
-                            <td class="text-center"><span class="badge bg-danger rounded-pill px-3 py-2 w-100">✔ Cancelado</span></td>
-                            <td class="text-center"><a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">0002</td>
-                            <td class="fw-semibold">INNOVACIÓN TECNOLÓGICA</td>
-                            <td class="text-muted">11/12/26</td>
-                            <td class="text-muted">15/12/26</td>
-                            <td>Auditorio Principal</td>
-                            <td class="text-center"><span class="badge bg-success rounded-pill px-3 py-2 w-100">✔ Confirmado</span></td>
-                            <td class="text-center"><a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">0003</td>
-                            <td class="fw-semibold">INNOVACIÓN TECNOLÓGICA</td>
-                            <td class="text-muted">12/12/26</td>
-                            <td class="text-muted">15/12/26</td>
-                            <td>Auditorio Principal</td>
-                            <td class="text-center"><span class="badge bg-danger rounded-pill px-3 py-2 w-100">✔ Cancelado</span></td>
-                            <td class="text-center"><a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">0004</td>
-                            <td class="fw-semibold">INNOVACIÓN TECNOLÓGICA</td>
-                            <td class="text-muted">12/12/26</td>
-                            <td class="text-muted">15/12/26</td>
-                            <td>Auditorio Principal</td>
-                            <td class="text-center"><span class="badge bg-secondary rounded-pill px-3 py-2 w-100">⏳ Pendiente</span></td>
-                            <td class="text-center"><a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a></td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">0005</td>
-                            <td class="fw-semibold">INNOVACIÓN TECNOLÓGICA</td>
-                            <td class="text-muted">13/12/26</td>
-                            <td class="text-muted">15/12/26</td>
-                            <td>Auditorio Principal</td>
-                            <td class="text-center"><span class="badge bg-success rounded-pill px-3 py-2 w-100">✔ Confirmado</span></td>
-                            <td class="text-center"><a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a></td>
-                        </tr>
+
+                        <c:choose>
+                            <c:when test="${not empty misReservas}">
+                                <c:forEach var="reserva" items="${misReservas}">
+                                    <tr>
+                                        <td class="text-muted">${reserva.codigoReserva}</td>
+                                        <td class="fw-semibold">Evento #${reserva.idEvento}</td>
+                                        <td class="text-muted">${reserva.fechaHoraReserva}</td>
+                                        <td class="text-muted">--/--/----</td>
+                                        <td>Lugar por definir</td>
+
+                                        <td class="text-center">
+                                            <c:choose>
+                                                <c:when test="${reserva.estado == 'Reservado' || reserva.estado == 'Confirmado'}">
+                                                    <span class="badge bg-success rounded-pill px-3 py-2 w-100">✔ ${reserva.estado}</span>
+                                                </c:when>
+                                                <c:when test="${reserva.estado == 'Cancelado'}">
+                                                    <span class="badge bg-danger rounded-pill px-3 py-2 w-100">✖ Cancelado</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge bg-secondary rounded-pill px-3 py-2 w-100">⏳ ${reserva.estado}</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        Aún no tienes reservas registradas.
+                                    </td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+
                         </tbody>
                     </table>
                 </div>
@@ -141,7 +137,6 @@
         </div>
     </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

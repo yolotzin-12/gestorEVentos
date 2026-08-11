@@ -26,7 +26,12 @@
         <div class="row align-items-stretch">
 
             <div class="col-md-7 pe-md-4 border-end">
-                <form action="#" method="post">
+
+
+                <form action="reserva" method="post">
+
+                    <input type="hidden" name="action" value="reservar">
+                    <input type="hidden" name="idEvento" value="${param.id}">
 
                     <div class="mb-3">
                         <label for="nombre" class="form-label text-muted fw-semibold mb-1">Nombre completo</label>
@@ -60,6 +65,7 @@
                         </button>
                     </div>
                 </form>
+
             </div>
 
             <div class="col-md-5 ps-md-4 d-flex flex-column justify-content-between mt-4 mt-md-0 text-center">

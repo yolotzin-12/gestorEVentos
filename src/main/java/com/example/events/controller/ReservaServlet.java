@@ -33,7 +33,7 @@ public class ReservaServlet extends HttpServlet {
 
         List<Reserva> misReservas = reservaDao.getByAsistente(idAsistente);
         request.setAttribute("misReservas", misReservas);
-        request.getRequestDispatcher("mis-reservas.jsp").forward(request, response);
+        request.getRequestDispatcher("historialReservas.jsp").forward(request, response);
     }
 
     @Override
