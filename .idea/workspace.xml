@@ -13,7 +13,6 @@
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/ReservaDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/ReservaDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Reserva.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Reserva.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/historialReservas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/historialReservas.jsp" afterDir="false" />
     </list>
@@ -88,7 +87,7 @@
     "Tomcat Server.Tomcat 10.1.56.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Merging main",
+    "git-widget-placeholder": "silvana",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -121,7 +120,8 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 10.1.56" value="STOPPED" />
+              <entry key="Tomcat 10.1.55" value="FAILED" />
+              <entry key="Tomcat 10.1.56" value="FAILED" />
             </map>
           </value>
         </entry>
