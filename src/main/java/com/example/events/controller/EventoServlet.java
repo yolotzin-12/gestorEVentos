@@ -63,7 +63,18 @@ public class EventoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/evento");
             }
         }
-        // 3. LISTADO GENERAL O DE ORGANIZADOR
+        // 3. PANEL "MIS EVENTOS" DEL ORGANIZADOR (HU-07)
+        else if ("misEventos".equals(action)) {
+            if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
+                int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+                List<Evento> lista = eventoDao.getByOrganizadorConReservas(idOrg);
+                request.setAttribute("listaEventos", lista);
+                request.getRequestDispatcher("misEventos.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/evento");
+            }
+        }
+        // 4. LISTADO GENERAL (ADMIN / USUARIO)
         else {
             List<Evento> lista;
 

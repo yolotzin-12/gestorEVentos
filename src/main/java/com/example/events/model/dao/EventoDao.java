@@ -86,6 +86,36 @@ public class EventoDao implements Dao<Evento, Integer> {
         return lista;
     }
 
+    // HU-07: Panel "Mis eventos" del organizador -> nombre, estado, lugares
+    // disponibles y cuántas reservas tiene cada evento.
+    public List<Evento> getByOrganizadorConReservas(int idOrganizador) {
+        List<Evento> lista = new ArrayList<>();
+        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
+                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria, " +
+                "(SELECT COUNT(*) FROM RESERVA r WHERE r.id_evento = e.id_evento " +
+                " AND r.estado = 'Reservado') AS total_reservas " +
+                "FROM EVENTO e " +
+                "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
+                "WHERE e.id_organizador = ? ORDER BY e.fecha_hora DESC";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idOrganizador);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Evento e = mapear(rs);
+                    e.setTotalReservas(rs.getInt("total_reservas"));
+                    lista.add(e);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+    }
+
     @Override
     public Evento getById(Integer id) {
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +

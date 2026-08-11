@@ -25,20 +25,17 @@
             </div>
 
             <nav class="eventos-nav">
-                <!-- Texto dinámico según el Rol del usuario -->
                 <a href="${pageContext.request.contextPath}/evento" class="activo">
-                    <c:choose>
-                        <c:when test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                            Mis eventos
-                        </c:when>
-                        <c:otherwise>
-                            Eventos
-                        </c:otherwise>
-                    </c:choose>
+                    Eventos
                 </a>
 
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                    <!-- Redirección directa al Servlet -->
+                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
+                    <!-- Solo organizador: su panel de HU-07 -->
+                    <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
+                </c:if>
+
+                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
+                    <!-- Solo admin -->
                     <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
                 </c:if>
             </nav>
