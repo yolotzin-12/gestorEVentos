@@ -29,10 +29,51 @@ public class ReservaServlet extends HttpServlet {
             throws ServletException, IOException {
 
         Usuario u = (Usuario) request.getSession(false).getAttribute("usuario");
-        int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
+        if (u == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
 
-        List<Reserva> misReservas = reservaDao.getByAsistente(idAsistente);
+        String action = request.getParameter("action");
+
+
+        if ("detalle".equals(action)) {
+            int idReserva = Integer.parseInt(request.getParameter("idReserva"));
+            Reserva r = reservaDao.getDetalleById(idReserva);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            if (r != null) {
+                String json = String.format(
+                        "{\"codigo\":\"%s\", \"evento\":\"%s\", \"descripcion\":\"%s\", \"fechaEvento\":\"%s\", \"lugar\":\"%s\", \"ubicacion\":\"%s\", \"estado\":\"%s\", \"fechaReserva\":\"%s\"}",
+                        r.getCodigoReserva(),
+                        r.getNombreEvento().replace("\"", "\\\""),
+                        r.getDescripcionEvento() != null ? r.getDescripcionEvento().replace("\"", "\\\"").replace("\n", " ") : "",
+                        r.getFechaEvento(),
+                        r.getNombreEspacio().replace("\"", "\\\""),
+                        r.getUbicacionEspacio() != null ? r.getUbicacionEspacio().replace("\"", "\\\"") : "",
+                        r.getEstado(),
+                        r.getFechaHoraReserva()
+                );
+                response.getWriter().write(json);
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+            return;
+        }
+
+        // Historial de Reservas
+        int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
+        String estado = request.getParameter("estado");
+        String fecha = request.getParameter("fecha");
+
+        List<Reserva> misReservas = reservaDao.getByAsistenteConFiltro(idAsistente, estado, fecha);
+
         request.setAttribute("misReservas", misReservas);
+        request.setAttribute("filtroEstado", estado);
+        request.setAttribute("filtroFecha", fecha);
+
         request.getRequestDispatcher("historialReservas.jsp").forward(request, response);
     }
 
@@ -43,6 +84,11 @@ public class ReservaServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         Usuario u = (Usuario) request.getSession(false).getAttribute("usuario");
+        if (u == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
         int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
 
         if ("reservar".equals(action)) {
@@ -74,9 +120,6 @@ public class ReservaServlet extends HttpServlet {
                 } catch (Exception ex) {
                     System.err.println("Correo de reserva no enviado: " + ex.getMessage());
                 }
-                request.setAttribute("mensaje", "Reserva exitosa. Código: " + r.getCodigoReserva());
-            } else {
-                request.setAttribute("error", "No hay disponibilidad para este evento.");
             }
             response.sendRedirect(request.getContextPath() + "/reserva");
 
