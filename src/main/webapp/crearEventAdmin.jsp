@@ -17,7 +17,6 @@
 <body class="bg-light">
 
 <div class="container my-4">
-    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
@@ -45,7 +44,6 @@
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
 
-                    <!-- SECCIÓN CATEGORÍA CON BOTONES NUEVA / ELIMINAR -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idCategoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
@@ -71,7 +69,6 @@
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
-                    <!-- SECCIÓN ESPACIO CON BOTONES NUEVO / ELIMINAR -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idEspacio" class="form-label fw-bold text-dark mb-0">Espacio / Ubicación</label>
@@ -158,7 +155,6 @@
     </div>
 </div>
 
-<!-- ================= MODALES DE CATEGORÍAS ================= -->
 <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -204,7 +200,6 @@
     </div>
 </div>
 
-<!-- ================= MODALES DE ESPACIOS ================= -->
 <div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">

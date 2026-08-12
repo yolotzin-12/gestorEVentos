@@ -60,7 +60,7 @@ public class UsuarioServlet extends HttpServlet {
             usuarioSesion.setTelefono(telefono);
             usuarioSesion.setEmail(correo);
 
-            // foto de perfil
+            // Foto de perfil
             Part filePart = request.getPart("fotoPerfil");
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -83,7 +83,6 @@ public class UsuarioServlet extends HttpServlet {
             }
             return;
         }
-
 
         // CAMBIAR LA CONTRASEÑA
         if ("cambiarPassword".equals(action)) {
@@ -111,21 +110,29 @@ public class UsuarioServlet extends HttpServlet {
             return;
         }
 
-
+        // GESTIÓN DE USUARIOS (DESHABILITAR / ESTADO / ROL)
         if (action != null && request.getParameter("idUsuario") != null) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 
             if ("deshabilitar".equals(action)) {
                 dao.deshabilitar(idUsuario);
+                response.sendRedirect(request.getContextPath() + "/usuarios?success=estado_actualizado");
             } else if ("cambiarEstado".equals(action)) {
                 boolean nuevoEstado = Boolean.parseBoolean(request.getParameter("estado"));
                 dao.cambiarEstado(idUsuario, nuevoEstado);
+                response.sendRedirect(request.getContextPath() + "/usuarios?success=estado_actualizado");
             } else if ("asignarRol".equals(action)) {
                 int idRol = Integer.parseInt(request.getParameter("idRol"));
-                dao.asignarRol(idUsuario, idRol);
+                int resultado = dao.asignarRol(idUsuario, idRol);
+
+                if (resultado == -1) {
+                    response.sendRedirect(request.getContextPath() + "/usuarios?error=reservas_activas");
+                } else if (resultado == 1) {
+                    response.sendRedirect(request.getContextPath() + "/usuarios?success=rol_actualizado");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/usuarios?error=general");
+                }
             }
         }
-
-        response.sendRedirect(request.getContextPath() + "/usuarios");
     }
 }
