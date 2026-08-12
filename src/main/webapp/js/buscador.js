@@ -1,4 +1,3 @@
-// Quita el chip de ubicación sin mover el resto de la barra de filtros
 function quitarUbicacion() {
     var chip = document.getElementById('filtroUbicacion');
     if (chip) {
@@ -6,8 +5,7 @@ function quitarUbicacion() {
     }
 }
 
-// Filtro en vivo: oculta las tarjetas de evento que no coincidan con el texto escrito,
-// comparando tanto el nombre del evento como su ubicación (coincidencia parcial).
+//
 document.addEventListener('DOMContentLoaded', function () {
     var input = document.querySelector('.buscador-evento input[name="buscar"]');
     var contenedor = document.getElementById('listaEventosGrid');

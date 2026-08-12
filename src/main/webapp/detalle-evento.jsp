@@ -25,7 +25,6 @@
 
             <nav class="eventos-nav">
                 <a href="evento">Eventos</a>
-                <!-- Ocultar "Mis reservas" si es Organizador/Admin -->
                 <c:if test="${sessionScope.usuario.idRol != 1 && sessionScope.usuario.idRol != 2}">
                     <a href="reserva">Mis reservas</a>
                 </c:if>
@@ -117,7 +116,6 @@
                                         </div>
                                     </c:when>
 
-                                    <%-- SI ES UN USUARIO NORMAL / ALUMNO: Botón de Reservar --%>
                                     <c:otherwise>
                                         <a href="reservar.jsp?id=${evento.id}" class="text-decoration-none w-100">
                                             <button type="button" class="btn fs-5 w-100 d-flex align-items-center justify-content-center gap-2" style="background-color:#0d8a5f; color:#fff; font-weight:bold; border-radius:10px; padding:10px; border:none;">

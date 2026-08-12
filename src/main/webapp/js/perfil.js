@@ -14,7 +14,6 @@ function previewImage(event) {
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // ALERTAS DE ACTUALIZACIÓN DE PERFIL ──────────────────────────────
     const updateSuccessInput = document.getElementById('updateSuccess');
     if (updateSuccessInput) {
         const updateStatus = updateSuccessInput.value;
@@ -35,19 +34,16 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // LIMPIEZA DE URL
     if (window.history.replaceState) {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.replaceState(null, null, cleanUrl);
     }
 
-    // VALIDACIÓN DE DATOS DEL PERFIL (TELÉFONO) ───────────────────────
     const formPerfil = document.getElementById('formActualizarPerfil');
     const telefonoInput = document.getElementById('telefono');
     const errorTelefono = document.getElementById('errorTelefono');
 
     if (formPerfil && telefonoInput) {
-        // Obliga a que solo se puedan escribir números
         telefonoInput.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, ''); // Quita todo lo que no sea número
 
@@ -57,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // Al enviar el formulario valida estrictamente
         formPerfil.addEventListener('submit', function(event) {
             if (telefonoInput.value.length > 0 && telefonoInput.value.length !== 10) {
                 errorTelefono.style.display = 'block';
@@ -67,7 +62,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // ALERTAS DE CAMBIO DE CONTRASEÑA ─────────────────────────────────
     const alertasContainer = document.getElementById('alertasContainerPerfil');
     const serverErrorInput = document.getElementById('serverErrorPerfil');
     const serverSuccessInput = document.getElementById('serverSuccessPerfil');
@@ -105,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function() {
         if (labelActual) labelActual.classList.add('text-danger');
     }
 
-    // MOSTRAR/OCULTAR CONTRASEÑA
     const toggleButtons = document.querySelectorAll('.toggle-password');
     toggleButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -125,7 +118,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // VALIDACIÓN DEL FORMULARIO DE CONTRASEÑA
     const form = document.getElementById('formCambiarContra');
     const contraNew = document.getElementById('contraNew');
     const confirmarContra = document.getElementById('confirmarContra');

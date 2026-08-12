@@ -129,7 +129,6 @@ function confirmarEliminarEvento(idEvento, nombreEvento) {
     });
 }
 
-// 3. FUNCIONES DE CATEGORÍA Y ESPACIO CON SWEETALERT2
 function guardarCategoria() {
     const nombreInput = document.getElementById('nombreCategoria').value;
     const mensajeDiv = document.getElementById('mensajeCategoria');

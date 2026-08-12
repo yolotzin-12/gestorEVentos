@@ -29,11 +29,9 @@
 
                 <div class="mb-4 text-start">
                     <label for="email" class="form-label fw-bold text-secondary text-center d-block">Ingresa tu correo</label>
-                    <!-- Es vital que exista name="email" para que el Servlet lo encuentre -->
                     <input type="email" id="email" name="email" class="form-control" placeholder="ejemplo@utez.edu.mx" required>
                 </div>
 
-                <!-- Tu botón existente -->
                 <div class="text-center mt-2">
                     <button type="submit" class="btn btn-primary fw-bold py-2 px-5 d-inline-flex">
                         <i class="bi bi-envelope me-2" style="font-size: 1.2rem;"></i> Generar enlace

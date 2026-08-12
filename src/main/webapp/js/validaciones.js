@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('email').classList.add('is-invalid');
         document.getElementById('contra').classList.add('is-invalid');
 
-        // Poner labels en rojo
         document.querySelector('label[for="email"]').classList.add('text-danger');
         document.querySelector('label[for="contra"]').classList.add('text-danger');
     }

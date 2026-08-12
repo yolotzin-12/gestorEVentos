@@ -3,7 +3,6 @@ let tiempoInactividad;
 function reiniciarTemporizador() {
     clearTimeout(tiempoInactividad);
 
-    // Configurar el temporizador para 30 minutos (1800000 milisegundos)
     tiempoInactividad = setTimeout(mostrarAlertaExpiracion, 30 * 60 * 1000);
 }
 

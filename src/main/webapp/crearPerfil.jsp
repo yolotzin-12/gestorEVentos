@@ -114,7 +114,6 @@
                                     <div class="col-md-12 mb-3">
                                         <label for="correo" class="form-label fw-bold">Correo Electrónico:</label>
                                         <div class="input-group">
-                                            <!-- readonly agregado y clases bg-secondary text-muted para que luzca bloqueado -->
                                             <input type="email" name="correo" class="form-control" style="background-color: #e9ecef; color: #6c757d; cursor: not-allowed;" id="correo" value="${usuario.email}" readonly title="El correo electrónico no puede ser modificado" required>
                                             <span class="input-group-text" style="background-color: #e9ecef;"><i class="bi bi-lock-fill text-muted"></i></span>
                                         </div>

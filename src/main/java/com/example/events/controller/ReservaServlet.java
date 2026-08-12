@@ -65,9 +65,7 @@ public class ReservaServlet extends HttpServlet {
         }
 
         // --- Evita que el navegador muestre una versión en caché de esta página ---
-        // Esto es lo que provocaba que "Mis reservas" apareciera vacío al entrar
-        // por primera vez y solo se viera bien al recargar: el navegador estaba
-        // reutilizando una copia vieja en lugar de pedir los datos de nuevo.
+
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
@@ -172,7 +170,6 @@ public class ReservaServlet extends HttpServlet {
         } else if ("cancelar".equals(action)) {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
 
-            // Se toma el detalle ANTES de cancelar, para poder armar el correo
             Reserva detalle = reservaDao.getDetalleById(idReserva);
             boolean ok = reservaDao.cancelar(idReserva);
 
@@ -197,7 +194,6 @@ public class ReservaServlet extends HttpServlet {
                 }
             }
 
-            // Se conservan los filtros que el usuario tenía aplicados en el historial
             String estadoFiltro = request.getParameter("filtroEstado");
             String fechaFiltro = request.getParameter("filtroFecha");
             StringBuilder redirect = new StringBuilder(request.getContextPath()).append("/reserva");
