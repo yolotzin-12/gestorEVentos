@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. MANEJO DE ALERTAS EN URL DESDE EL SERVLET
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
     const error = urlParams.get('error');
@@ -28,9 +27,19 @@ document.addEventListener("DOMContentLoaded", function() {
             confirmButtonColor: '#0d8a5f'
         });
         cleanUrl();
+    } else if (success === 'edited') {
+        Swal.fire({
+            title: '¡Actualizado!',
+            text: 'El evento se ha editado y actualizado con éxito.',
+            icon: 'success',
+            confirmButtonColor: '#0d8a5f'
+        });
+        cleanUrl();
     } else if (error) {
         let msg = 'Ocurrió un error al procesar tu solicitud.';
         if (error === 'create_failed') msg = 'No se pudo guardar el evento.';
+        if (error === 'update_failed') msg = 'No se pudo actualizar el evento.';
+        if (error === 'delete_failed') msg = 'No se pudo eliminar el evento (quizá tenga reservas asociadas).';
         if (error === 'invalid_data') msg = 'Los datos enviados son inválidos. Revisa el formulario.';
 
         Swal.fire({
@@ -49,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // 2. VALIDACIÓN DEL FORMULARIO PRINCIPAL
     const formEvento = document.querySelector('form[action="evento"]');
     if (formEvento) {
         formEvento.addEventListener('submit', function(e) {
@@ -85,6 +93,41 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+function confirmarEliminarEvento(idEvento, nombreEvento) {
+    Swal.fire({
+        title: '¿Eliminar Evento?',
+        html: `¿Estás seguro de que deseas eliminar el evento <b>"${nombreEvento}"</b>?<br>Esta acción no se puede deshacer.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#cc0000',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Creamos un formulario dinámico para enviar la petición POST que el Servlet espera
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'evento';
+
+            const inputAction = document.createElement('input');
+            inputAction.type = 'hidden';
+            inputAction.name = 'action';
+            inputAction.value = 'delete';
+            form.appendChild(inputAction);
+
+            const inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'id';
+            inputId.value = idEvento;
+            form.appendChild(inputId);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
 
 // 3. FUNCIONES DE CATEGORÍA Y ESPACIO CON SWEETALERT2
 function guardarCategoria() {
@@ -290,3 +333,4 @@ function borrarEspacio() {
         }
     });
 }
+

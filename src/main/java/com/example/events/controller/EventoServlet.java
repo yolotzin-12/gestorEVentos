@@ -49,6 +49,24 @@ public class EventoServlet extends HttpServlet {
                 request.getRequestDispatcher("crearEvent.jsp").forward(request, response);
             }
         }
+        else if ("editar".equals(action)) {
+            String idParam = request.getParameter("id");
+            if (idParam != null && !idParam.isEmpty()) {
+                int idEvento = Integer.parseInt(idParam);
+                Evento evento = eventoDao.getById(idEvento);
+                request.setAttribute("evento", evento);
+
+                EspacioDao espDao = new EspacioDao();
+                request.setAttribute("listaEspacios", espDao.getAllEspacios());
+
+                CategoriaDao catDao = new CategoriaDao();
+                request.setAttribute("listaCategorias", catDao.getCategoriasActivas());
+
+                request.getRequestDispatcher("EditarEvent.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/evento");
+            }
+        }
         else if ("detalle".equals(action)) {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
@@ -94,7 +112,52 @@ public class EventoServlet extends HttpServlet {
             }
             return;
 
-        } else if ("publicar".equals(action) || "borrador".equals(action)) {
+        }
+        else if ("actualizar".equals(action)) {
+            try {
+                int idEvento = Integer.parseInt(request.getParameter("id"));
+                Evento ev = eventoDao.getById(idEvento);
+
+                ev.setNombre(request.getParameter("nombre"));
+                ev.setDescripcion(request.getParameter("descripcion"));
+                ev.setIdCategoria(Integer.parseInt(request.getParameter("idCategoria")));
+                ev.setCapacidadMaxima(Integer.parseInt(request.getParameter("capacidad")));
+                ev.setIdEspacio(Integer.parseInt(request.getParameter("idEspacio")));
+                ev.setEstado(request.getParameter("estado") != null ? request.getParameter("estado") : "Disponible");
+
+                String fechaRaw = request.getParameter("fecha");
+                if (fechaRaw != null && fechaRaw.contains("T")) {
+                    fechaRaw = fechaRaw.replace("T", " ") + ":00";
+                }
+                ev.setFechaHora(fechaRaw);
+
+                jakarta.servlet.http.Part filePart = request.getPart("img");
+                if (filePart != null && filePart.getSize() > 0) {
+                    String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    String uploadPath = getServletContext().getRealPath("") + java.io.File.separator + "img" + java.io.File.separator + "eventos";
+                    java.io.File uploadDir = new java.io.File(uploadPath);
+                    if (!uploadDir.exists()) uploadDir.mkdir();
+
+                    String filePath = uploadPath + java.io.File.separator + fileName;
+                    filePart.write(filePath);
+                    ev.setImagenUrl("img/eventos/" + fileName);
+                }
+
+                boolean actualizado = eventoDao.update(ev);
+
+                if (actualizado) {
+                    response.sendRedirect(request.getContextPath() + "/evento?success=edited");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/evento?error=update_failed");
+                }
+                return;
+            } catch (Exception e) {
+                System.err.println("Error editando evento: " + e.getMessage());
+                response.sendRedirect(request.getContextPath() + "/evento?error=invalid_data");
+                return;
+            }
+        }
+        else if ("publicar".equals(action) || "borrador".equals(action)) {
             try {
                 Evento ev = new Evento();
                 ev.setNombre(request.getParameter("nombre"));
