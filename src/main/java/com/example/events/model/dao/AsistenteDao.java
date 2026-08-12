@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AsistenteDao implements Dao<Asistente, Integer> {
+public class  AsistenteDao implements Dao<Asistente, Integer> {
 
     // Obtener id_asistente a partir del id_usuario (lo usa ReservaServlet)
     public int getIdAsistenteByUsuario(int idUsuario) {

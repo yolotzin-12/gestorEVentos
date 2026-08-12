@@ -81,14 +81,18 @@ public class UsuarioDao {
         }
     }
 
-    // Valida credenciales para acceso al sistema
+    // Valida credenciales, trae foto y teléfono de cualquiera de los 3 roles
     public Usuario login(String email, String password) {
         if (email == null || password == null) return null;
 
         String sql = "SELECT u.id_usuario, u.id_rol, u.nombre, u.apellido_paterno, " +
-                "u.apellido_materno, u.correo_electronico, u.activo " +
+                "u.apellido_materno, u.correo_electronico, u.activo, u.foto_url, " +
+                "COALESCE(a.telefono, o.telefono, ad.telefono) AS telefono " +
                 "FROM USUARIO u " +
                 "JOIN CONTRASENA c ON c.id_usuario = u.id_usuario AND c.activa = 1 " +
+                "LEFT JOIN ASISTENTE a ON u.id_usuario = a.id_usuario " +
+                "LEFT JOIN ORGANIZADOR o ON u.id_usuario = o.id_usuario " +
+                "LEFT JOIN ADMINISTRADOR ad ON u.id_usuario = ad.id_usuario " +
                 "WHERE LOWER(u.correo_electronico) = ? AND c.hash_contrasena = ? AND u.activo = 1";
 
         try (Connection con = OracleConnectApp.getConnection();
@@ -107,6 +111,11 @@ public class UsuarioDao {
                     u.setApellidoMaterno(rs.getString("apellido_materno"));
                     u.setEmail(rs.getString("correo_electronico"));
                     u.setActivo(rs.getInt("activo") == 1);
+
+                    // Recuperamos la foto y el teléfono
+                    u.setFotoUrl(rs.getString("foto_url"));
+                    u.setTelefono(rs.getString("telefono"));
+
                     return u;
                 }
             }
@@ -120,7 +129,7 @@ public class UsuarioDao {
     // Obtiene todos los usuarios registrados
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, ACTIVO FROM USUARIO ORDER BY ID_USUARIO ASC";
+        String sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, ACTIVO, FOTO_URL FROM USUARIO ORDER BY ID_USUARIO ASC";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             if (con == null) return lista;
@@ -137,6 +146,7 @@ public class UsuarioDao {
                     u.setApellidoMaterno(rs.getString("APELLIDO_MATERNO"));
                     u.setEmail(rs.getString("CORREO_ELECTRONICO"));
                     u.setActivo(rs.getInt("ACTIVO") == 1);
+                    u.setFotoUrl(rs.getString("FOTO_URL"));
                     lista.add(u);
                 }
             }
@@ -262,6 +272,74 @@ public class UsuarioDao {
             System.err.println(" Error en cambiarContrasenaPerfil: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+
+    // Actualiza datos, foto y el teléfono dependiendo del rol
+    public boolean actualizarPerfil(Usuario u) {
+        String sqlUsuario = "UPDATE USUARIO SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, correo_electronico = ?, foto_url = ? WHERE id_usuario = ?";
+        String sqlTelefono = "";
+        String sqlInsert = "";
+
+        // 1 = Admin, 2 = Organizador, 3 = Asistente
+        if (u.getIdRol() == 1) {
+            sqlTelefono = "UPDATE ADMINISTRADOR SET telefono = ? WHERE id_usuario = ?";
+            sqlInsert = "INSERT INTO ADMINISTRADOR (id_usuario, telefono, nivel_acceso) VALUES (?, ?, 'total')";
+        } else if (u.getIdRol() == 2) {
+            sqlTelefono = "UPDATE ORGANIZADOR SET telefono = ? WHERE id_usuario = ?";
+            sqlInsert = "INSERT INTO ORGANIZADOR (id_usuario, telefono) VALUES (?, ?)";
+        } else if (u.getIdRol() == 3) {
+            sqlTelefono = "UPDATE ASISTENTE SET telefono = ? WHERE id_usuario = ?";
+            sqlInsert = "INSERT INTO ASISTENTE (id_usuario, telefono) VALUES (?, ?)";
+        }
+
+        Connection con = null;
+        try {
+            con = OracleConnectApp.getConnection();
+            con.setAutoCommit(false);
+
+            // Actualizamos tabla USUARIO (incluye la foto)
+            try (PreparedStatement psU = con.prepareStatement(sqlUsuario)) {
+                psU.setString(1, u.getNombre());
+                psU.setString(2, u.getApellidoPaterno());
+                psU.setString(3, u.getApellidoMaterno());
+                psU.setString(4, u.getEmail().trim().toLowerCase());
+                psU.setString(5, u.getFotoUrl());
+                psU.setInt(6, u.getId());
+                psU.executeUpdate();
+            }
+
+            // Actualizamos el TELÉFONO en la tabla correcta
+            if (!sqlTelefono.isEmpty()) {
+                try (PreparedStatement psT = con.prepareStatement(sqlTelefono)) {
+                    psT.setString(1, u.getTelefono());
+                    psT.setInt(2, u.getId());
+                    int filasActualizadas = psT.executeUpdate();
+
+                    // Si el usuario no existía en su tabla hija, lo insertamos
+                    if (filasActualizadas == 0 && !sqlInsert.isEmpty()) {
+                        try (PreparedStatement psI = con.prepareStatement(sqlInsert)) {
+                            psI.setInt(1, u.getId());
+                            psI.setString(2, u.getTelefono());
+                            psI.executeUpdate();
+                        }
+                    }
+                }
+            }
+
+            con.commit();
+            return true;
+
+        } catch (SQLException e) {
+            if (con != null) {
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (con != null) {
+                try { con.setAutoCommit(true); con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
         }
     }
 }

@@ -16,7 +16,6 @@
 
 <div class="container my-4">
 
-    <!-- Encabezado superior -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
@@ -67,15 +66,31 @@
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-3" style="color: #162e54;">Datos Personales</h5>
 
-                            <div class="text-center mb-3">
-                                <div class="bg-primary text-white d-inline-flex flex-column align-items-center justify-content-center rounded-3 p-3" style="width: 100px; height: 90px; cursor: pointer;">
-                                    <i class="bi bi-person-fill fs-2"></i>
-                                    <small style="font-size: 0.65rem;">Cambiar imagen</small>
-                                </div>
-                            </div>
+                            <input type="hidden" id="updateSuccess" value="${param.update}">
 
-                            <form action="${pageContext.request.contextPath}/usuarios" method="post">
+                            <form action="${pageContext.request.contextPath}/usuarios?action=actualizarDatos" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="action" value="actualizarDatos">
+                                <div class="text-center mb-3">
+                                    <div class="position-relative d-inline-block">
+                                        <c:choose>
+                                            <c:when test="${not empty usuario.fotoUrl}">
+                                                <img src="${usuario.fotoUrl}" id="previewFoto" class="rounded-circle object-fit-cover shadow" style="width: 100px; height: 100px; border: 3px solid #162e54;">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div id="defaultIcon" class="bg-primary text-white d-inline-flex flex-column align-items-center justify-content-center rounded-circle shadow" style="width: 100px; height: 100px;">
+                                                    <i class="bi bi-person-fill fs-1"></i>
+                                                </div>
+                                                <img src="" id="previewFoto" class="rounded-circle object-fit-cover shadow d-none" style="width: 100px; height: 100px; border: 3px solid #162e54;">
+                                            </c:otherwise>
+                                        </c:choose>
+
+                                        <label for="fotoPerfil" class="btn btn-sm btn-success rounded-circle position-absolute bottom-0 end-0" style="background-color: #0d8a5f; cursor: pointer;">
+                                            <i class="bi bi-camera-fill"></i>
+                                        </label>
+                                        <input type="file" id="fotoPerfil" name="fotoPerfil" class="d-none" accept="image/*" onchange="previewImage(event)">
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="nombre" class="form-label fw-bold">Nombre:</label>
@@ -102,7 +117,7 @@
                                     </div>
                                 </div>
                                 <div class="text-center mt-2">
-                                    <button type="submit" class="btn btn-success fw-bold px-4" style="background-color: #0d8a5f;"><i class="bi bi-floppy me-2"></i> Guardar</button>
+                                    <button type="submit" class="btn btn-success fw-bold px-4" style="background-color: #0d8a5f;"><i class="bi bi-floppy me-2"></i> Guardar Cambios</button>
                                 </div>
                             </form>
                         </div>

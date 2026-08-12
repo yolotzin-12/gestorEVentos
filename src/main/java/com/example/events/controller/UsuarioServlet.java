@@ -1,17 +1,26 @@
 package com.example.events.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import com.example.events.model.Usuario;
 import com.example.events.model.dao.UsuarioDao;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 @WebServlet(name = "UsuarioServlet", value = "/usuarios")
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 5,      // 5 MB
+        maxRequestSize = 1024 * 1024 * 10   // 10 MB
+)
 public class UsuarioServlet extends HttpServlet {
 
     private final UsuarioDao dao = new UsuarioDao();
@@ -29,11 +38,55 @@ public class UsuarioServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        // Petición para actualizar la contraseña desde el perfil
-        if ("cambiarPassword".equals(action)) {
-            HttpSession session = request.getSession();
-            Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+        HttpSession session = request.getSession();
+        Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
 
+        // ACTUALIZAR DATOS PERSONALES ---
+        if ("actualizarDatos".equals(action)) {
+            if (usuarioSesion == null) {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return;
+            }
+
+            String nombre = request.getParameter("nombre");
+            String apeP = request.getParameter("apeP");
+            String apeM = request.getParameter("apeM");
+            String telefono = request.getParameter("telefono");
+            String correo = request.getParameter("correo");
+
+            usuarioSesion.setNombre(nombre);
+            usuarioSesion.setApellidoPaterno(apeP);
+            usuarioSesion.setApellidoMaterno(apeM);
+            usuarioSesion.setTelefono(telefono);
+            usuarioSesion.setEmail(correo);
+
+            // foto de perfil
+            Part filePart = request.getPart("fotoPerfil");
+            if (filePart != null && filePart.getSize() > 0) {
+                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                String uploadPath = getServletContext().getRealPath("") + File.separator + "img" + File.separator + "perfiles";
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdirs();
+
+                String filePath = uploadPath + File.separator + fileName;
+                filePart.write(filePath);
+                usuarioSesion.setFotoUrl("img/perfiles/" + fileName);
+            }
+
+            boolean exito = dao.actualizarPerfil(usuarioSesion);
+
+            if (exito) {
+                session.setAttribute("usuario", usuarioSesion);
+                response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?update=success");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?update=error");
+            }
+            return;
+        }
+
+
+        // CAMBIAR LA CONTRASEÑA
+        if ("cambiarPassword".equals(action)) {
             if (usuarioSesion == null) {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
                 return;
@@ -58,7 +111,7 @@ public class UsuarioServlet extends HttpServlet {
             return;
         }
 
-        // Lógica administrativa existente
+
         if (action != null && request.getParameter("idUsuario") != null) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 

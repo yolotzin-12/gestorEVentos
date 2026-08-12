@@ -1,10 +1,49 @@
+
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('previewFoto');
+        const defaultIcon = document.getElementById('defaultIcon');
+        output.src = reader.result;
+        output.classList.remove('d-none');
+        if(defaultIcon) defaultIcon.classList.add('d-none');
+    };
+    if (event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 
+    // ALERTAS DE ACTUALIZACIÓN DE PERFIL ──────────────────────────────
+    const updateSuccessInput = document.getElementById('updateSuccess');
+    if (updateSuccessInput) {
+        const updateStatus = updateSuccessInput.value;
+        if (updateStatus === 'success') {
+            Swal.fire({
+                title: '¡Perfil Actualizado!',
+                text: 'Tus datos se han guardado correctamente.',
+                icon: 'success',
+                confirmButtonColor: '#0d8a5f'
+            });
+        } else if (updateStatus === 'error') {
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al guardar tus datos. Inténtalo de nuevo.',
+                icon: 'error',
+                confirmButtonColor: '#162e54'
+            });
+        }
+    }
+
+    //LIMPIEZA DE URL
+    //
     if (window.history.replaceState) {
         const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
         window.history.replaceState(null, null, cleanUrl);
     }
 
+    // ALERTAS DE CAMBIO DE CONTRASEÑA
     const alertasContainer = document.getElementById('alertasContainerPerfil');
     const serverErrorInput = document.getElementById('serverErrorPerfil');
     const serverSuccessInput = document.getElementById('serverSuccessPerfil');
@@ -42,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (labelActual) labelActual.classList.add('text-danger');
     }
 
+    // DE MOSTRAR/OCULTAR CONTRASEÑA
     const toggleButtons = document.querySelectorAll('.toggle-password');
     toggleButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -61,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // VALIDACIÓN DEL FORMULARIO DE CONTRASEÑA
     const form = document.getElementById('formCambiarContra');
     const contraNew = document.getElementById('contraNew');
     const confirmarContra = document.getElementById('confirmarContra');
