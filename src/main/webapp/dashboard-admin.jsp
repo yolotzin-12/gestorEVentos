@@ -32,7 +32,7 @@
                 <a href="crearPerfil.jsp" class="icono-usuario">
                     <i class="bi bi-person"></i>
                 </a>
-                <a href="logout" class="btn-logout-eventos">
+                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -103,8 +103,11 @@
     <div><i class="bi bi-envelope-fill"></i> CORREO@UTEZ.EDU.MX</div>
     <div><i class="bi bi-geo-alt-fill"></i> UBICACIÓN</div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/buscador.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>

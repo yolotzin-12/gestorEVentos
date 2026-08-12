@@ -73,8 +73,14 @@ public class ReservaServlet extends HttpServlet {
             return;
         }
 
-        // Historial de Reservas — cada usuario ve únicamente lo que le
-        // corresponde, filtrado por su propio idAsistente.
+        // --- Evita que el navegador muestre una versión en caché de esta página ---
+
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
+        // Historial de Reservas
+        int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
         String estado = request.getParameter("estado");
         String fecha = request.getParameter("fecha");
 
@@ -136,10 +142,6 @@ public class ReservaServlet extends HttpServlet {
         } else if ("cancelar".equals(action)) {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
 
-            // Se toma el detalle ANTES de cancelar, para armar el correo
-            // y, sobre todo, para comprobar que la reserva es del usuario
-            // que la está intentando cancelar (evita que alguien cancele
-            // reservas ajenas manipulando el idReserva del formulario).
             Reserva detalle = reservaDao.getDetalleById(idReserva);
             boolean esDelUsuario = detalle != null && detalle.getIdAsistente() == idAsistente;
 

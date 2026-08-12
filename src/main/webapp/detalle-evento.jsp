@@ -25,7 +25,6 @@
 
             <nav class="eventos-nav">
                 <a href="evento">Eventos</a>
-                <!-- Ocultar "Mis reservas" si es Organizador/Admin -->
                 <c:if test="${sessionScope.usuario.idRol != 1 && sessionScope.usuario.idRol != 2}">
                     <a href="reserva">Mis reservas</a>
                 </c:if>
@@ -35,7 +34,7 @@
                 <a href="crearPerfil.jsp" class="icono-usuario">
                     <i class="bi bi-person"></i>
                 </a>
-                <a href="logout" class="btn-logout-eventos">
+                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -117,7 +116,6 @@
                                         </div>
                                     </c:when>
 
-                                    <%-- SI ES UN USUARIO NORMAL / ALUMNO: Botón de Reservar --%>
                                     <c:otherwise>
                                         <a href="reservar.jsp?id=${evento.id}" class="text-decoration-none w-100">
                                             <button type="button" class="btn fs-5 w-100 d-flex align-items-center justify-content-center gap-2" style="background-color:#0d8a5f; color:#fff; font-weight:bold; border-radius:10px; padding:10px; border:none;">
@@ -159,7 +157,10 @@
     </div>
 
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>

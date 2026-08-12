@@ -30,12 +30,10 @@
                 </a>
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                    <!-- Solo organizador: su panel de HU-07 -->
                     <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
                 </c:if>
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
-                    <!-- Solo admin -->
                     <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
                 </c:if>
             </nav>
@@ -49,7 +47,7 @@
                 <a href="crearPerfil.jsp" class="icono-usuario">
                     <i class="bi bi-person"></i>
                 </a>
-                <a href="logout" class="btn-logout-eventos">
+                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -82,8 +80,9 @@
                         <div class="col-6 col-md-3"
                              data-nombre-evento="${fn:toLowerCase(evento.nombre)}"
                              data-ubicacion-evento="${fn:toLowerCase(evento.ubicacion)}">
-                            <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link">
-                                <div class="tarjeta-evento">
+
+                            <div class="tarjeta-evento d-flex flex-column h-100">
+                                <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;">
                                     <div class="encabezado-evento">
                                         <div class="d-flex justify-content-between align-items-start gap-2">
                                             <h3>${evento.nombre}</h3>
@@ -103,12 +102,13 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <div class="pie-evento">
+                                    <div class="pie-evento mt-auto">
                                         <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
                                         <div><i class="bi bi-geo-alt-fill"></i> <c:out value="${evento.ubicacion}" default="Sin ubicación"/></div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
+
                         </div>
                     </c:forEach>
                 </div>
@@ -124,6 +124,10 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/buscador.js"></script>
+<script src="js/categorias.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>

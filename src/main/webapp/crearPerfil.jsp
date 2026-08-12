@@ -18,7 +18,8 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
+            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
+            <img src="img/letras.png" alt="SRAE" style="height:120px;">
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
@@ -68,7 +69,7 @@
 
                             <input type="hidden" id="updateSuccess" value="${param.update}">
 
-                            <form action="${pageContext.request.contextPath}/usuarios?action=actualizarDatos" method="post" enctype="multipart/form-data">
+                            <form action="${pageContext.request.contextPath}/usuarios?action=actualizarDatos" method="post" enctype="multipart/form-data" id="formActualizarPerfil">
                                 <input type="hidden" name="action" value="actualizarDatos">
                                 <div class="text-center mb-3">
                                     <div class="position-relative d-inline-block">
@@ -106,13 +107,16 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="telefono" class="form-label fw-bold">Teléfono:</label>
-                                        <input type="tel" name="telefono" class="form-control" id="telefono" value="${usuario.telefono}" placeholder="777-0000-000">
+                                        <input type="tel" name="telefono" class="form-control" id="telefono" value="${usuario.telefono}" placeholder="10 dígitos (Ej: 7771234567)" maxlength="10" minlength="10" pattern="[0-9]{10}">
+                                        <div id="errorTelefono" class="text-danger mt-1" style="display: none; font-size: 0.85em;">
+                                            El teléfono debe tener exactamente 10 dígitos.
+                                        </div>
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label for="correo" class="form-label fw-bold">Correo Electrónico:</label>
                                         <div class="input-group">
-                                            <input type="email" name="correo" class="form-control" id="correo" value="${usuario.email}" required>
-                                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                            <input type="email" name="correo" class="form-control" style="background-color: #e9ecef; color: #6c757d; cursor: not-allowed;" id="correo" value="${usuario.email}" readonly title="El correo electrónico no puede ser modificado" required>
+                                            <span class="input-group-text" style="background-color: #e9ecef;"><i class="bi bi-lock-fill text-muted"></i></span>
                                         </div>
                                     </div>
                                 </div>
@@ -190,5 +194,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/perfil.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>

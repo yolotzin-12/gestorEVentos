@@ -183,21 +183,77 @@ public class UsuarioDao {
         }
     }
 
-    // Actualiza el rol de un usuario
-    public boolean asignarRol(int idUsuario, int idRol) {
-        String sql = "UPDATE USUARIO SET id_rol = ? WHERE id_usuario = ?";
-        try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idRol);
-            ps.setInt(2, idUsuario);
-            return ps.executeUpdate() > 0;
+    // Actualiza el rol validando previamente que el usuario no tenga reservas activas
+    public int asignarRol(int idUsuario, int idRolNuevo) {
+        int resultado = 0; // 0 = Error, 1 = Éxito, -1 = Tiene reservas
+        Connection con = null;
+        PreparedStatement psCheckReservas = null;
+        PreparedStatement psActualizarRol = null;
+        PreparedStatement psEliminarAsistente = null;
+
+        try {
+            con = OracleConnectApp.getConnection();
+            con.setAutoCommit(false);
+
+            if (idRolNuevo != 3) {
+                String sqlCheck = "SELECT COUNT(*) FROM RESERVA r INNER JOIN ASISTENTE a ON r.id_asistente = a.id_asistente WHERE a.id_usuario = ?";
+                psCheckReservas = con.prepareStatement(sqlCheck);
+                psCheckReservas.setInt(1, idUsuario);
+                try (ResultSet rsCheck = psCheckReservas.executeQuery()) {
+                    if (rsCheck.next() && rsCheck.getInt(1) > 0) {
+                        return -1; // Aborta la operación y avisa que tiene reservas
+                    }
+                }
+            }
+
+            String sqlRol = "UPDATE USUARIO SET id_rol = ? WHERE id_usuario = ?";
+            psActualizarRol = con.prepareStatement(sqlRol);
+            psActualizarRol.setInt(1, idRolNuevo);
+            psActualizarRol.setInt(2, idUsuario);
+            psActualizarRol.executeUpdate();
+
+            if (idRolNuevo == 2) {
+                String sqlCheckOrg = "SELECT COUNT(*) FROM ORGANIZADOR WHERE id_usuario = ?";
+                try (PreparedStatement psCheckOrg = con.prepareStatement(sqlCheckOrg)) {
+                    psCheckOrg.setInt(1, idUsuario);
+                    try (ResultSet rsCheckOrg = psCheckOrg.executeQuery()) {
+                        if (rsCheckOrg.next() && rsCheckOrg.getInt(1) == 0) {
+                            String sqlInsertOrg = "INSERT INTO ORGANIZADOR (id_usuario, organizacion) VALUES (?, 'Organización Pendiente')";
+                            try (PreparedStatement psInsertOrg = con.prepareStatement(sqlInsertOrg)) {
+                                psInsertOrg.setInt(1, idUsuario);
+                                psInsertOrg.executeUpdate();
+                            }
+                        }
+                    }
+                }
+
+                String sqlDelAsis = "DELETE FROM ASISTENTE WHERE id_usuario = ?";
+                psEliminarAsistente = con.prepareStatement(sqlDelAsis);
+                psEliminarAsistente.setInt(1, idUsuario);
+                psEliminarAsistente.executeUpdate();
+            }
+
+            con.commit();
+            resultado = 1; // Éxito
+
         } catch (SQLException e) {
+            if (con != null) {
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
             e.printStackTrace();
-            return false;
+        } finally {
+            try {
+                if (psCheckReservas != null) psCheckReservas.close();
+                if (psActualizarRol != null) psActualizarRol.close();
+                if (psEliminarAsistente != null) psEliminarAsistente.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return resultado;
     }
 
-    // Devuelve los datos de un usuario mediante su correo
     public Usuario getByEmail(String email) {
         if (email == null) return null;
 
@@ -245,6 +301,7 @@ public class UsuarioDao {
         }
     }
 
+    // Cambia la contraseña desde el perfil
     public boolean cambiarContrasenaPerfil(int idUsuario, String contraActual, String nuevaContrasena) {
         String sqlVerificar = "SELECT id_usuario FROM CONTRASENA WHERE id_usuario = ? AND hash_contrasena = ? AND activa = 1";
         // Un solo UPDATE para evitar el bloqueo en paralelo de Oracle

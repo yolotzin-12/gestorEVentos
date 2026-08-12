@@ -19,14 +19,13 @@ public class RecuperarContraServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final TokenRecuperacionDao tokenDao = new TokenRecuperacionDao();
 
-    // Muestra la vista del formulario si se entra directo desde la URL por GET
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("recuperarContra.jsp").forward(request, response);
     }
 
-    // Procesa el envío del correo cuando se manda el formulario por POST
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

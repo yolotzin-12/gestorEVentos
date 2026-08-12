@@ -42,7 +42,6 @@ public class RestablecerContraServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String token = request.getParameter("token");
-        // Nombres corregidos según los inputs de nuevaContra.jsp
         String nueva = request.getParameter("nuevaContra");
         String confirma = request.getParameter("confirmarContra");
 

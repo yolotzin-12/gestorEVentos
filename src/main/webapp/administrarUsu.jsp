@@ -18,7 +18,8 @@
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
+            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
+            <img src="img/letras.png" alt="SRAE" style="height:120px;">
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
@@ -43,7 +44,6 @@
                         <i class="bi bi-calendar-check me-3"></i> Reservas
                     </a>
 
-                    <!-- Apunta directo al Servlet /usuarios (Evita doble clic) -->
                     <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold active">
                         <i class="bi bi-people me-3"></i> Usuarios
                     </a>
@@ -80,7 +80,7 @@
                         <c:forEach var="u" items="${listaUsuarios}">
                             <tr class="fila-usuario">
                                 <td>
-                                    <img src="img/avatar.png" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                                    <img src="${not empty u.fotoUrl ? u.fotoUrl : 'img/avatar.png'}" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
                                 </td>
                                 <td>
                                     <div class="fw-semibold text-dark item-nombre">
@@ -91,7 +91,6 @@
                                     <div class="text-dark item-correo">${u.email}</div>
                                 </td>
                                 <td>
-                                    <!-- Selección de Rol -->
                                     <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0">
                                         <input type="hidden" name="action" value="asignarRol">
                                         <input type="hidden" name="idUsuario" value="${u.id}">
@@ -103,7 +102,6 @@
                                     </form>
                                 </td>
                                 <td class="text-center">
-                                    <!-- Switch de Estado (Activar/Deshabilitar con un solo clic) -->
                                     <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0 d-inline-block">
                                         <input type="hidden" name="action" value="cambiarEstado">
                                         <input type="hidden" name="idUsuario" value="${u.id}">
@@ -130,25 +128,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="js/Adminusu.js"></script>
+<script src="js/cierresesion.js"></script>
 
-<!-- Script para el buscador -->
-<script>
-    document.getElementById('inputBusqueda').addEventListener('keyup', function() {
-        let filtro = this.value.toLowerCase();
-        let filas = document.querySelectorAll('#tablaUsuarios tbody tr.fila-usuario');
 
-        filas.forEach(fila => {
-            let nombre = fila.querySelector('.item-nombre').textContent.toLowerCase();
-            let correo = fila.querySelector('.item-correo').textContent.toLowerCase();
-
-            if (nombre.includes(filtro) || correo.includes(filtro)) {
-                fila.style.display = '';
-            } else {
-                fila.style.display = 'none';
-            }
-        });
-    });
-</script>
 
 </body>
 </html>

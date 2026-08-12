@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -17,10 +18,10 @@
 <body class="bg-light">
 
 <div class="container my-4">
-    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
+            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
+            <img src="img/letras.png" alt="SRAE" style="height:120px;">
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
@@ -45,7 +46,6 @@
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
 
-                    <!-- SECCIÓN CATEGORÍA CON BOTONES NUEVA / ELIMINAR -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idCategoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
@@ -71,7 +71,6 @@
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
-                    <!-- SECCIÓN ESPACIO CON BOTONES NUEVO / ELIMINAR -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center m-1">
                             <label for="idEspacio" class="form-label fw-bold text-dark mb-0">Espacio / Ubicación</label>
@@ -103,9 +102,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha del evento</label>
-                        <input type="date" name="fecha" class="form-control p-2 rounded-3" id="fecha" required>
+                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha y hora del evento</label>
+                        <input type="datetime-local" name="fecha" class="form-control p-2 rounded-3" id="fecha"
+                               value="${not empty evento ? fn:substring(fn:replace(evento.fechaHora, ' ', 'T'), 0, 16) : ''}" required>
                     </div>
+
 
                     <div class="mb-3">
                         <label for="capacidad" class="form-label fw-bold text-dark m-1">Capacidad máxima</label>
@@ -158,7 +159,6 @@
     </div>
 </div>
 
-<!-- ================= MODALES DE CATEGORÍAS ================= -->
 <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -204,7 +204,6 @@
     </div>
 </div>
 
-<!-- ================= MODALES DE ESPACIOS ================= -->
 <div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -257,6 +256,9 @@
 </div>
 
 <script src="${pageContext.request.contextPath}/js/categorias.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>

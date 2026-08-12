@@ -18,17 +18,18 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
+
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <version>3.0.0</version>
         </dependency>
+
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
@@ -40,6 +41,7 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>3.0.1</version>
         </dependency>
+
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -53,26 +55,34 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc11</artifactId>
-            <version>23.4.0.24.05</version> <!-- Use the latest available version -->
+            <version>23.4.0.24.05</version>
         </dependency>
+
         <dependency>
             <groupId>com.oracle.database.security</groupId>
             <artifactId>oraclepki</artifactId>
             <version>23.4.0.24.05</version>
         </dependency>
-        <dependency> <groupId>com.oracle.database.security</groupId>
+
+        <dependency>
+            <groupId>com.oracle.database.security</groupId>
             <artifactId>osdt_core</artifactId>
-            <version>21.13.0.0</version> </dependency>
-        <dependency> <groupId>com.oracle.database.security</groupId>
+            <version>21.13.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.database.security</groupId>
             <artifactId>osdt_cert</artifactId>
             <version>21.13.0.0</version>
         </dependency>

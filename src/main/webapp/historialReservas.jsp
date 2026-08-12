@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!doctype html>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %><!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +11,6 @@
 <%--suppress XmlUnresolvedReference --%>
     <meta http-equiv="Expires" content="0">
     <title>Mis Reservas - SRAE</title>
-
     <link rel="stylesheet" href="css/fooyini.css">
     <link rel="stylesheet" href="css/pagprin.css">
     <link rel="stylesheet" href="css/misReservas.css?v=3">
@@ -24,7 +22,9 @@
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
+            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
+            <img src="img/letras.png" alt="SRAE" style="height:120px;">
+
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
@@ -170,6 +170,7 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Modal de confirmación para cancelar una reserva -->
 <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
@@ -229,5 +230,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>
