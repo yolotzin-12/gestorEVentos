@@ -36,7 +36,13 @@ public class ReservaServlet extends HttpServlet {
             return;
         }
 
+        // Anti-caché aplicado a TODA respuesta de este servlet
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         String action = request.getParameter("action");
+        int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
 
         if ("detalle".equals(action)) {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
@@ -45,7 +51,10 @@ public class ReservaServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 
-            if (r != null) {
+            // Se valida que la reserva pertenezca al usuario logueado antes
+            // de devolver cualquier dato. Sin esto, cualquiera podía cambiar
+            // idReserva en la URL y ver reservas de otras personas.
+            if (r != null && r.getIdAsistente() == idAsistente) {
                 String json = String.format(
                         "{\"codigo\":\"%s\", \"evento\":\"%s\", \"descripcion\":\"%s\", \"fechaEvento\":\"%s\", \"lugar\":\"%s\", \"ubicacion\":\"%s\", \"estado\":\"%s\", \"fechaReserva\":\"%s\"}",
                         r.getCodigoReserva(),
@@ -109,58 +118,21 @@ public class ReservaServlet extends HttpServlet {
             boolean ok = reservaDao.create(r);
 
             if (ok) {
+                // Enviar correo de confirmación (HU-14)
                 try {
                     String html = """
-                        <div style="background-color: #f5f5f5; padding: 40px 20px; font-family: Arial, sans-serif; text-align: center;">
-                            <div style="background-color: #ffffff; max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                                
-                                <!-- NOTA: Para que el logo se vea en Gmail, la URL debe ser pública -->
-                                <img src="https://i.imgur.com/K3C4Xn9.png" alt="SRAE Logo" style="height: 80px; margin-bottom: 10px;">
-                                
-                                <h1 style="color: #003b71; font-size: 26px; margin-bottom: 15px; font-weight: 800;">¡Reserva confirmada!</h1>
-                                
-                                <p style="color: #000000; font-size: 15px; margin-bottom: 30px; line-height: 1.6; font-weight: bold;">
-                                    ¡Gracias! Tu lugar para el evento ha sido<br>reservado con éxito. Por favor, presenta<br>este correo al momento del ingreso.
-                                </p>
-                    
-                                <div style="background-color: #e8ecef; border-radius: 15px; padding: 25px; margin-bottom: 35px; text-align: left;">
-                                    <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 18px; color: #003b71; text-align: center;">¡Detalles de la reserva!</h3>
-                                    
-                                    <p style="margin: 5px 0; font-size: 15px; color: #000000;">
-                                        <strong>Evento:</strong> {0}
-                                    </p>
-                                    <p style="margin: 5px 0; font-size: 15px; color: #000000;">
-                                        <strong>Fecha:</strong> {1}
-                                    </p>
-                                    <p style="margin: 5px 0; font-size: 15px; color: #000000;">
-                                        <strong>Hora:</strong> {2}
-                                    </p>
-                                    <p style="margin: 5px 0; font-size: 15px; color: #000000;">
-                                        <strong>Ubicación:</strong> {3}
-                                    </p>
-                                    <p style="margin: 5px 0; font-size: 15px; color: #000000;">
-                                        <strong>Código:</strong> {4}
-                                    </p>
-                                </div>
-                    
-                                <!-- El enlace apunta al Servlet de reservas de tu proyecto local -->
-                                <a href="http://localhost:8080/Events_war_exploded/reserva" style="display: inline-block; background-color: #0d8a5f; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 14px;">
-                                    &#128197; VER EN MIS RESERVACIONES
-                                </a>
-                                
-                            </div>
-                        </div>
+                        <html><body style="font-family:Arial,sans-serif">
+                          <h2 style="color:#003b71">¡Reserva confirmada!</h2>
+                          <p><strong>Evento:</strong> {0}</p>
+                          <p><strong>Fecha:</strong> {1}</p>
+                          <p><strong>Código de reserva:</strong> {2}</p>
+                        </body></html>
                         """;
-
-                    String nombreEvento = (evento != null) ? evento.getNombre() : "—";
-                    String fechaEvento = (evento != null) ? evento.getFechaHora() : "—";
-                    String horaEvento = "Por definir";
-                    String ubicacion = "Auditorio Principal";
-                    String codigo = r.getCodigoReserva();
-
                     EmailSender.sendMail(u.getEmail(), "Confirmación de reserva - SRAE",
-                            MessageFormat.format(html, nombreEvento, fechaEvento, horaEvento, ubicacion, codigo));
-
+                            MessageFormat.format(html,
+                                    evento != null ? evento.getNombre() : "—",
+                                    evento != null ? evento.getFechaHora() : "—",
+                                    r.getCodigoReserva()));
                 } catch (Exception ex) {
                     System.err.println("Correo de reserva no enviado: " + ex.getMessage());
                 }
@@ -171,9 +143,11 @@ public class ReservaServlet extends HttpServlet {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
 
             Reserva detalle = reservaDao.getDetalleById(idReserva);
-            boolean ok = reservaDao.cancelar(idReserva);
+            boolean esDelUsuario = detalle != null && detalle.getIdAsistente() == idAsistente;
 
-            if (ok && detalle != null) {
+            boolean ok = esDelUsuario && reservaDao.cancelar(idReserva);
+
+            if (ok) {
                 try {
                     String html = """
                         <html><body style="font-family:Arial,sans-serif">
@@ -194,18 +168,30 @@ public class ReservaServlet extends HttpServlet {
                 }
             }
 
-            String estadoFiltro = request.getParameter("filtroEstado");
-            String fechaFiltro = request.getParameter("filtroFecha");
-            StringBuilder redirect = new StringBuilder(request.getContextPath()).append("/reserva");
-            String sep = "?";
-            if (estadoFiltro != null && !estadoFiltro.isBlank()) {
-                redirect.append(sep).append("estado=").append(URLEncoder.encode(estadoFiltro, StandardCharsets.UTF_8));
-                sep = "&";
-            }
-            if (fechaFiltro != null && !fechaFiltro.isBlank()) {
-                redirect.append(sep).append("fecha=").append(URLEncoder.encode(fechaFiltro, StandardCharsets.UTF_8));
-            }
-            response.sendRedirect(redirect.toString());
+            redirigirConFiltros(request, response);
+
+        } else if ("limpiarHistorial".equals(action)) {
+            // Elimina del historial las reservas Canceladas y las Finalizadas
+            // (Utilizado, o Reservado con evento ya pasado). Las reservas
+            // activas (próximas) nunca se tocan.
+            reservaDao.limpiarHistorial(idAsistente);
+            redirigirConFiltros(request, response);
         }
+    }
+
+    private void redirigirConFiltros(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Se conservan los filtros que el usuario tenía aplicados en el historial
+        String estadoFiltro = request.getParameter("filtroEstado");
+        String fechaFiltro = request.getParameter("filtroFecha");
+        StringBuilder redirect = new StringBuilder(request.getContextPath()).append("/reserva");
+        String sep = "?";
+        if (estadoFiltro != null && !estadoFiltro.isBlank()) {
+            redirect.append(sep).append("estado=").append(URLEncoder.encode(estadoFiltro, StandardCharsets.UTF_8));
+            sep = "&";
+        }
+        if (fechaFiltro != null && !fechaFiltro.isBlank()) {
+            redirect.append(sep).append("fecha=").append(URLEncoder.encode(fechaFiltro, StandardCharsets.UTF_8));
+        }
+        response.sendRedirect(redirect.toString());
     }
 }
