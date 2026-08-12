@@ -95,3 +95,21 @@
     background-color: #b02a37 !important;
     color: white !important;
 }
+
+/* Botón de limpiar historial */
+.btn-limpiar-historial {
+    background-color: #ffffff !important;
+    color: #dc3545 !important;
+    font-weight: bold !important;
+    font-size: 0.85rem !important;
+    border-radius: 12px !important;
+    padding: 8px 18px !important;
+    border: 1px solid #dc3545 !important;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-limpiar-historial:hover {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}

@@ -102,9 +102,6 @@ public class ReservaDao implements Dao<Reserva, Integer> {
                         "WHERE r.id_asistente = ? "
         );
 
-        // "Finalizado" no es un estado real en la tabla RESERVA: es una reserva
-        // que sigue "Reservado" pero cuyo evento ya pasó. "Reservado" en el
-        // filtro significa lo opuesto: reservas activas de eventos que aún no ocurren.
         boolean esFinalizado = estado != null && estado.trim().equalsIgnoreCase("Finalizado");
         boolean esReservado = estado != null && estado.trim().equalsIgnoreCase("Reservado");
         boolean esOtroEstado = estado != null && !estado.trim().isEmpty() && !esFinalizado && !esReservado;
@@ -177,6 +174,32 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         return null;
     }
 
+    /**
+     * Elimina permanentemente del historial de un asistente las reservas que
+     * ya no son "accionables": las Canceladas, las Utilizadas, y las que
+     * siguen en estado Reservado pero cuyo evento ya pasó (Finalizado).
+     * Las reservas activas (Reservado, con evento aún futuro) nunca se tocan.
+     */
+    public boolean limpiarHistorial(int idAsistente) {
+        String sql = "DELETE FROM RESERVA r WHERE r.id_asistente = ? " +
+                "AND ( LOWER(r.estado) = 'cancelado' " +
+                "      OR LOWER(r.estado) = 'utilizado' " +
+                "      OR ( LOWER(r.estado) = 'reservado' AND EXISTS ( " +
+                "               SELECT 1 FROM EVENTO e " +
+                "               WHERE e.id_evento = r.id_evento AND e.fecha_hora < SYSTIMESTAMP " +
+                "           ) ) )";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idAsistente);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     @Override
     public List<Reserva> getAll() {
         return new ArrayList<>();
@@ -223,11 +246,6 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         r.setIdAsistente(rs.getInt("id_asistente"));
         r.setCodigoReserva(rs.getString("codigo_reserva"));
         r.setEstado(rs.getString("estado"));
-        // "fecha_hora_reserva" solo existe en el SELECT de getById(); en las
-        // consultas de historial esa columna viene formateada con TO_CHAR
-        // bajo el alias "fecha_reserva_fmt" (ver mapearCompleto). Por eso
-        // se intenta leerla y, si no está presente, simplemente se ignora
-        // aquí para que mapearCompleto la complete después.
         try {
             r.setFechaHoraReserva(rs.getString("fecha_hora_reserva"));
         } catch (SQLException ex) {
