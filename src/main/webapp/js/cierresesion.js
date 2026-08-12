@@ -28,3 +28,13 @@ document.onmousemove = reiniciarTemporizador;
 document.onkeypress = reiniciarTemporizador;
 document.onclick = reiniciarTemporizador;
 document.onscroll = reiniciarTemporizador;
+
+window.addEventListener('pageshow', function (event) {
+    var historyTraversal = event.persisted ||
+        (typeof window.performance != 'undefined' &&
+            window.performance.getEntriesByType("navigation")[0].type === 'back_forward');
+
+    if (historyTraversal) {
+        window.location.reload();
+    }
+});
