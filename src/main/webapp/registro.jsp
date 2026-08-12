@@ -21,14 +21,7 @@
                 <img src="img/LOGOOO.png" alt="Logo SRAE" style="max-height: 150px;">
             </div>
 
-            <c:if test="${not empty error}">
-                <div class="alert alert-danger d-flex align-items-center py-2 text-start" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <div class="small">
-                            ${error}
-                    </div>
-                </div>
-            </c:if>
+            <input type="hidden" id="serverErrorRegistro" value="${error}">
 
             <c:if test="${not empty mensaje}">
                 <div class="alert alert-info d-flex align-items-center py-2 text-start" role="alert">
@@ -94,6 +87,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/utilidades.js"></script>
+<script src="js/alertaregistro.js"></script>
+
 </body>
 </html>

@@ -10,9 +10,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const serverSuccessInput = document.getElementById('serverSuccessPerfil');
 
     if (serverSuccessInput && serverSuccessInput.value === 'true') {
-        // Mostramos el mensaje, al darle "Aceptar" redirige a logout
-        alert("Contraseña actualizada correctamente. Tendrá que iniciar sesión nuevamente.");
-        window.location.href = 'logout';
+        Swal.fire({
+            title: '¡Actualización Exitosa!',
+            text: 'Tu contraseña ha sido actualizada. Por seguridad, tendrás que iniciar sesión nuevamente.',
+            icon: 'success',
+            confirmButtonColor: '#0d8a5f',
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'logout';
+            }
+        });
     }
 
     const errorMsg = serverErrorInput ? serverErrorInput.value.trim() : "";
