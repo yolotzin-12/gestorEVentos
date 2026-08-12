@@ -16,7 +16,7 @@
 
 <div class="container my-4">
 
-    <!-- ENCABEZADO UNIFICADO (Idéntico a Administrar Usuarios) -->
+    <!-- Muestra el encabezado superior y el botón para cerrar sesión -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
@@ -32,11 +32,10 @@
         </div>
     </div>
 
-    <!-- TARJETA CONTENEDORA PRINCIPAL -->
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
-            <!-- MENÚ LATERAL (Misma estructura) -->
+            <!-- Muestra el menú de navegación lateral -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
@@ -61,12 +60,11 @@
                 </div>
             </div>
 
-            <!-- CONTENIDO DE MI PERFIL -->
             <div class="col-md-9">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">MI PERFIL</h4>
 
                 <div class="row g-4">
-                    <!-- DATOS PERSONALES -->
+                    <!-- Formulario para enviar los datos personales actualizados al Servlet -->
                     <div class="col-md-7">
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-3" style="color: #162e54;">Datos Personales</h5>
@@ -78,7 +76,8 @@
                                 </div>
                             </div>
 
-                            <form action="paginaPrincipal.jsp" method="post">
+                            <form action="${pageContext.request.contextPath}/usuarios" method="post">
+                                <input type="hidden" name="action" value="actualizarDatos">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="nombre" class="form-label fw-bold">Nombre:</label>
@@ -111,13 +110,14 @@
                         </div>
                     </div>
 
-                    <!-- SEGURIDAD -->
+                    <!-- Formulario para enviar la petición de cambio de contraseña al Servlet -->
                     <div class="col-md-5">
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-1" style="color: #162e54;">Seguridad</h5>
                             <small class="text-muted d-block mb-3">Cambiar contraseña</small>
 
-                            <form action="login.jsp" method="post">
+                            <form action="${pageContext.request.contextPath}/usuarios" method="post">
+                                <input type="hidden" name="action" value="cambiarPassword">
                                 <div class="mb-3">
                                     <label for="contraActual" class="form-label fw-bold">Contraseña actual:</label>
                                     <input type="password" name="contraActual" class="form-control" id="contraActual" placeholder="Contraseña actual" required>

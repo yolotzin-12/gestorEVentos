@@ -10,6 +10,7 @@ public class Usuario {
     private String password;
     private String telefono;
     private boolean activo;
+    private String fotoUrl;
 
     public Usuario() {}
 
@@ -39,4 +40,7 @@ public class Usuario {
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public String getFotoUrl() { return fotoUrl; }
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 }

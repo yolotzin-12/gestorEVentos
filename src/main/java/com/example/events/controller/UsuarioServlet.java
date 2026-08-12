@@ -5,6 +5,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import com.example.events.model.Usuario;
 import com.example.events.model.dao.UsuarioDao;
 
 import java.io.IOException;
@@ -27,6 +29,38 @@ public class UsuarioServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
+        // petición  para actualizar la contraseña desde el perfil
+        if ("cambiarPassword".equals(action)) {
+            HttpSession session = request.getSession();
+            Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+
+            if (usuarioSesion == null) {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return;
+            }
+
+            String contraActual = request.getParameter("contraActual");
+            String contraNew = request.getParameter("contraNew");
+            String confirmarContra = request.getParameter("confirmarContra");
+
+            if (contraNew == null || !contraNew.equals(confirmarContra)) {
+                response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?error=pass_mismatch");
+                return;
+            }
+
+            boolean exito = dao.cambiarContrasenaPerfil(usuarioSesion.getId(), contraActual, contraNew);
+
+            if (exito) {
+                session.invalidate();
+
+                response.sendRedirect(request.getContextPath() + "/login.jsp?msg=pass_updated");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?error=pass_invalid");
+            }
+            return;
+        }
+
+        // ── Lógica administrativa existente (requiere idUsuario en el request) ──
         if (action != null && request.getParameter("idUsuario") != null) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 

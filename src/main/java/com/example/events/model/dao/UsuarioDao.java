@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UsuarioDao {
 
-    // ── Función para encriptar contraseñas ───────────────────────────────────
+    // Encripta una cadena de texto usando el algoritmo SHA-256
     public static String hashSHA256(String texto) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -23,7 +23,7 @@ public class UsuarioDao {
         }
     }
 
-    // ── Crear usuario (INSERT en USUARIO + CONTRASENA + ASISTENTE) ───────────
+    // Registra un nuevo usuario junto con su contraseña y datos de asistente
     public boolean create(Usuario usuario) {
         if (usuario == null || usuario.getEmail() == null) return false;
 
@@ -39,7 +39,6 @@ public class UsuarioDao {
             con = OracleConnectApp.getConnection();
             con.setAutoCommit(false);
 
-            // 1. Insertar en USUARIO
             try (PreparedStatement ps = con.prepareStatement(sqlUsuario, new String[]{"ID_USUARIO"})) {
                 ps.setString(1, usuario.getNombre());
                 ps.setString(2, usuario.getApellidoPaterno());
@@ -53,14 +52,12 @@ public class UsuarioDao {
                 }
             }
 
-            // 2. Insertar contraseña hasheada en CONTRASENA
             try (PreparedStatement ps = con.prepareStatement(sqlContra)) {
                 ps.setInt(1, usuario.getId());
                 ps.setString(2, hashSHA256(usuario.getPassword()));
                 ps.executeUpdate();
             }
 
-            // 3. Insertar en ASISTENTE (tabla hija)
             try (PreparedStatement ps = con.prepareStatement(sqlAsis)) {
                 ps.setInt(1, usuario.getId());
                 ps.setString(2, usuario.getTelefono() != null ? usuario.getTelefono() : "");
@@ -84,7 +81,7 @@ public class UsuarioDao {
         }
     }
 
-    // ── Login ────────────────────────────────────────────────────────────────
+    // Valida las credenciales de un usuario para permitirle el acceso
     public Usuario login(String email, String password) {
         if (email == null || password == null) return null;
 
@@ -120,7 +117,7 @@ public class UsuarioDao {
         return null;
     }
 
-    // ── Obtener todos los usuarios (Con logs de depuración para la consola) ──
+    // Obtiene una lista con todos los usuarios registrados en el sistema
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, ACTIVO FROM USUARIO ORDER BY ID_USUARIO ASC";
@@ -152,17 +149,17 @@ public class UsuarioDao {
                     u.setActivo(rs.getInt("ACTIVO") == 1);
                     lista.add(u);
                 }
-                System.out.println("✅ TOTAL DE USUARIOS EXTRAÍDOS DE LA BD: " + contador);
+                System.out.println(" TOTAL DE USUARIOS EXTRAÍDOS DE LA BD: " + contador);
             }
         } catch (SQLException e) {
-            System.err.println("❌ ERROR AL EJECUTAR LA CONSULTA SQL EN getAll():");
+            System.err.println(" ERROR AL EJECUTAR LA CONSULTA SQL EN getAll():");
             System.err.println("Detalle del error: " + e.getMessage());
             e.printStackTrace();
         }
         return lista;
     }
 
-    // ── Deshabilitar usuario ─────────────────────────────────────────────────
+    // Marca a un usuario como inactivo utilizando su ID
     public boolean deshabilitar(int idUsuario) {
         String sql = "UPDATE USUARIO SET activo = 0 WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -175,7 +172,7 @@ public class UsuarioDao {
         }
     }
 
-    // ── Cambiar estado (Habilitar / Deshabilitar dinámicamente) ─────────────
+    // Modifica el estado activo o inactivo de un usuario específico
     public boolean cambiarEstado(int idUsuario, boolean estado) {
         String sql = "UPDATE USUARIO SET activo = ? WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -189,7 +186,7 @@ public class UsuarioDao {
         }
     }
 
-    // ── Asignar rol ──────────────────────────────────────────────────────────
+    // Actualiza el rol asignado a un usuario
     public boolean asignarRol(int idUsuario, int idRol) {
         String sql = "UPDATE USUARIO SET id_rol = ? WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -203,7 +200,7 @@ public class UsuarioDao {
         }
     }
 
-    // ── Buscar por correo (para recuperación) ────────────────────────────────
+    // Busca y devuelve los datos de un usuario mediante su correo electrónico
     public Usuario getByEmail(String email) {
         if (email == null) return null;
 
@@ -232,7 +229,7 @@ public class UsuarioDao {
         return null;
     }
 
-    // ── Actualizar contraseña (después de recuperación) ──────────────────────
+    // Reemplaza la contraseña de un usuario por una nueva
     public boolean actualizarContrasena(int idUsuario, String nuevaContrasena) {
         String sqlDesact = "UPDATE CONTRASENA SET activa = 0 WHERE id_usuario = ?";
         String sqlNueva = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
@@ -242,16 +239,64 @@ public class UsuarioDao {
             con = OracleConnectApp.getConnection();
             con.setAutoCommit(false);
 
-            // 1. Desactivar contraseña previa
             try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
                 ps1.setInt(1, idUsuario);
                 ps1.executeUpdate();
             }
 
-            // Commit intermedio para prevenir ORA-12838 en Oracle
             con.commit();
 
-            // 2. Insertar nueva contraseña activa
+            try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
+                ps2.setInt(1, idUsuario);
+                ps2.setString(2, hashSHA256(nuevaContrasena));
+                ps2.executeUpdate();
+            }
+
+            con.commit();
+            return true;
+
+        } catch (SQLException e) {
+            if (con != null) {
+                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (con != null) {
+                try { con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+        }
+    }
+
+    // Permite al usuario cambiar su contraseña validando primero la contraseña actual
+
+    public boolean cambiarContrasenaPerfil(int idUsuario, String contraActual, String nuevaContrasena) {
+        String sqlVerificar = "SELECT hash_contrasena FROM CONTRASENA WHERE id_usuario = ? AND activa = 1";
+        String sqlDesact = "UPDATE CONTRASENA SET activa = 0 WHERE id_usuario = ?";
+        String sqlNueva = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
+
+        Connection con = null;
+        try {
+            con = OracleConnectApp.getConnection();
+
+            try (PreparedStatement ps = con.prepareStatement(sqlVerificar)) {
+                ps.setInt(1, idUsuario);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next() || !rs.getString("hash_contrasena").equals(hashSHA256(contraActual))) {
+                        return false;
+                    }
+                }
+            }
+
+            con.setAutoCommit(false);
+
+            try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
+                ps1.setInt(1, idUsuario);
+                ps1.executeUpdate();
+            }
+
+            con.commit();
+
             try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
                 ps2.setInt(1, idUsuario);
                 ps2.setString(2, hashSHA256(nuevaContrasena));
