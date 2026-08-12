@@ -10,7 +10,7 @@ import java.util.List;
 
 public class UsuarioDao {
 
-    // Encripta una cadena de texto usando el algoritmo SHA-256
+    // Encripta SHA-256
     public static String hashSHA256(String texto) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -23,7 +23,7 @@ public class UsuarioDao {
         }
     }
 
-    // Registra un nuevo usuario junto con su contraseña y datos de asistente
+    // Registra usuario
     public boolean create(Usuario usuario) {
         if (usuario == null || usuario.getEmail() == null) return false;
 
@@ -71,7 +71,7 @@ public class UsuarioDao {
             if (con != null) {
                 try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
-            System.err.println("❌ Error al registrar usuario: " + e.getMessage());
+            System.err.println(" Error al registrar usuario: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
@@ -81,7 +81,7 @@ public class UsuarioDao {
         }
     }
 
-    // Valida las credenciales de un usuario para permitirle el acceso
+    // Valida credenciales para acceso al sistema
     public Usuario login(String email, String password) {
         if (email == null || password == null) return null;
 
@@ -111,34 +111,24 @@ public class UsuarioDao {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error en login: " + e.getMessage());
+            System.err.println(" Error en login: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
-    // Obtiene una lista con todos los usuarios registrados en el sistema
+    // Obtiene todos los usuarios registrados
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, ACTIVO FROM USUARIO ORDER BY ID_USUARIO ASC";
 
-        System.out.println("=== 🔍 INTENTANDO OBTENER USUARIOS DE LA BD ===");
-
         try (Connection con = OracleConnectApp.getConnection()) {
-
-            if (con == null) {
-                System.err.println("❌ ERROR: OracleConnectApp.getConnection() devolvió NULL.");
-                return lista;
-            }
-
-            System.out.println("✅ Conexión establecida con Oracle. Ejecutando SQL...");
+            if (con == null) return lista;
 
             try (PreparedStatement ps = con.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {
 
-                int contador = 0;
                 while (rs.next()) {
-                    contador++;
                     Usuario u = new Usuario();
                     u.setId(rs.getInt("ID_USUARIO"));
                     u.setIdRol(rs.getInt("ID_ROL"));
@@ -149,17 +139,14 @@ public class UsuarioDao {
                     u.setActivo(rs.getInt("ACTIVO") == 1);
                     lista.add(u);
                 }
-                System.out.println(" TOTAL DE USUARIOS EXTRAÍDOS DE LA BD: " + contador);
             }
         } catch (SQLException e) {
-            System.err.println(" ERROR AL EJECUTAR LA CONSULTA SQL EN getAll():");
-            System.err.println("Detalle del error: " + e.getMessage());
             e.printStackTrace();
         }
         return lista;
     }
 
-    // Marca a un usuario como inactivo utilizando su ID
+    // Marca un usuario como inactivo
     public boolean deshabilitar(int idUsuario) {
         String sql = "UPDATE USUARIO SET activo = 0 WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -172,7 +159,7 @@ public class UsuarioDao {
         }
     }
 
-    // Modifica el estado activo o inactivo de un usuario específico
+    // Modifica el estado activo/inactivo de un usuario
     public boolean cambiarEstado(int idUsuario, boolean estado) {
         String sql = "UPDATE USUARIO SET activo = ? WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -186,7 +173,7 @@ public class UsuarioDao {
         }
     }
 
-    // Actualiza el rol asignado a un usuario
+    // Actualiza el rol de un usuario
     public boolean asignarRol(int idUsuario, int idRol) {
         String sql = "UPDATE USUARIO SET id_rol = ? WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -200,7 +187,7 @@ public class UsuarioDao {
         }
     }
 
-    // Busca y devuelve los datos de un usuario mediante su correo electrónico
+    // Devuelve los datos de un usuario mediante su correo
     public Usuario getByEmail(String email) {
         if (email == null) return null;
 
@@ -229,93 +216,52 @@ public class UsuarioDao {
         return null;
     }
 
-    // Reemplaza la contraseña de un usuario por una nueva
+    // Fuerza una actualización de contraseña
     public boolean actualizarContrasena(int idUsuario, String nuevaContrasena) {
-        String sqlDesact = "UPDATE CONTRASENA SET activa = 0 WHERE id_usuario = ?";
-        String sqlNueva = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
+        String sqlActualizar = "UPDATE CONTRASENA SET hash_contrasena = ? WHERE id_usuario = ? AND activa = 1";
 
-        Connection con = null;
-        try {
-            con = OracleConnectApp.getConnection();
-            con.setAutoCommit(false);
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sqlActualizar)) {
 
-            try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
-                ps1.setInt(1, idUsuario);
-                ps1.executeUpdate();
-            }
+            ps.setString(1, hashSHA256(nuevaContrasena));
+            ps.setInt(2, idUsuario);
 
-            con.commit();
-
-            try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
-                ps2.setInt(1, idUsuario);
-                ps2.setString(2, hashSHA256(nuevaContrasena));
-                ps2.executeUpdate();
-            }
-
-            con.commit();
-            return true;
+            return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
-            }
+            System.err.println(" Error al actualizar contraseña: " + e.getMessage());
             e.printStackTrace();
             return false;
-        } finally {
-            if (con != null) {
-                try { con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
-            }
         }
     }
 
-    // Permite al usuario cambiar su contraseña validando primero la contraseña actual
-
     public boolean cambiarContrasenaPerfil(int idUsuario, String contraActual, String nuevaContrasena) {
-        String sqlVerificar = "SELECT hash_contrasena FROM CONTRASENA WHERE id_usuario = ? AND activa = 1";
-        String sqlDesact = "UPDATE CONTRASENA SET activa = 0 WHERE id_usuario = ?";
-        String sqlNueva = "INSERT INTO CONTRASENA(id_usuario, hash_contrasena, activa) VALUES(?, ?, 1)";
+        String sqlVerificar = "SELECT id_usuario FROM CONTRASENA WHERE id_usuario = ? AND hash_contrasena = ? AND activa = 1";
+        // Un solo UPDATE para evitar el bloqueo en paralelo de Oracle
+        String sqlActualizar = "UPDATE CONTRASENA SET hash_contrasena = ? WHERE id_usuario = ? AND activa = 1";
 
-        Connection con = null;
-        try {
-            con = OracleConnectApp.getConnection();
+        try (Connection con = OracleConnectApp.getConnection()) {
 
             try (PreparedStatement ps = con.prepareStatement(sqlVerificar)) {
                 ps.setInt(1, idUsuario);
+                ps.setString(2, hashSHA256(contraActual));
                 try (ResultSet rs = ps.executeQuery()) {
-                    if (!rs.next() || !rs.getString("hash_contrasena").equals(hashSHA256(contraActual))) {
+                    if (!rs.next()) {
                         return false;
                     }
                 }
             }
 
-            con.setAutoCommit(false);
-
-            try (PreparedStatement ps1 = con.prepareStatement(sqlDesact)) {
-                ps1.setInt(1, idUsuario);
-                ps1.executeUpdate();
+            try (PreparedStatement ps = con.prepareStatement(sqlActualizar)) {
+                ps.setString(1, hashSHA256(nuevaContrasena));
+                ps.setInt(2, idUsuario);
+                return ps.executeUpdate() > 0;
             }
-
-            con.commit();
-
-            try (PreparedStatement ps2 = con.prepareStatement(sqlNueva)) {
-                ps2.setInt(1, idUsuario);
-                ps2.setString(2, hashSHA256(nuevaContrasena));
-                ps2.executeUpdate();
-            }
-
-            con.commit();
-            return true;
 
         } catch (SQLException e) {
-            if (con != null) {
-                try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
-            }
+            System.err.println(" Error en cambiarContrasenaPerfil: " + e.getMessage());
             e.printStackTrace();
             return false;
-        } finally {
-            if (con != null) {
-                try { con.close(); } catch (SQLException ex) { ex.printStackTrace(); }
-            }
         }
     }
 }

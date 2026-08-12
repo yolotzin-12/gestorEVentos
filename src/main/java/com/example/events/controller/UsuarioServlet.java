@@ -29,7 +29,7 @@ public class UsuarioServlet extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        // petición  para actualizar la contraseña desde el perfil
+        // Petición para actualizar la contraseña desde el perfil
         if ("cambiarPassword".equals(action)) {
             HttpSession session = request.getSession();
             Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
@@ -51,22 +51,20 @@ public class UsuarioServlet extends HttpServlet {
             boolean exito = dao.cambiarContrasenaPerfil(usuarioSesion.getId(), contraActual, contraNew);
 
             if (exito) {
-                session.invalidate();
-
-                response.sendRedirect(request.getContextPath() + "/login.jsp?msg=pass_updated");
+                response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?success=pass_updated");
             } else {
                 response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?error=pass_invalid");
             }
             return;
         }
 
-        // ── Lógica administrativa existente (requiere idUsuario en el request) ──
+        // Lógica administrativa existente
         if (action != null && request.getParameter("idUsuario") != null) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 
             if ("deshabilitar".equals(action)) {
                 dao.deshabilitar(idUsuario);
-            } else if ("cambiarEstado".equals(action)) { // Alternar estado mediante el switch
+            } else if ("cambiarEstado".equals(action)) {
                 boolean nuevoEstado = Boolean.parseBoolean(request.getParameter("estado"));
                 dao.cambiarEstado(idUsuario, nuevoEstado);
             } else if ("asignarRol".equals(action)) {
@@ -75,7 +73,6 @@ public class UsuarioServlet extends HttpServlet {
             }
         }
 
-        // Redirige de vuelta a la lista para ver los cambios
         response.sendRedirect(request.getContextPath() + "/usuarios");
     }
 }

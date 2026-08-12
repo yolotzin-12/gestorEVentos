@@ -16,7 +16,7 @@
 
 <div class="container my-4">
 
-    <!-- Muestra el encabezado superior y el botón para cerrar sesión -->
+    <!-- Encabezado superior -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
@@ -35,7 +35,6 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
-            <!-- Muestra el menú de navegación lateral -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
@@ -64,7 +63,6 @@
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">MI PERFIL</h4>
 
                 <div class="row g-4">
-                    <!-- Formulario para enviar los datos personales actualizados al Servlet -->
                     <div class="col-md-7">
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-3" style="color: #162e54;">Datos Personales</h5>
@@ -110,28 +108,59 @@
                         </div>
                     </div>
 
-                    <!-- Formulario para enviar la petición de cambio de contraseña al Servlet -->
                     <div class="col-md-5">
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-1" style="color: #162e54;">Seguridad</h5>
                             <small class="text-muted d-block mb-3">Cambiar contraseña</small>
 
-                            <form action="${pageContext.request.contextPath}/usuarios" method="post">
+                            <input type="hidden" id="serverErrorPerfil" value="${not empty error ? error : (param.error == 'pass_invalid' ? 'La contraseña actual es incorrecta.' : '')}">
+                            <input type="hidden" id="serverSuccessPerfil" value="${param.success == 'pass_updated' ? 'true' : 'false'}">
+
+                            <div id="alertasContainerPerfil" class="mb-3"></div>
+
+                            <form action="${pageContext.request.contextPath}/usuarios" method="post" id="formCambiarContra">
                                 <input type="hidden" name="action" value="cambiarPassword">
+
                                 <div class="mb-3">
                                     <label for="contraActual" class="form-label fw-bold">Contraseña actual:</label>
-                                    <input type="password" name="contraActual" class="form-control" id="contraActual" placeholder="Contraseña actual" required>
+                                    <div class="input-group">
+                                        <input type="password" name="contraActual" class="form-control" id="contraActual" placeholder="Contraseña actual" required>
+                                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="contraActual" style="border-color: #dee2e6;">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
+
                                 <div class="mb-3">
                                     <label for="contraNew" class="form-label fw-bold">Contraseña nueva:</label>
-                                    <input type="password" name="contraNew" class="form-control" id="contraNew" placeholder="Contraseña Nueva" required>
+                                    <div class="input-group">
+                                        <input type="password" name="contraNew" class="form-control" id="contraNew" placeholder="Contraseña Nueva" required>
+                                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="contraNew" style="border-color: #dee2e6;">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div id="errorLongitud" class="text-danger mt-1" style="display: none; font-size: 0.85em;">
+                                        La contraseña debe tener al menos 8 caracteres.
+                                    </div>
                                 </div>
+
                                 <div class="mb-3">
                                     <label for="confirmarContra" class="form-label fw-bold">Confirmar contraseña:</label>
-                                    <input type="password" name="confirmarContra" class="form-control" id="confirmarContra" placeholder="Confirmar contraseña" required>
+                                    <div class="input-group">
+                                        <input type="password" name="confirmarContra" class="form-control" id="confirmarContra" placeholder="Confirmar contraseña" required>
+                                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmarContra" style="border-color: #dee2e6;">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div id="errorCoincidencia" class="text-danger mt-1" style="display: none; font-size: 0.85em;">
+                                        Las contraseñas no coinciden.
+                                    </div>
                                 </div>
+
                                 <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-success fw-bold px-4" style="background-color: #0d8a5f;"><i class="bi bi-arrow-clockwise me-2"></i> Actualizar</button>
+                                    <button type="submit" class="btn btn-success fw-bold px-4" style="background-color: #0d8a5f;">
+                                        <i class="bi bi-arrow-clockwise me-2"></i> Actualizar
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -145,5 +174,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/perfil.js"></script>
 </body>
 </html>
