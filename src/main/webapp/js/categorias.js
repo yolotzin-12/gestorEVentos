@@ -106,7 +106,6 @@ function confirmarEliminarEvento(idEvento, nombreEvento) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Creamos un formulario dinámico para enviar la petición POST que el Servlet espera
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = 'evento';
@@ -333,3 +332,43 @@ function borrarEspacio() {
     });
 }
 
+function guardarOrganizacion() {
+    const idOrganizador = document.getElementById("selectOrgModal").value;
+    const organizacion = document.getElementById("nombreOrganizacion").value;
+    const mensajeDiv = document.getElementById("mensajeOrganizacion");
+
+    if (!idOrganizador || !organizacion.trim()) {
+        mensajeDiv.innerHTML = '<span class="text-danger">Por favor completa todos los campos.</span>';
+        return;
+    }
+
+    fetch('api/organizador', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            idOrganizador: parseInt(idOrganizador),
+            organizacion: organizacion.trim()
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    title: '¡Organización Asignada!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonColor: '#0d8a5f'
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                mensajeDiv.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-triangle"></i> ${data.message}</span>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mensajeDiv.innerHTML = '<span class="text-danger">Ocurrió un error al guardar.</span>';
+        });
+}
