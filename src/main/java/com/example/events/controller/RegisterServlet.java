@@ -41,16 +41,33 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
+        String regexNombre = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$";
+        String regexEmail = "^[a-zA-Z0-9._%+-]+@(gmail\\.com|hotmail\\.com|yahoo\\.com|outlook\\.com|utez\\.edu\\.mx)$";
+
+        if (!nombre.matches(regexNombre) || !apellidoPaterno.matches(regexNombre) ||
+                (apellidoMaterno != null && !apellidoMaterno.isBlank() && !apellidoMaterno.matches(regexNombre))) {
+            request.setAttribute("error", "Los nombres y apellidos solo deben contener letras.");
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
+
+        if (!email.toLowerCase().matches(regexEmail)) {
+            request.setAttribute("error", "Dominio de correo no permitido. Usa gmail, hotmail, yahoo, outlook o utez.edu.mx.");
+            request.setAttribute("errorEmail", true);
+            request.getRequestDispatcher("registro.jsp").forward(request, response);
+            return;
+        }
+
         if (!email.equals(emailConf)) {
             request.setAttribute("error", "Los correos no coinciden.");
-            request.setAttribute("errorEmail", true); // Bandera para pintar inputs de correo
+            request.setAttribute("errorEmail", true);
             request.getRequestDispatcher("registro.jsp").forward(request, response);
             return;
         }
 
         if (contra.length() < 8) {
             request.setAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
-            request.setAttribute("errorContra", true); // Bandera para pintar input de contraseña
+            request.setAttribute("errorContra", true);
             request.getRequestDispatcher("registro.jsp").forward(request, response);
             return;
         }
@@ -86,7 +103,7 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Ese correo ya está registrado.");
-            request.setAttribute("errorEmail", true); // Bandera para pintar inputs de correo
+            request.setAttribute("errorEmail", true);
             request.getRequestDispatcher("registro.jsp").forward(request, response);
         }
     }

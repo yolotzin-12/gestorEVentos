@@ -32,28 +32,28 @@
                 </div>
             </c:if>
 
-            <form action="register" method="post">
+            <form action="register" method="post" id="formRegistro">
 
                 <div class="mb-3 text-start">
                     <label for="txtNombre" class="form-label fw-bold label-formulario">Nombre(s):</label>
-                    <input type="text" name="nombre" value="${param.nombre}" class="form-control input-formulario" id="txtNombre" placeholder="Tu nombre(s):" required>
+                    <input type="text" name="nombre" value="${param.nombre}" class="form-control input-formulario" id="txtNombre" placeholder="Tu nombre(s):" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios" required>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3 text-start">
                         <label for="txtApellidoPaterno" class="form-label fw-bold label-formulario">Apellido Paterno:</label>
-                        <input type="text" name="apellidoPaterno" value="${param.apellidoPaterno}" class="form-control input-formulario" id="txtApellidoPaterno" placeholder="Primer apellido:" required>
+                        <input type="text" name="apellidoPaterno" value="${param.apellidoPaterno}" class="form-control input-formulario" id="txtApellidoPaterno" placeholder="Primer apellido:" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios" required>
                     </div>
 
                     <div class="col-md-6 mb-3 text-start">
                         <label for="txtApellidoMaterno" class="form-label fw-bold label-formulario">Apellido Materno:</label>
-                        <input type="text" name="apellidoMaterno" value="${param.apellidoMaterno}" class="form-control input-formulario" id="txtApellidoMaterno" placeholder="Segundo apellido:" required>
+                        <input type="text" name="apellidoMaterno" value="${param.apellidoMaterno}" class="form-control input-formulario" id="txtApellidoMaterno" placeholder="Segundo apellido:" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios" required>
                     </div>
                 </div>
 
                 <div class="mb-3 text-start">
                     <label for="txtCorreo" class="form-label fw-bold label-formulario ${not empty errorEmail ? 'text-danger' : ''}">Correo Electrónico:</label>
-                    <input type="email" name="email" value="${param.email}" class="form-control input-formulario ${not empty errorEmail ? 'is-invalid' : ''}" id="txtCorreo" placeholder="Tu correo electrónico:" required>
+                    <input type="email" name="email" value="${param.email}" class="form-control input-formulario ${not empty errorEmail ? 'is-invalid' : ''}" id="txtCorreo" placeholder="Tu correo electrónico:" pattern="^[a-zA-Z0-9._%+\-]+@(gmail\.com|hotmail\.com|yahoo\.com|outlook\.com|utez\.edu\.mx)$" title="Dominios permitidos: gmail.com, hotmail.com, yahoo.com, outlook.com, utez.edu.mx" required>
                 </div>
 
                 <div class="mb-3 text-start">
