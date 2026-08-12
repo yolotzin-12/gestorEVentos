@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
 <html lang="es">
 <head>
@@ -100,9 +101,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha del evento</label>
-                        <input type="date" name="fecha" class="form-control p-2 rounded-3" id="fecha" required>
+                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha y hora del evento</label>
+                        <input type="datetime-local" name="fecha" class="form-control p-2 rounded-3" id="fecha"
+                               value="${not empty evento ? fn:substring(fn:replace(evento.fechaHora, ' ', 'T'), 0, 16) : ''}" required>
                     </div>
+
 
                     <div class="mb-3">
                         <label for="capacidad" class="form-label fw-bold text-dark m-1">Capacidad máxima</label>
@@ -252,6 +255,7 @@
 </div>
 
 <script src="${pageContext.request.contextPath}/js/categorias.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

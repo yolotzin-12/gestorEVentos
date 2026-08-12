@@ -30,12 +30,10 @@
                 </a>
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                    <!-- Solo organizador: su panel de HU-07 -->
                     <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
                 </c:if>
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
-                    <!-- Solo admin -->
                     <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
                 </c:if>
             </nav>
@@ -82,8 +80,9 @@
                         <div class="col-6 col-md-3"
                              data-nombre-evento="${fn:toLowerCase(evento.nombre)}"
                              data-ubicacion-evento="${fn:toLowerCase(evento.ubicacion)}">
-                            <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link">
-                                <div class="tarjeta-evento">
+
+                            <div class="tarjeta-evento d-flex flex-column h-100">
+                                <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link flex-grow-1" style="text-decoration: none; color: inherit;">
                                     <div class="encabezado-evento">
                                         <div class="d-flex justify-content-between align-items-start gap-2">
                                             <h3>${evento.nombre}</h3>
@@ -107,8 +106,21 @@
                                         <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
                                         <div><i class="bi bi-geo-alt-fill"></i> <c:out value="${evento.ubicacion}" default="Sin ubicación"/></div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+
+                                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+                                    <div class="d-flex justify-content-between p-2 border-top bg-light mt-auto">
+                                        <a href="evento?action=editar&id=${evento.id}" class="btn btn-outline-primary btn-sm w-50 me-1">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+
+                                        <a href="evento?action=eliminar&id=${evento.id}" class="btn btn-outline-danger btn-sm w-50 ms-1" onclick="return confirm('¿Estás seguro de eliminar el evento \'${evento.nombre}\'? Esta acción no se puede deshacer.');">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </c:if>
+                            </div>
+
                         </div>
                     </c:forEach>
                 </div>

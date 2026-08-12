@@ -87,7 +87,6 @@
                         </select>
                     </div>
 
-                    <!-- SE MODIFICÓ A type="datetime-local" PARA PERMITIR SELECCIONAR LA HORA -->
                     <div class="mb-3">
                         <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha y hora del evento</label>
                         <input type="datetime-local" name="fecha" class="form-control p-2 rounded-3" id="fecha"
@@ -135,7 +134,8 @@
         </form>
     </div>
 </div>
-
+<script src="${pageContext.request.contextPath}/js/categorias.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
