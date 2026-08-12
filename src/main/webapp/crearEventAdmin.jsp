@@ -20,7 +20,8 @@
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
+            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
+            <img src="img/letras.png" alt="SRAE" style="height:120px;">
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>

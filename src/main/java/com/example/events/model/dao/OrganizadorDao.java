@@ -20,7 +20,6 @@ public class OrganizadorDao implements Dao<Organizador, Integer> {
 
             while (rs.next()) {
                 Organizador org = new Organizador();
-                // Nota: Usamos setId porque así se llama en tu modelo
                 org.setId(rs.getInt("id_organizador"));
                 org.setNombre(rs.getString("nombre"));
                 org.setApellidoPaterno(rs.getString("apellido_paterno"));
@@ -34,8 +33,6 @@ public class OrganizadorDao implements Dao<Organizador, Integer> {
         return lista;
     }
 
-
-    // Obtener id_organizador a partir del id_usuario (lo usa EventoServlet)
     public int getIdOrganizadorByUsuario(int idUsuario) {
         String sql = "SELECT id_organizador FROM ORGANIZADOR WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -57,6 +54,21 @@ public class OrganizadorDao implements Dao<Organizador, Integer> {
             ps.setString(2, o.getOrganizacion());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean actualizarOrganizacion(int idOrganizador, String nuevaOrganizacion) {
+        String sql = "UPDATE ORGANIZADOR SET organizacion = ? WHERE id_organizador = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nuevaOrganizacion);
+            ps.setInt(2, idOrganizador);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override public List<Organizador> getAll() { return new ArrayList<>(); }
