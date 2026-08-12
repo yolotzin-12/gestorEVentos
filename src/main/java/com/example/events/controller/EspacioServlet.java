@@ -48,4 +48,48 @@ public class EspacioServlet extends HttpServlet {
         }
         response.getWriter().write(jsonResponse.toString());
     }
+
+    // NUEVO MÉTODO DODelete
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        JsonObject jsonResponse = new JsonObject();
+
+        try {
+            String idParam = request.getParameter("id");
+            if (idParam == null || idParam.trim().isEmpty()) {
+                jsonResponse.addProperty("status", "error");
+                jsonResponse.addProperty("message", "ID de espacio no proporcionado.");
+                response.getWriter().write(jsonResponse.toString());
+                return;
+            }
+
+            int idEspacio = Integer.parseInt(idParam);
+            String resultado = espacioDao.eliminarEspacio(idEspacio);
+
+            switch (resultado) {
+                case "success":
+                    jsonResponse.addProperty("status", "success");
+                    jsonResponse.addProperty("message", "Espacio eliminado exitosamente.");
+                    break;
+                case "in_use":
+                    jsonResponse.addProperty("status", "error");
+                    jsonResponse.addProperty("message", "No se puede eliminar: hay eventos asignados a este espacio.");
+                    break;
+                default:
+                    jsonResponse.addProperty("status", "error");
+                    jsonResponse.addProperty("message", "Error al eliminar el espacio en la BD.");
+                    break;
+            }
+        } catch (NumberFormatException e) {
+            jsonResponse.addProperty("status", "error");
+            jsonResponse.addProperty("message", "Formato de ID inválido.");
+        } catch (Exception e) {
+            jsonResponse.addProperty("status", "error");
+            jsonResponse.addProperty("message", "Error interno.");
+        }
+
+        response.getWriter().write(jsonResponse.toString());
+    }
 }
