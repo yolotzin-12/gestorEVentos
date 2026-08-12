@@ -1,6 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%-- Obtener objeto usuario y extraer el rol de manera segura --%>
+<c:set var="u" value="${not empty sessionScope.usuario ? sessionScope.usuario : sessionScope.user}" />
+<c:set var="rolUsuario" value="${not empty u.idRol ? u.idRol : (not empty u.id_rol ? u.id_rol : (not empty u.idrol ? u.idrol : sessionScope.rol))}" />
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -24,30 +29,34 @@
                 <img src="img/letras.png" alt="SRAE" style="height:120px;">
             </div>
 
+            <!-- NAVEGACIÓN SUPERIOR POR ROL -->
             <nav class="eventos-nav">
-                <a href="${pageContext.request.contextPath}/evento" class="activo">
-                    Eventos
-                </a>
+                <a href="${pageContext.request.contextPath}/evento" class="activo">Eventos</a>
 
-                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                    <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
+                <%-- 'MIS RESERVAS' SOLO PARA CLIENTES (NUNCA ADMIN 1 NI ORGANIZADOR 2) --%>
+                <c:if test="${rolUsuario != 1 && rolUsuario != '1' && rolUsuario != 2 && rolUsuario != '2'}">
+                    <a href="${pageContext.request.contextPath}/reserva">Mis reservas</a>
                 </c:if>
 
-                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
+                <%-- 'USUARIOS' SOLO PARA ADMIN (ROL 1) --%>
+                <c:if test="${rolUsuario == 1 || rolUsuario == '1'}">
                     <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
                 </c:if>
             </nav>
 
             <div class="d-flex align-items-center gap-2">
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+
+                <%-- '+ NUEVO EVENTO' SOLO PARA ADMIN (1) Y ORGANIZADOR (2) --%>
+                <c:if test="${rolUsuario == 1 || rolUsuario == '1' || rolUsuario == 2 || rolUsuario == '2'}">
                     <a href="evento?action=crear" class="btn btn-success btn-sm fw-bold me-2" style="background-color: #0d8a5f; border: none;">
                         <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
                     </a>
                 </c:if>
-                <a href="crearPerfil.jsp" class="icono-usuario">
+
+                <a href="crearPerfil.jsp" class="icono-usuario" title="Mi Perfil">
                     <i class="bi bi-person"></i>
                 </a>
-                <a href="logout" class="btn-logout-eventos">
+                <a href="logout" class="btn-logout-eventos" title="Cerrar Sesión">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>

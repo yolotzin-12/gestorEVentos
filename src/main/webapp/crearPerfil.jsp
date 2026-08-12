@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="u" value="${not empty sessionScope.usuario ? sessionScope.usuario : sessionScope.user}" />
+<c:set var="rolUsuario" value="${not empty u.idRol ? u.idRol : (not empty u.id_rol ? u.id_rol : (not empty u.idrol ? u.idrol : sessionScope.rol))}" />
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -34,17 +38,27 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
+            <!-- SIDEBAR UNIFICADO -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
-                    <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
-                        <i class="bi bi-calendar-check me-3"></i> Reservas
+
+                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
+                        <i class="bi bi-calendar-event me-3"></i> Eventos
                     </a>
 
-                    <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                        <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold">
+                    <%-- 'MIS RESERVAS' SOLO PARA CLIENTES (NUNCA ADMIN 1 NI ORGANIZADOR 2) --%>
+                    <c:if test="${rolUsuario != 1 && rolUsuario != '1' && rolUsuario != 2 && rolUsuario != '2'}">
+                        <a href="reserva" class="btn sidebar-btn py-3 px-4 fw-bold">
+                            <i class="bi bi-calendar-check me-3"></i> Mis reservas
+                        </a>
+                    </c:if>
+
+                    <%-- 'USUARIOS' SOLO PARA ADMIN --%>
+                    <c:if test="${rolUsuario == 1 || rolUsuario == '1'}">
+                        <a href="usuarios" class="btn sidebar-btn py-3 px-4 fw-bold">
                             <i class="bi bi-people me-3"></i> Usuarios
                         </a>
                     </c:if>
@@ -58,6 +72,7 @@
                 </div>
             </div>
 
+            <!-- FORMULARIO DE PERFIL -->
             <div class="col-md-9">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">MI PERFIL</h4>
 
@@ -73,8 +88,8 @@
                                 <div class="text-center mb-3">
                                     <div class="position-relative d-inline-block">
                                         <c:choose>
-                                            <c:when test="${not empty usuario.fotoUrl}">
-                                                <img src="${usuario.fotoUrl}" id="previewFoto" class="rounded-circle object-fit-cover shadow" style="width: 100px; height: 100px; border: 3px solid #162e54;">
+                                            <c:when test="${not empty u.fotoUrl}">
+                                                <img src="${u.fotoUrl}" id="previewFoto" class="rounded-circle object-fit-cover shadow" style="width: 100px; height: 100px; border: 3px solid #162e54;">
                                             </c:when>
                                             <c:otherwise>
                                                 <div id="defaultIcon" class="bg-primary text-white d-inline-flex flex-column align-items-center justify-content-center rounded-circle shadow" style="width: 100px; height: 100px;">
@@ -94,19 +109,19 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="nombre" class="form-label fw-bold">Nombre:</label>
-                                        <input type="text" name="nombre" class="form-control" id="nombre" value="${usuario.nombre}" required>
+                                        <input type="text" name="nombre" class="form-control" id="nombre" value="${u.nombre}" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="apeP" class="form-label fw-bold">Apellido Paterno:</label>
-                                        <input type="text" name="apeP" class="form-control" id="apeP" value="${usuario.apellidoPaterno}" required>
+                                        <input type="text" name="apeP" class="form-control" id="apeP" value="${u.apellidoPaterno}" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="apeM" class="form-label fw-bold">Apellido Materno:</label>
-                                        <input type="text" name="apeM" class="form-control" id="apeM" value="${usuario.apellidoMaterno}" required>
+                                        <input type="text" name="apeM" class="form-control" id="apeM" value="${u.apellidoMaterno}" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="telefono" class="form-label fw-bold">Teléfono:</label>
-                                        <input type="tel" name="telefono" class="form-control" id="telefono" value="${usuario.telefono}" placeholder="10 dígitos (Ej: 7771234567)" maxlength="10" minlength="10" pattern="[0-9]{10}">
+                                        <input type="tel" name="telefono" class="form-control" id="telefono" value="${u.telefono}" placeholder="10 dígitos (Ej: 7771234567)" maxlength="10" minlength="10" pattern="[0-9]{10}">
                                         <div id="errorTelefono" class="text-danger mt-1" style="display: none; font-size: 0.85em;">
                                             El teléfono debe tener exactamente 10 dígitos.
                                         </div>
@@ -114,8 +129,7 @@
                                     <div class="col-md-12 mb-3">
                                         <label for="correo" class="form-label fw-bold">Correo Electrónico:</label>
                                         <div class="input-group">
-                                            <!-- readonly agregado y clases bg-secondary text-muted para que luzca bloqueado -->
-                                            <input type="email" name="correo" class="form-control" style="background-color: #e9ecef; color: #6c757d; cursor: not-allowed;" id="correo" value="${usuario.email}" readonly title="El correo electrónico no puede ser modificado" required>
+                                            <input type="email" name="correo" class="form-control" style="background-color: #e9ecef; color: #6c757d; cursor: not-allowed;" id="correo" value="${u.email}" readonly title="El correo electrónico no puede ser modificado" required>
                                             <span class="input-group-text" style="background-color: #e9ecef;"><i class="bi bi-lock-fill text-muted"></i></span>
                                         </div>
                                     </div>
@@ -191,6 +205,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/perfil.js"></script>

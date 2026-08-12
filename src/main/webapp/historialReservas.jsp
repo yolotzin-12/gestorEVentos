@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="u" value="${not empty sessionScope.usuario ? sessionScope.usuario : sessionScope.user}" />
+<c:set var="rolUsuario" value="${not empty u.idRol ? u.idRol : (not empty u.id_rol ? u.id_rol : (not empty u.idrol ? u.idrol : sessionScope.rol))}" />
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -28,7 +32,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar Sesión">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -37,14 +41,32 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
+            <!-- SIDEBAR CON ESTRUCTURA UNIFICADA -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
-                    <a href="reserva" class="btn sidebar-btn py-3 px-4 fw-bold active">
-                        <i class="bi bi-calendar-check me-3"></i> Mis reservas
+
+                    <%-- BOTÓN DE EVENTOS RECUPERADO --%>
+                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
+                        <i class="bi bi-calendar-event me-3"></i> Eventos
                     </a>
+
+                    <%-- 'MIS RESERVAS' SOLO VISIBLE SI ES CLIENTE --%>
+                    <c:if test="${rolUsuario != 1 && rolUsuario != '1' && rolUsuario != 2 && rolUsuario != '2'}">
+                        <a href="reserva" class="btn sidebar-btn py-3 px-4 fw-bold active">
+                            <i class="bi bi-calendar-check me-3"></i> Mis reservas
+                        </a>
+                    </c:if>
+
+                    <%-- 'USUARIOS' SOLO PARA ADMIN --%>
+                    <c:if test="${rolUsuario == 1 || rolUsuario == '1'}">
+                        <a href="usuarios" class="btn sidebar-btn py-3 px-4 fw-bold">
+                            <i class="bi bi-people me-3"></i> Usuarios
+                        </a>
+                    </c:if>
+
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
