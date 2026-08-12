@@ -127,5 +127,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/buscador.js"></script>
 <script src="js/categorias.js"></script>
+<script src="js/cierresesion.js"></script>
+
 </body>
 </html>
