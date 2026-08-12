@@ -27,7 +27,7 @@
                 <a href="evento">Eventos</a>
                 <!-- Ocultar "Mis reservas" si es Organizador/Admin -->
                 <c:if test="${sessionScope.usuario.idRol != 1 && sessionScope.usuario.idRol != 2}">
-                    <a href="historialReservas.jsp">Mis reservas</a>
+                    <a href="reserva">Mis reservas</a>
                 </c:if>
             </nav>
 

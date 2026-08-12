@@ -49,13 +49,25 @@ public class ReservaDao implements Dao<Reserva, Integer> {
     }
 
     public boolean cancelar(int idReserva) {
+        // Solo se puede cancelar si sigue "Reservado" y el evento todavía no ocurre.
+        String sqlCheck = "SELECT r.id_evento FROM RESERVA r JOIN EVENTO e ON r.id_evento = e.id_evento " +
+                "WHERE r.id_reserva = ? AND r.estado = 'Reservado' AND e.fecha_hora >= SYSTIMESTAMP";
         String sqlCancelar = "UPDATE RESERVA SET estado = 'Cancelado' WHERE id_reserva = ? AND estado = 'Reservado'";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             con.setAutoCommit(false);
 
-            Reserva r = getById(idReserva);
-            if (r == null || !"Reservado".equals(r.getEstado())) {
+            int idEvento = -1;
+            try (PreparedStatement psCheck = con.prepareStatement(sqlCheck)) {
+                psCheck.setInt(1, idReserva);
+                try (ResultSet rs = psCheck.executeQuery()) {
+                    if (rs.next()) idEvento = rs.getInt("id_evento");
+                }
+            }
+
+            if (idEvento == -1) {
+                // Ya estaba cancelada/utilizada o el evento ya finalizó
+                con.rollback();
                 return false;
             }
 
@@ -65,7 +77,7 @@ public class ReservaDao implements Dao<Reserva, Integer> {
                 if (filas == 0) { con.rollback(); return false; }
             }
 
-            eventoDao.incrementarDisponibilidad(r.getIdEvento(), con);
+            eventoDao.incrementarDisponibilidad(idEvento, con);
             con.commit();
             return true;
 
@@ -82,14 +94,26 @@ public class ReservaDao implements Dao<Reserva, Integer> {
                         "TO_CHAR(r.fecha_hora_reserva, 'DD/MM/YYYY HH24:MI') as fecha_reserva_fmt, " +
                         "e.nombre AS nombre_evento, " +
                         "TO_CHAR(e.fecha_hora, 'DD/MM/YYYY HH24:MI') as fecha_evento_fmt, " +
-                        "esp.nombre_espacio " +
+                        "esp.nombre_espacio, " +
+                        "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN 1 ELSE 0 END AS finalizado " +
                         "FROM RESERVA r " +
                         "JOIN EVENTO e ON r.id_evento = e.id_evento " +
                         "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
                         "WHERE r.id_asistente = ? "
         );
 
-        if (estado != null && !estado.trim().isEmpty()) {
+        // "Finalizado" no es un estado real en la tabla RESERVA: es una reserva
+        // que sigue "Reservado" pero cuyo evento ya pasó. "Reservado" en el
+        // filtro significa lo opuesto: reservas activas de eventos que aún no ocurren.
+        boolean esFinalizado = estado != null && estado.trim().equalsIgnoreCase("Finalizado");
+        boolean esReservado = estado != null && estado.trim().equalsIgnoreCase("Reservado");
+        boolean esOtroEstado = estado != null && !estado.trim().isEmpty() && !esFinalizado && !esReservado;
+
+        if (esFinalizado) {
+            sql.append("AND LOWER(r.estado) = 'reservado' AND e.fecha_hora < SYSTIMESTAMP ");
+        } else if (esReservado) {
+            sql.append("AND LOWER(r.estado) = 'reservado' AND e.fecha_hora >= SYSTIMESTAMP ");
+        } else if (esOtroEstado) {
             sql.append("AND LOWER(r.estado) = LOWER(?) ");
         }
 
@@ -105,7 +129,7 @@ public class ReservaDao implements Dao<Reserva, Integer> {
             int paramIndex = 1;
             ps.setInt(paramIndex++, idAsistente);
 
-            if (estado != null && !estado.trim().isEmpty()) {
+            if (esOtroEstado) {
                 ps.setString(paramIndex++, estado.trim());
             }
 
@@ -129,7 +153,8 @@ public class ReservaDao implements Dao<Reserva, Integer> {
                 "TO_CHAR(r.fecha_hora_reserva, 'DD/MM/YYYY HH24:MI') as fecha_reserva_fmt, " +
                 "e.nombre AS nombre_evento, e.descripcion, " +
                 "TO_CHAR(e.fecha_hora, 'DD/MM/YYYY HH24:MI') as fecha_evento_fmt, " +
-                "esp.nombre_espacio, esp.ubicacion " +
+                "esp.nombre_espacio, esp.ubicacion, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN 1 ELSE 0 END AS finalizado " +
                 "FROM RESERVA r " +
                 "JOIN EVENTO e ON r.id_evento = e.id_evento " +
                 "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
@@ -198,7 +223,16 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         r.setIdAsistente(rs.getInt("id_asistente"));
         r.setCodigoReserva(rs.getString("codigo_reserva"));
         r.setEstado(rs.getString("estado"));
-        r.setFechaHoraReserva(rs.getString("fecha_hora_reserva"));
+        // "fecha_hora_reserva" solo existe en el SELECT de getById(); en las
+        // consultas de historial esa columna viene formateada con TO_CHAR
+        // bajo el alias "fecha_reserva_fmt" (ver mapearCompleto). Por eso
+        // se intenta leerla y, si no está presente, simplemente se ignora
+        // aquí para que mapearCompleto la complete después.
+        try {
+            r.setFechaHoraReserva(rs.getString("fecha_hora_reserva"));
+        } catch (SQLException ex) {
+            // columna no presente en este resultset, no es un error real
+        }
         return r;
     }
 
@@ -208,6 +242,7 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         r.setFechaHoraReserva(rs.getString("fecha_reserva_fmt"));
         r.setFechaEvento(rs.getString("fecha_evento_fmt"));
         r.setNombreEspacio(rs.getString("nombre_espacio"));
+        r.setEventoFinalizado(rs.getInt("finalizado") == 1);
         return r;
     }
 }

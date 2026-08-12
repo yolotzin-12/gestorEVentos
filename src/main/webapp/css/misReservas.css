@@ -1,4 +1,3 @@
-
 .sidebar-btn {
     text-align: left !important;
     border: none !important;
@@ -77,5 +76,22 @@
 
 .btn-consultar:hover {
     background-color: #0f203a !important;
+    color: white !important;
+}
+
+/* Botón de cancelar reserva - rojo */
+.btn-cancelar {
+    background-color: #dc3545 !important;
+    color: white !important;
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+    border-radius: 20px !important;
+    padding: 6px 15px !important;
+    border: none !important;
+    white-space: nowrap;
+}
+
+.btn-cancelar:hover {
+    background-color: #b02a37 !important;
     color: white !important;
 }

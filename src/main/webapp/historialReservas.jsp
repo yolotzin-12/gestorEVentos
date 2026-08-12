@@ -5,11 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Mis Reservas - SRAE</title>
 
     <link rel="stylesheet" href="css/fooyini.css">
     <link rel="stylesheet" href="css/pagprin.css">
-    <link rel="stylesheet" href="css/misReservas.css">
+    <link rel="stylesheet" href="css/misReservas.css?v=2">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -45,7 +48,7 @@
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
-                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
+                    <a href="logout" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
@@ -54,19 +57,19 @@
             <div class="col-md-9">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">MIS RESERVAS</h4>
 
-                <form action="#" method="get" class="row g-3 align-items-end mb-4">
+                <form action="reserva" method="get" class="row g-3 align-items-end mb-4" id="formFiltros">
                     <div class="col-sm-4">
                         <label class="form-label fw-bold text-dark small mb-1">Filtrar por: estado</label>
-                        <select name="estado" class="form-select input-filtro">
-                            <option value="">estado</option>
-                            <option value="confirmado">Confirmado</option>
-                            <option value="pendiente">Pendiente</option>
-                            <option value="cancelado">Cancelado</option>
+                        <select name="estado" class="form-select input-filtro" onchange="this.form.submit()">
+                            <option value="" ${empty filtroEstado ? 'selected' : ''}>Todos</option>
+                            <option value="Reservado" ${filtroEstado == 'Reservado' ? 'selected' : ''}>Reservado</option>
+                            <option value="Cancelado" ${filtroEstado == 'Cancelado' ? 'selected' : ''}>Cancelado</option>
+                            <option value="Utilizado" ${filtroEstado == 'Utilizado' ? 'selected' : ''}>Finalizado</option>
                         </select>
                     </div>
                     <div class="col-sm-4">
                         <label class="form-label fw-bold text-dark small mb-1">Fecha del evento</label>
-                        <input type="text" name="fecha" class="form-control input-filtro" placeholder="DD/MM/AAAA">
+                        <input type="date" name="fecha" class="form-control input-filtro" value="${filtroFecha}">
                     </div>
                     <div class="col-sm-4">
                         <button type="submit" class="btn btn-aplicar-filtros w-100 d-flex align-items-center justify-content-center gap-2 shadow-sm">
@@ -95,18 +98,24 @@
                                 <c:forEach var="reserva" items="${misReservas}">
                                     <tr>
                                         <td class="text-muted">${reserva.codigoReserva}</td>
-                                        <td class="fw-semibold">Evento #${reserva.idEvento}</td>
+                                        <td class="fw-semibold">${reserva.nombreEvento}</td>
                                         <td class="text-muted">${reserva.fechaHoraReserva}</td>
-                                        <td class="text-muted">--/--/----</td>
-                                        <td>Lugar por definir</td>
+                                        <td class="text-muted">${reserva.fechaEvento}</td>
+                                        <td>${reserva.nombreEspacio}</td>
 
                                         <td class="text-center">
                                             <c:choose>
-                                                <c:when test="${reserva.estado == 'Reservado' || reserva.estado == 'Confirmado'}">
-                                                    <span class="badge bg-success rounded-pill px-3 py-2 w-100">✔ ${reserva.estado}</span>
+                                                <c:when test="${reserva.estado == 'Reservado' && reserva.eventoFinalizado}">
+                                                    <span class="badge bg-secondary rounded-pill px-3 py-2 w-100">Finalizado</span>
+                                                </c:when>
+                                                <c:when test="${reserva.estado == 'Reservado'}">
+                                                    <span class="badge bg-success rounded-pill px-3 py-2 w-100">✔ Reservado</span>
                                                 </c:when>
                                                 <c:when test="${reserva.estado == 'Cancelado'}">
                                                     <span class="badge bg-danger rounded-pill px-3 py-2 w-100">✖ Cancelado</span>
+                                                </c:when>
+                                                <c:when test="${reserva.estado == 'Utilizado'}">
+                                                    <span class="badge bg-secondary rounded-pill px-3 py-2 w-100">✔ Finalizado</span>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <span class="badge bg-secondary rounded-pill px-3 py-2 w-100">⏳ ${reserva.estado}</span>
@@ -115,7 +124,27 @@
                                         </td>
 
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-consultar"><i class="bi bi-eye me-1"></i> Consultar Reserva</a>
+                                            <c:choose>
+                                                <c:when test="${reserva.estado == 'Reservado' && reserva.eventoFinalizado}">
+                                                    <button type="button" class="btn btn-consultar" disabled>
+                                                        <i class="bi bi-check2-circle me-1"></i> Finalizado
+                                                    </button>
+                                                </c:when>
+                                                <c:when test="${reserva.estado == 'Reservado'}">
+                                                    <form action="reserva" method="post" onsubmit="return confirm('¿Seguro que deseas cancelar esta reserva?');">
+                                                        <input type="hidden" name="action" value="cancelar">
+                                                        <input type="hidden" name="idReserva" value="${reserva.id}">
+                                                        <input type="hidden" name="filtroEstado" value="${filtroEstado}">
+                                                        <input type="hidden" name="filtroFecha" value="${filtroFecha}">
+                                                        <button type="submit" class="btn btn-cancelar">
+                                                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                                                        </button>
+                                                    </form>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="text-muted">—</span>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </td>
                                     </tr>
                                 </c:forEach>
