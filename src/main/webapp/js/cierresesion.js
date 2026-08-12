@@ -37,3 +37,22 @@ window.addEventListener('pageshow', function (event) {
         window.location.reload();
     }
 });
+
+function confirmarCierreSesion(event) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: '¿Estás seguro de que deseas salir del sistema?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#162e54',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'logout';
+        }
+    });
+}
