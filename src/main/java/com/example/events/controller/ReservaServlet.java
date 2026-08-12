@@ -14,6 +14,8 @@ import com.example.events.model.dao.ReservaDao;
 import com.example.events.utils.EmailSender;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -61,6 +63,14 @@ public class ReservaServlet extends HttpServlet {
             }
             return;
         }
+
+        // --- Evita que el navegador muestre una versión en caché de esta página ---
+        // Esto es lo que provocaba que "Mis reservas" apareciera vacío al entrar
+        // por primera vez y solo se viera bien al recargar: el navegador estaba
+        // reutilizando una copia vieja en lugar de pedir los datos de nuevo.
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
 
         // Historial de Reservas
         int idAsistente = asisDao.getIdAsistenteByUsuario(u.getId());
@@ -161,8 +171,45 @@ public class ReservaServlet extends HttpServlet {
 
         } else if ("cancelar".equals(action)) {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
-            reservaDao.cancelar(idReserva);
-            response.sendRedirect(request.getContextPath() + "/reserva");
+
+            // Se toma el detalle ANTES de cancelar, para poder armar el correo
+            Reserva detalle = reservaDao.getDetalleById(idReserva);
+            boolean ok = reservaDao.cancelar(idReserva);
+
+            if (ok && detalle != null) {
+                try {
+                    String html = """
+                        <html><body style="font-family:Arial,sans-serif">
+                          <h2 style="color:#cc0000">Reserva cancelada</h2>
+                          <p><strong>Evento:</strong> {0}</p>
+                          <p><strong>Fecha:</strong> {1}</p>
+                          <p><strong>Código de reserva:</strong> {2}</p>
+                          <p>Tu lugar ha sido liberado.</p>
+                        </body></html>
+                        """;
+                    EmailSender.sendMail(u.getEmail(), "Cancelación de reserva - SRAE",
+                            MessageFormat.format(html,
+                                    detalle.getNombreEvento(),
+                                    detalle.getFechaEvento(),
+                                    detalle.getCodigoReserva()));
+                } catch (Exception ex) {
+                    System.err.println("Correo de cancelación no enviado: " + ex.getMessage());
+                }
+            }
+
+            // Se conservan los filtros que el usuario tenía aplicados en el historial
+            String estadoFiltro = request.getParameter("filtroEstado");
+            String fechaFiltro = request.getParameter("filtroFecha");
+            StringBuilder redirect = new StringBuilder(request.getContextPath()).append("/reserva");
+            String sep = "?";
+            if (estadoFiltro != null && !estadoFiltro.isBlank()) {
+                redirect.append(sep).append("estado=").append(URLEncoder.encode(estadoFiltro, StandardCharsets.UTF_8));
+                sep = "&";
+            }
+            if (fechaFiltro != null && !fechaFiltro.isBlank()) {
+                redirect.append(sep).append("fecha=").append(URLEncoder.encode(fechaFiltro, StandardCharsets.UTF_8));
+            }
+            response.sendRedirect(redirect.toString());
         }
     }
 }

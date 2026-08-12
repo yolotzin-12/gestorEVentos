@@ -14,6 +14,7 @@ public class Reserva {
     private String fechaEvento;
     private String nombreEspacio;
     private String ubicacionEspacio;
+    private boolean eventoFinalizado;
 
     public Reserva() {}
 
@@ -51,4 +52,9 @@ public class Reserva {
 
     public String getUbicacionEspacio() { return ubicacionEspacio; }
     public void setUbicacionEspacio(String ubicacionEspacio) { this.ubicacionEspacio = ubicacionEspacio; }
+
+    // true cuando la fecha/hora del evento ya pasó (se usa para pintar
+    // el botón de la fila en historialReservas.jsp como "Finalizado")
+    public boolean isEventoFinalizado() { return eventoFinalizado; }
+    public void setEventoFinalizado(boolean eventoFinalizado) { this.eventoFinalizado = eventoFinalizado; }
 }
