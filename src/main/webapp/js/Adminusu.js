@@ -102,3 +102,25 @@ function confirmarCambioEstado(checkbox, estabaActivo) {
         checkbox.form.submit();
     }
 }
+
+function confirmarCambioRol(selectElement) {
+    const rolSeleccionado = selectElement.options[selectElement.selectedIndex].text;
+    const valorOriginal = selectElement.getAttribute('data-original-value');
+
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: '¿Deseas cambiar el rol de este usuario a ' + rolSeleccionado + '?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#0d8a5f',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, cambiar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            selectElement.form.submit();
+        } else {
+            selectElement.value = valorOriginal;
+        }
+    });
+}

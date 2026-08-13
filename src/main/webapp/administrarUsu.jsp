@@ -120,7 +120,7 @@
                                                 </select>
                                             </c:when>
                                             <c:otherwise>
-                                                <select name="idRol" class="form-select select-rol-admin" onchange="this.form.submit()">
+                                                <select name="idRol" class="form-select select-rol-admin" data-original-value="${u.idRol}" onchange="confirmarCambioRol(this)">
                                                     <option value="3" ${u.idRol == 3 ? 'selected' : ''}>Asistente</option>
                                                     <option value="2" ${u.idRol == 2 ? 'selected' : ''}>Organizador</option>
                                                 </select>
