@@ -10,8 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import com.example.events.model.Usuario;
 import com.example.events.model.dao.UsuarioDao;
-import com.example.events.model.dao.AsistenteDao;
-import com.example.events.model.dao.OrganizadorDao;
+import com.example.events.utils.EmailSender;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,15 +18,13 @@ import java.nio.file.Paths;
 
 @WebServlet(name = "UsuarioServlet", value = "/usuarios")
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 1,
-        maxFileSize = 1024 * 1024 * 5,
-        maxRequestSize = 1024 * 1024 * 10
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 5,      // 5 MB
+        maxRequestSize = 1024 * 1024 * 10   // 10 MB
 )
 public class UsuarioServlet extends HttpServlet {
 
     private final UsuarioDao dao = new UsuarioDao();
-    private final AsistenteDao asisDao = new AsistenteDao();
-    private final OrganizadorDao orgDao = new OrganizadorDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,9 +38,11 @@ public class UsuarioServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
+
         HttpSession session = request.getSession();
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
 
+        // ACTUALIZAR DATOS PERSONALES ---
         if ("actualizarDatos".equals(action)) {
             if (usuarioSesion == null) {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -62,6 +61,7 @@ public class UsuarioServlet extends HttpServlet {
             usuarioSesion.setTelefono(telefono);
             usuarioSesion.setEmail(correo);
 
+            // Foto de perfil
             Part filePart = request.getPart("fotoPerfil");
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -85,6 +85,7 @@ public class UsuarioServlet extends HttpServlet {
             return;
         }
 
+        // CAMBIAR LA CONTRASEÑA
         if ("cambiarPassword".equals(action)) {
             if (usuarioSesion == null) {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -103,6 +104,15 @@ public class UsuarioServlet extends HttpServlet {
             boolean exito = dao.cambiarContrasenaPerfil(usuarioSesion.getId(), contraActual, contraNew);
 
             if (exito) {
+                // Notificación por correo de que la contraseña se cambió,
+                // por seguridad: si el usuario no fue quien la cambió, se entera.
+                try {
+                    String html = construirCorreoCambioPassword(usuarioSesion.getNombre());
+                    EmailSender.sendMail(usuarioSesion.getEmail(), "Contraseña actualizada - SRAE", html);
+                } catch (Exception ex) {
+                    System.err.println("Correo de cambio de contraseña no enviado: " + ex.getMessage());
+                }
+
                 response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?success=pass_updated");
             } else {
                 response.sendRedirect(request.getContextPath() + "/crearPerfil.jsp?error=pass_invalid");
@@ -110,6 +120,7 @@ public class UsuarioServlet extends HttpServlet {
             return;
         }
 
+        // GESTIÓN DE USUARIOS (DESHABILITAR / ESTADO / ROL)
         if (action != null && request.getParameter("idUsuario") != null) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 
@@ -118,32 +129,10 @@ public class UsuarioServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/usuarios?success=estado_actualizado");
             } else if ("cambiarEstado".equals(action)) {
                 boolean nuevoEstado = Boolean.parseBoolean(request.getParameter("estado"));
-
-                if (!nuevoEstado) {
-                    if (asisDao.tieneReservasActivas(idUsuario)) {
-                        response.sendRedirect(request.getContextPath() + "/usuarios?error=reservas_activas");
-                        return;
-                    }
-                    if (orgDao.tieneEventosActivos(idUsuario)) {
-                        response.sendRedirect(request.getContextPath() + "/usuarios?error=eventos_activos");
-                        return;
-                    }
-                }
-
                 dao.cambiarEstado(idUsuario, nuevoEstado);
                 response.sendRedirect(request.getContextPath() + "/usuarios?success=estado_actualizado");
             } else if ("asignarRol".equals(action)) {
                 int idRol = Integer.parseInt(request.getParameter("idRol"));
-
-                if (asisDao.tieneReservasActivas(idUsuario)) {
-                    response.sendRedirect(request.getContextPath() + "/usuarios?error=reservas_activas");
-                    return;
-                }
-                if (orgDao.tieneEventosActivos(idUsuario)) {
-                    response.sendRedirect(request.getContextPath() + "/usuarios?error=eventos_activos");
-                    return;
-                }
-
                 int resultado = dao.asignarRol(idUsuario, idRol);
 
                 if (resultado == -1) {
@@ -155,5 +144,52 @@ public class UsuarioServlet extends HttpServlet {
                 }
             }
         }
+    }
+
+    private static String construirCorreoCambioPassword(String nombre) {
+        return """
+            <html>
+            <body style="margin:0; padding:0; background-color:#f5f6f8; font-family:Arial,sans-serif;">
+              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+
+                      <tr>
+                        <td style="background-color:#162e54; padding:24px; text-align:center;">
+                          <div style="color:#ffffff; font-weight:bold; font-size:26px; letter-spacing:2px; margin-bottom:6px;">
+                            SRAE
+                          </div>
+                          <div style="color:#ffffff; font-weight:bold; font-size:12px; letter-spacing:1px; opacity:0.85;">
+                            SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:32px 30px;">
+                          <h2 style="color:#0d8a5f; margin:0 0 12px;">Contraseña actualizada</h2>
+                          <p style="color:#495057; font-size:14px; line-height:1.6; margin:0 0 20px;">
+                            Hola {0}, te confirmamos que la contraseña de tu cuenta se actualizó correctamente.
+                          </p>
+                          <p style="color:#adb5bd; font-size:12px; margin-top:24px;">
+                            Si tú no realizaste este cambio, contacta al administrador del sistema lo antes posible.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="background-color:#f5f6f8; padding:16px; text-align:center; color:#adb5bd; font-size:11px;">
+                          SRAE &middot; Sistema de Reservación y Administración de Eventos
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
+            """.replace("{0}", nombre);
     }
 }
