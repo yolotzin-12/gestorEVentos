@@ -40,24 +40,30 @@ public class RecuperarContraServlet extends HttpServlet {
 
         Usuario u = usuarioDao.getByEmail(email.trim().toLowerCase());
 
-        request.setAttribute("mensaje",
-                "Si ese correo está registrado, recibirás un enlace en los próximos minutos.");
+        // Si el correo no está registrado, se avisa explícitamente y se
+        // marca "correoNoExistente" para que el JSP muestre los botones
+        // de Registrarse / Cancelar en vez del mensaje de éxito.
+        if (u == null) {
+            request.setAttribute("error", "Este correo no está registrado en el sistema.");
+            request.setAttribute("correoNoExistente", true);
+            request.getRequestDispatcher("recuperarContra.jsp").forward(request, response);
+            return;
+        }
 
-        if (u != null) {
-            String token = UUID.randomUUID().toString();
-            boolean guardado = tokenDao.crear(u.getId(), token);
+        String token = UUID.randomUUID().toString();
+        boolean guardado = tokenDao.crear(u.getId(), token);
 
-            if (guardado) {
-                String html = construirCorreo(request, token);
+        if (guardado) {
+            String html = construirCorreo(request, token);
 
-                try {
-                    EmailSender.sendMail(u.getEmail(), "Recuperar contraseña - SRAE", html);
-                } catch (Exception ex) {
-                    System.err.println("Error enviando correo de recuperación: " + ex.getMessage());
-                }
+            try {
+                EmailSender.sendMail(u.getEmail(), "Recuperar contraseña - SRAE", html);
+            } catch (Exception ex) {
+                System.err.println("Error enviando correo de recuperación: " + ex.getMessage());
             }
         }
 
+        request.setAttribute("mensaje", "Se ha enviado un enlace de recuperación a tu correo.");
         request.getRequestDispatcher("recuperarContra.jsp").forward(request, response);
     }
 
