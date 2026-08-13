@@ -14,7 +14,12 @@
 <body class="bg-light">
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-    <div class="card p-4 shadow-sm tarjeta-personalizada" style="max-width: 450px; width: 100%;">
+    <div class="card p-4 shadow-sm tarjeta-personalizada position-relative" style="max-width: 450px; width: 100%;">
+
+        <a href="${pageContext.request.contextPath}/login.jsp" class="text-secondary fs-4 position-absolute" style="top: 16px; right: 20px;" title="Regresar al inicio de sesión">
+            <i class="bi bi-x-lg"></i>
+        </a>
+
         <div class="card-body text-center">
 
             <img src="img/utez.png" alt="Logo UTEZ" class="mb-4" style="max-height: 100px;">
@@ -79,8 +84,6 @@
 
 <c:if test="${not empty correoNoExistente}">
     <script>
-        // Se abre automáticamente el modal en cuanto la página carga,
-        // ya que el servlet marcó que el correo enviado no existe.
         document.addEventListener('DOMContentLoaded', function () {
             var modal = new bootstrap.Modal(document.getElementById('modalCorreoNoExiste'));
             modal.show();
