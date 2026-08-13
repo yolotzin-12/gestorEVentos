@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import com.example.events.model.Usuario;
 import com.example.events.model.models.Evento;
 import com.example.events.model.dao.EventoDao;
@@ -31,7 +32,13 @@ public class EventoServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        Usuario usuarioSesion = (Usuario) request.getSession(false).getAttribute("usuario");
+        HttpSession session = request.getSession(false);
+        Usuario usuarioSesion = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
+
+        // Si la sesión guarda el usuario como "user" en lugar de "usuario"
+        if (usuarioSesion == null && session != null) {
+            usuarioSesion = (Usuario) session.getAttribute("user");
+        }
 
         if ("crear".equals(action)) {
             EspacioDao espDao = new EspacioDao();
@@ -78,16 +85,23 @@ public class EventoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/evento");
             }
         }
-        else {
+        else if ("gestion".equals(action)) {
+            // VISTA DE GESTIÓN PARA ADMINISTRADOR (1) Y ORGANIZADOR (2)
             List<Evento> lista;
-
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
                 int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                 lista = eventoDao.getByOrganizador(idOrg);
             } else {
                 lista = eventoDao.getAll();
             }
+            request.setAttribute("listaEventos", lista);
 
+            // Intenta redirigir a gestionEventos.jsp o la vista correspondiente
+            request.getRequestDispatcher("gestionEventos.jsp").forward(request, response);
+        }
+        else {
+            // ACCIÓN POR DEFECTO: VISTA PÚBLICA DE EVENTOS (Para Cliente / Rol 3)
+            List<Evento> lista = eventoDao.getAll();
             request.setAttribute("listaEventos", lista);
             request.getRequestDispatcher("eventos.jsp").forward(request, response);
         }
@@ -99,7 +113,12 @@ public class EventoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
-        Usuario usuarioSesion = (Usuario) request.getSession(false).getAttribute("usuario");
+        HttpSession session = request.getSession(false);
+        Usuario usuarioSesion = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
+
+        if (usuarioSesion == null && session != null) {
+            usuarioSesion = (Usuario) session.getAttribute("user");
+        }
 
         if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
