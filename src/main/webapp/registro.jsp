@@ -34,16 +34,16 @@
             color: #0d8a5f;
             font-weight: 600;
         }
-        #mensajeCoincidencia {
+        .mensaje-coincidencia {
             font-size: 0.85rem;
             margin-top: 6px;
             display: none;
         }
-        #mensajeCoincidencia.ok {
+        .mensaje-coincidencia.ok {
             color: #0d8a5f;
             font-weight: 600;
         }
-        #mensajeCoincidencia.error {
+        .mensaje-coincidencia.error {
             color: #dc3545;
             font-weight: 600;
         }
@@ -97,6 +97,7 @@
                 <div class="mb-3 text-start">
                     <label for="txtCorreoConfirmacion" class="form-label fw-bold label-formulario ${not empty errorEmail ? 'text-danger' : ''}">Confirmar Correo:</label>
                     <input type="email" name="emailConfirmacion" value="${param.emailConfirmacion}" class="form-control input-formulario ${not empty errorEmail ? 'is-invalid' : ''}" id="txtCorreoConfirmacion" placeholder="Confirme su correo electronico:" required>
+                    <div id="mensajeCoincidenciaEmail" class="mensaje-coincidencia"></div>
                 </div>
 
                 <div class="mb-3 text-start">
@@ -119,12 +120,12 @@
                 <div class="mb-4 text-start">
                     <label for="txtPasswordConfirmacion" class="form-label fw-bold label-formulario">Confirmar Contraseña:</label>
                     <div class="input-group">
-                        <input type="password" name="contraConfirmacion" class="form-control input-formulario" id="txtPasswordConfirmacion" placeholder="Confirme su contraseña:" required>
+                        <input type="password" name="contraConfirmacion" class="form-control input-formulario" id="txtPasswordConfirmacion" placeholder="Repite tu contraseña:" required>
                         <button class="btn btn-outline-secondary btn-ver-password" type="button" onclick="togglePassword('txtPasswordConfirmacion', this)">
                             <i class="bi bi-eye-fill"></i>
                         </button>
                     </div>
-                    <div id="mensajeCoincidencia"></div>
+                    <div id="mensajeCoincidenciaPassword" class="mensaje-coincidencia"></div>
                 </div>
 
                 <div class="text-center mt-2">
@@ -150,8 +151,12 @@
 <script>
     var campoPassword = document.getElementById('txtPassword');
     var listaRequisitos = document.getElementById('listaRequisitos');
-    var campoConfirmacion = document.getElementById('txtPasswordConfirmacion');
-    var mensajeCoincidencia = document.getElementById('mensajeCoincidencia');
+    var campoConfirmacionPassword = document.getElementById('txtPasswordConfirmacion');
+    var mensajeCoincidenciaPassword = document.getElementById('mensajeCoincidenciaPassword');
+
+    var campoCorreo = document.getElementById('txtCorreo');
+    var campoConfirmacionCorreo = document.getElementById('txtCorreoConfirmacion');
+    var mensajeCoincidenciaEmail = document.getElementById('mensajeCoincidenciaEmail');
 
     // Checklist en vivo de requisitos de contraseña: se queda oculto hasta
     // que el usuario empieza a escribir, y cada regla se marca en rojo si
@@ -186,39 +191,57 @@
             }
         }
 
-        // Si ya había algo escrito en "confirmar contraseña", se revalida
-        // la coincidencia cada vez que cambia la contraseña principal.
-        if (campoConfirmacion.value.length > 0) {
-            validarCoincidencia();
+        if (campoConfirmacionPassword.value.length > 0) {
+            validarCoincidencia(campoPassword, campoConfirmacionPassword, mensajeCoincidenciaPassword);
         }
     });
 
-    function validarCoincidencia() {
+    // Función genérica: compara dos campos y muestra un mensaje verde si
+    // coinciden, o rojo si no, reutilizable para correo y para contraseña.
+    function validarCoincidencia(campoOriginal, campoConfirmacion, elementoMensaje) {
         if (campoConfirmacion.value.length === 0) {
-            mensajeCoincidencia.style.display = 'none';
+            elementoMensaje.style.display = 'none';
             return;
         }
 
-        mensajeCoincidencia.style.display = 'block';
+        elementoMensaje.style.display = 'block';
 
-        if (campoConfirmacion.value === campoPassword.value) {
-            mensajeCoincidencia.textContent = '✓ Las contraseñas coinciden';
-            mensajeCoincidencia.className = 'ok';
+        if (campoConfirmacion.value === campoOriginal.value) {
+            elementoMensaje.textContent = '✓ Coinciden';
+            elementoMensaje.className = 'mensaje-coincidencia ok';
         } else {
-            mensajeCoincidencia.textContent = '✕ Las contraseñas no coinciden';
-            mensajeCoincidencia.className = 'error';
+            elementoMensaje.textContent = '✕ No coinciden';
+            elementoMensaje.className = 'mensaje-coincidencia error';
         }
     }
 
-    campoConfirmacion.addEventListener('input', validarCoincidencia);
+    campoConfirmacionPassword.addEventListener('input', function () {
+        validarCoincidencia(campoPassword, campoConfirmacionPassword, mensajeCoincidenciaPassword);
+    });
 
-    // Bloquea el envío si las contraseñas no coinciden, como último resguardo
-    // por si el usuario no vio el mensaje en tiempo real.
+    campoCorreo.addEventListener('input', function () {
+        if (campoConfirmacionCorreo.value.length > 0) {
+            validarCoincidencia(campoCorreo, campoConfirmacionCorreo, mensajeCoincidenciaEmail);
+        }
+    });
+
+    campoConfirmacionCorreo.addEventListener('input', function () {
+        validarCoincidencia(campoCorreo, campoConfirmacionCorreo, mensajeCoincidenciaEmail);
+    });
+
+    // Bloquea el envío si el correo o la contraseña no coinciden, como
+    // último resguardo por si el usuario no vio el mensaje en tiempo real.
     document.getElementById('formRegistro').addEventListener('submit', function (e) {
-        if (campoPassword.value !== campoConfirmacion.value) {
+        if (campoCorreo.value !== campoConfirmacionCorreo.value) {
             e.preventDefault();
-            validarCoincidencia();
-            campoConfirmacion.focus();
+            validarCoincidencia(campoCorreo, campoConfirmacionCorreo, mensajeCoincidenciaEmail);
+            campoConfirmacionCorreo.focus();
+            return;
+        }
+        if (campoPassword.value !== campoConfirmacionPassword.value) {
+            e.preventDefault();
+            validarCoincidencia(campoPassword, campoConfirmacionPassword, mensajeCoincidenciaPassword);
+            campoConfirmacionPassword.focus();
         }
     });
 </script>
