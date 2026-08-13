@@ -18,42 +18,57 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-            <img src="img/letras.png" alt="SRAE" style="height:120px;">
+            <img src="img/logo.png" alt="Logo SRAE" style="max-height: 70px;" class="me-3">
             <div>
                 <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <a href="logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar Sesión">
-                <i class="bi bi-box-arrow-right fs-5"></i>
-            </a>
+            <%-- CIERRA SESIÓN DIRECTO AL HACER CLIC --%>
+                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
         </div>
     </div>
 
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
+            <!-- MENÚ LATERAL (SIDEBAR) CORREGIDO SEGÚN ROL -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
-                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
+                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
-                    <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
-                        <i class="bi bi-calendar-check me-3"></i> Reservas
-                    </a>
 
-                    <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                        <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold">
+                    <%-- SOLO CLIENTE / USUARIO NORMAL (idRol == 3) VE RESERVAS --%>
+                    <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 3}">
+                        <a href="reserva" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
+                            <i class="bi bi-calendar-check me-3"></i> Mis reservas
+                        </a>
+                    </c:if>
+
+                    <%-- ORGANIZADOR (idRol == 2) VE MIS EVENTOS --%>
+                    <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
+                        <a href="${pageContext.request.contextPath}/evento?action=misEventos" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
+                            <i class="bi bi-calendar-event me-3"></i> Mis eventos
+                        </a>
+                    </c:if>
+
+                    <%-- SOLO EL ADMINISTRADOR (idRol == 1) VE USUARIOS --%>
+                    <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
+                        <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                             <i class="bi bi-people me-3"></i> Usuarios
                         </a>
                     </c:if>
 
-                    <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold active">
+                    <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold text-start active">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
-                    <a href="logout" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
+
+                    <%-- SALIR DIRECTO con ALERTA --%>
+                    <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
@@ -191,10 +206,10 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/perfil.js"></script>
-<script src="js/cierresesion.js"></script>
 
 </body>
 </html>
