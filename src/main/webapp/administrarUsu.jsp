@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar Sesión">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -35,13 +35,15 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
+            <!-- BARRA LATERAL -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
-                    <a href="historialReservas.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
-                        <i class="bi bi-calendar-check me-3"></i> Reservas
+
+                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
+                        <i class="bi bi-calendar-event me-3"></i> Eventos
                     </a>
 
                     <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold active">
@@ -51,12 +53,14 @@
                     <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
-                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
+
+                    <a href="logout" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
             </div>
 
+            <!-- TABLA DE USUARIOS -->
             <div class="col-md-9">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">ADMINISTRAR USUARIOS</h4>
 
@@ -131,8 +135,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/Adminusu.js"></script>
 <script src="js/cierresesion.js"></script>
-
-
 
 </body>
 </html>

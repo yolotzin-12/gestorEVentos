@@ -12,9 +12,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Reserva.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/models/Reserva.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/historialReservas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/historialReservas.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +31,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -87,7 +85,7 @@
     "Tomcat Server.Tomcat 10.1.56.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "silvana",
+    "git-widget-placeholder": "vanessa",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -120,8 +118,7 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 10.1.55" value="FAILED" />
-              <entry key="Tomcat 10.1.56" value="FAILED" />
+              <entry key="Tomcat 10.1.56" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -226,8 +223,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
-        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.31033.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.31033.145" />
       </set>
     </attachedChunks>
   </component>
@@ -246,10 +243,22 @@
       <workItem from="1785945988272" duration="1550000" />
       <workItem from="1786059530699" duration="7224000" />
       <workItem from="1786125930812" duration="1829000" />
+      <workItem from="1786546626503" duration="4283000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
