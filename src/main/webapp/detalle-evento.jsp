@@ -117,7 +117,7 @@
                                     </c:when>
 
                                     <c:otherwise>
-                                        <a href="reservar.jsp?id=${evento.id}" class="text-decoration-none w-100">
+                                        <a href="evento?action=reservar&id=${evento.id}" class="text-decoration-none w-100">
                                             <button type="button" class="btn fs-5 w-100 d-flex align-items-center justify-content-center gap-2" style="background-color:#0d8a5f; color:#fff; font-weight:bold; border-radius:10px; padding:10px; border:none;">
                                                 <i class="bi bi-calendar-check"></i> Reservar / Registrarse
                                             </button>

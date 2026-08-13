@@ -11,6 +11,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/eventos.css">
+
+    <style>
+        /* Tarjeta atenuada para eventos que ya pasaron */
+        .tarjeta-evento.evento-finalizado {
+            opacity: 0.55;
+            filter: grayscale(60%);
+        }
+        .tarjeta-evento.evento-finalizado .tarjeta-evento-link {
+            cursor: not-allowed;
+        }
+        .badge-finalizado {
+            background-color: #6c757d;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 4px 10px;
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 <body class="eventos-body d-flex flex-column min-vh-100">
 
@@ -81,32 +101,65 @@
                              data-nombre-evento="${fn:toLowerCase(evento.nombre)}"
                              data-ubicacion-evento="${fn:toLowerCase(evento.ubicacion)}">
 
-                            <div class="tarjeta-evento d-flex flex-column h-100">
-                                <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;">
-                                    <div class="encabezado-evento">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <h3>${evento.nombre}</h3>
-                                            <c:if test="${evento.estado == 'Borrador'}">
-                                                <span class="badge bg-warning text-dark flex-shrink-0">Borrador</span>
-                                            </c:if>
-                                        </div>
-                                        <p><c:out value="${evento.nombreCategoria}" default="General"/></p>
-                                    </div>
+                            <div class="tarjeta-evento d-flex flex-column h-100 ${evento.eventoFinalizado ? 'evento-finalizado' : ''}">
 
-                                    <c:choose>
-                                        <c:when test="${not empty evento.imagenUrl}">
-                                            <img src="${evento.imagenUrl}" alt="${evento.nombre}" class="imagen-evento">
-                                        </c:when>
-                                        <c:otherwise>
-                                            <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
-                                        </c:otherwise>
-                                    </c:choose>
+                                <c:choose>
+                                    <c:when test="${evento.eventoFinalizado}">
+                                        <a href="#" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;"
+                                           onclick="mostrarEventoFinalizado(event)">
+                                            <div class="encabezado-evento">
+                                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                                    <h3>${evento.nombre}</h3>
+                                                    <span class="badge-finalizado">Finalizado</span>
+                                                </div>
+                                                <p><c:out value="${evento.nombreCategoria}" default="General"/></p>
+                                            </div>
 
-                                    <div class="pie-evento mt-auto">
-                                        <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
-                                        <div><i class="bi bi-geo-alt-fill"></i> <c:out value="${evento.ubicacion}" default="Sin ubicación"/></div>
-                                    </div>
-                                </a>
+                                            <c:choose>
+                                                <c:when test="${not empty evento.imagenUrl}">
+                                                    <img src="${evento.imagenUrl}" alt="${evento.nombre}" class="imagen-evento">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                            <div class="pie-evento mt-auto">
+                                                <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
+                                                <div><i class="bi bi-geo-alt-fill"></i> <c:out value="${evento.ubicacion}" default="Sin ubicación"/></div>
+                                            </div>
+                                        </a>
+                                    </c:when>
+
+                                    <c:otherwise>
+                                        <a href="evento?action=detalle&id=${evento.id}" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;">
+                                            <div class="encabezado-evento">
+                                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                                    <h3>${evento.nombre}</h3>
+                                                    <c:if test="${evento.estado == 'Borrador'}">
+                                                        <span class="badge bg-warning text-dark flex-shrink-0">Borrador</span>
+                                                    </c:if>
+                                                </div>
+                                                <p><c:out value="${evento.nombreCategoria}" default="General"/></p>
+                                            </div>
+
+                                            <c:choose>
+                                                <c:when test="${not empty evento.imagenUrl}">
+                                                    <img src="${evento.imagenUrl}" alt="${evento.nombre}" class="imagen-evento">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img src="img/personas.jpg" alt="Evento" class="imagen-evento">
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                            <div class="pie-evento mt-auto">
+                                                <div><i class="bi bi-calendar-event"></i> ${evento.fechaHora}</div>
+                                                <div><i class="bi bi-geo-alt-fill"></i> <c:out value="${evento.ubicacion}" default="Sin ubicación"/></div>
+                                            </div>
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </div>
 
                         </div>
@@ -123,11 +176,39 @@
 
 </main>
 
+<!-- Modal: evento ya finalizado -->
+<div class="modal fade" id="modalEventoFinalizado" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" style="color:#162e54;">
+                    <i class="bi bi-calendar-x-fill text-secondary me-2"></i>Evento finalizado
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Este evento ya se llevó a cabo y ya no se pueden hacer reservaciones. Explora los demás eventos disponibles.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-confirmar rounded-3" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/buscador.js"></script>
 <script src="js/categorias.js"></script>
 <script src="js/cierresesion.js"></script>
+
+<script>
+    function mostrarEventoFinalizado(event) {
+        event.preventDefault();
+        var modal = new bootstrap.Modal(document.getElementById('modalEventoFinalizado'));
+        modal.show();
+    }
+</script>
 
 </body>
 </html>
