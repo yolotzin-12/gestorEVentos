@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import com.example.events.model.Usuario;
 import com.example.events.model.dao.UsuarioDao;
+import com.example.events.model.dao.AsistenteDao;
+import com.example.events.model.dao.OrganizadorDao;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,13 +19,15 @@ import java.nio.file.Paths;
 
 @WebServlet(name = "UsuarioServlet", value = "/usuarios")
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
-        maxFileSize = 1024 * 1024 * 5,      // 5 MB
-        maxRequestSize = 1024 * 1024 * 10   // 10 MB
+        fileSizeThreshold = 1024 * 1024 * 1,
+        maxFileSize = 1024 * 1024 * 5,
+        maxRequestSize = 1024 * 1024 * 10
 )
 public class UsuarioServlet extends HttpServlet {
 
     private final UsuarioDao dao = new UsuarioDao();
+    private final AsistenteDao asisDao = new AsistenteDao();
+    private final OrganizadorDao orgDao = new OrganizadorDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,11 +41,9 @@ public class UsuarioServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-
         HttpSession session = request.getSession();
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
 
-        // ACTUALIZAR DATOS PERSONALES ---
         if ("actualizarDatos".equals(action)) {
             if (usuarioSesion == null) {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -60,7 +62,6 @@ public class UsuarioServlet extends HttpServlet {
             usuarioSesion.setTelefono(telefono);
             usuarioSesion.setEmail(correo);
 
-            // Foto de perfil
             Part filePart = request.getPart("fotoPerfil");
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -84,7 +85,6 @@ public class UsuarioServlet extends HttpServlet {
             return;
         }
 
-        // CAMBIAR LA CONTRASEÑA
         if ("cambiarPassword".equals(action)) {
             if (usuarioSesion == null) {
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
@@ -110,7 +110,6 @@ public class UsuarioServlet extends HttpServlet {
             return;
         }
 
-        // GESTIÓN DE USUARIOS (DESHABILITAR / ESTADO / ROL)
         if (action != null && request.getParameter("idUsuario") != null) {
             int idUsuario = Integer.parseInt(request.getParameter("idUsuario"));
 
@@ -119,10 +118,32 @@ public class UsuarioServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/usuarios?success=estado_actualizado");
             } else if ("cambiarEstado".equals(action)) {
                 boolean nuevoEstado = Boolean.parseBoolean(request.getParameter("estado"));
+
+                if (!nuevoEstado) {
+                    if (asisDao.tieneReservasActivas(idUsuario)) {
+                        response.sendRedirect(request.getContextPath() + "/usuarios?error=reservas_activas");
+                        return;
+                    }
+                    if (orgDao.tieneEventosActivos(idUsuario)) {
+                        response.sendRedirect(request.getContextPath() + "/usuarios?error=eventos_activos");
+                        return;
+                    }
+                }
+
                 dao.cambiarEstado(idUsuario, nuevoEstado);
                 response.sendRedirect(request.getContextPath() + "/usuarios?success=estado_actualizado");
             } else if ("asignarRol".equals(action)) {
                 int idRol = Integer.parseInt(request.getParameter("idRol"));
+
+                if (asisDao.tieneReservasActivas(idUsuario)) {
+                    response.sendRedirect(request.getContextPath() + "/usuarios?error=reservas_activas");
+                    return;
+                }
+                if (orgDao.tieneEventosActivos(idUsuario)) {
+                    response.sendRedirect(request.getContextPath() + "/usuarios?error=eventos_activos");
+                    return;
+                }
+
                 int resultado = dao.asignarRol(idUsuario, idRol);
 
                 if (resultado == -1) {

@@ -35,7 +35,6 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
-            <!-- BARRA LATERAL -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
@@ -60,13 +59,28 @@
                 </div>
             </div>
 
-            <!-- TABLA DE USUARIOS -->
             <div class="col-md-9">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">ADMINISTRAR USUARIOS</h4>
 
-                <div class="position-relative mb-4">
-                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted fs-5"></i>
-                    <input type="text" id="inputBusqueda" class="form-control input-busqueda-admin" placeholder="Buscar por nombre o correo...">
+                <div class="row mb-4 gx-2">
+                    <div class="col-md-6 position-relative mb-2 mb-md-0">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted fs-5"></i>
+                        <input type="text" id="inputBusqueda" class="form-control input-busqueda-admin w-100" placeholder="Buscar por nombre o correo...">
+                    </div>
+                    <div class="col-md-3 mb-2 mb-md-0">
+                        <select id="selectFiltroRol" class="form-select input-busqueda-admin w-100 text-muted" style="padding-left: 15px;">
+                            <option value="todos">Todos los roles</option>
+                            <option value="2">Organizador</option>
+                            <option value="3">Asistente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="selectFiltroEstado" class="form-select input-busqueda-admin w-100 text-muted" style="padding-left: 15px;">
+                            <option value="todos">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="table-responsive shadow-sm tabla-admin">
@@ -98,11 +112,20 @@
                                     <form action="${pageContext.request.contextPath}/usuarios" method="POST" class="m-0">
                                         <input type="hidden" name="action" value="asignarRol">
                                         <input type="hidden" name="idUsuario" value="${u.id}">
-                                        <select name="idRol" class="form-select select-rol-admin" onchange="this.form.submit()">
-                                            <option value="3" ${u.idRol == 3 ? 'selected' : ''}>Asistente</option>
-                                            <option value="2" ${u.idRol == 2 ? 'selected' : ''}>Organizador</option>
-                                            <option value="1" ${u.idRol == 1 ? 'selected' : ''}>Administrador</option>
-                                        </select>
+
+                                        <c:choose>
+                                            <c:when test="${u.idRol == 1}">
+                                                <select class="form-select select-rol-admin" disabled>
+                                                    <option value="1" selected>Administrador</option>
+                                                </select>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <select name="idRol" class="form-select select-rol-admin" onchange="this.form.submit()">
+                                                    <option value="3" ${u.idRol == 3 ? 'selected' : ''}>Asistente</option>
+                                                    <option value="2" ${u.idRol == 2 ? 'selected' : ''}>Organizador</option>
+                                                </select>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </form>
                                 </td>
                                 <td class="text-center">
@@ -111,7 +134,7 @@
                                         <input type="hidden" name="idUsuario" value="${u.id}">
                                         <input type="hidden" name="estado" value="${!u.activo}">
                                         <div class="form-check form-switch d-inline-block">
-                                            <input class="form-check-input" type="checkbox" role="switch" ${u.activo ? 'checked' : ''} onchange="this.form.submit()">
+                                            <input class="form-check-input check-estado-usuario" type="checkbox" role="switch" ${u.activo ? 'checked' : ''} onchange="confirmarCambioEstado(this, ${u.activo})">
                                         </div>
                                     </form>
                                 </td>
