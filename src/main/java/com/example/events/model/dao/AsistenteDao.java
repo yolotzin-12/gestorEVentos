@@ -7,9 +7,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class  AsistenteDao implements Dao<Asistente, Integer> {
+public class AsistenteDao implements Dao<Asistente, Integer> {
 
-    // Obtener id_asistente a partir del id_usuario (lo usa ReservaServlet)
     public int getIdAsistenteByUsuario(int idUsuario) {
         String sql = "SELECT id_asistente FROM ASISTENTE WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -20,6 +19,18 @@ public class  AsistenteDao implements Dao<Asistente, Integer> {
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return -1;
+    }
+
+    public boolean tieneReservasActivas(int idUsuario) {
+        String sql = "SELECT COUNT(*) FROM RESERVA r JOIN ASISTENTE a ON r.id_asistente = a.id_asistente JOIN EVENTO e ON r.id_evento = e.id_evento WHERE a.id_usuario = ? AND LOWER(r.estado) = 'reservado' AND e.fecha_hora >= SYSTIMESTAMP";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
     }
 
     @Override

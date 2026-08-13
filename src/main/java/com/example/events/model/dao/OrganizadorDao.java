@@ -45,6 +45,18 @@ public class OrganizadorDao implements Dao<Organizador, Integer> {
         return -1;
     }
 
+    public boolean tieneEventosActivos(int idUsuario) {
+        String sql = "SELECT COUNT(*) FROM EVENTO e JOIN ORGANIZADOR o ON e.id_organizador = o.id_organizador WHERE o.id_usuario = ? AND e.fecha_hora >= SYSTIMESTAMP AND LOWER(e.estado) != 'cancelado'";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
     @Override
     public boolean create(Organizador o) {
         String sql = "INSERT INTO ORGANIZADOR(id_usuario, organizacion) VALUES(?, ?)";
