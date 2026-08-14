@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (formPerfil && telefonoInput) {
         telefonoInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, ''); // Quita todo lo que no sea número
+            this.value = this.value.replace(/[^0-9]/g, '');
 
             if (this.value.length === 10 || this.value.length === 0) {
                 errorTelefono.style.display = 'none';
@@ -57,11 +57,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (telefonoInput.value.length > 0 && telefonoInput.value.length !== 10) {
                 errorTelefono.style.display = 'block';
                 telefonoInput.classList.add('is-invalid');
-                event.preventDefault(); // Detiene el envío
+                event.preventDefault();
             }
         });
     }
-
 
     const nombreInput = document.getElementById('nombre');
     const apePInput = document.getElementById('apeP');
@@ -134,47 +133,97 @@ document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('formCambiarContra');
     const contraNew = document.getElementById('contraNew');
     const confirmarContra = document.getElementById('confirmarContra');
-    const errorLongitud = document.getElementById('errorLongitud');
+    const listaRequisitos = document.getElementById('listaRequisitos');
     const errorCoincidencia = document.getElementById('errorCoincidencia');
 
-    if (form) {
+    function validarCoincidencia(campoOriginal, campoConfirmacion, elementoMensaje) {
+        if (campoConfirmacion.value.length === 0) {
+            elementoMensaje.style.display = 'none';
+            return;
+        }
+
+        elementoMensaje.style.display = 'block';
+
+        if (campoConfirmacion.value === campoOriginal.value) {
+            elementoMensaje.textContent = '✓ Coinciden';
+            elementoMensaje.className = 'text-success mt-1';
+        } else {
+            elementoMensaje.textContent = '✕ No coinciden';
+            elementoMensaje.className = 'text-danger mt-1';
+        }
+    }
+
+    if (form && contraNew && confirmarContra) {
+        contraNew.addEventListener('input', function () {
+            const valor = this.value;
+
+            if (listaRequisitos) {
+                if (valor.length === 0) {
+                    listaRequisitos.style.display = 'none';
+                } else {
+                    listaRequisitos.style.display = 'block';
+                }
+
+                const reglas = {
+                    'req-longitud': valor.length >= 8,
+                    'req-mayuscula': /[A-Z]/.test(valor),
+                    'req-minuscula': /[a-z]/.test(valor),
+                    'req-numero': /[0-9]/.test(valor)
+                };
+
+                for (let id in reglas) {
+                    const li = document.getElementById(id);
+                    if (li) {
+                        const icono = li.querySelector('i');
+                        if (reglas[id]) {
+                            li.classList.add('cumplido');
+                            li.classList.remove('no-cumplido');
+                            if (icono) icono.className = 'bi bi-check-circle-fill me-1';
+                        } else {
+                            li.classList.add('no-cumplido');
+                            li.classList.remove('cumplido');
+                            if (icono) icono.className = 'bi bi-x-circle-fill me-1';
+                        }
+                    }
+                }
+            }
+
+            if (confirmarContra.value.length > 0) {
+                validarCoincidencia(contraNew, confirmarContra, errorCoincidencia);
+            }
+        });
+
+        confirmarContra.addEventListener('input', function () {
+            validarCoincidencia(contraNew, confirmarContra, errorCoincidencia);
+        });
+
         form.addEventListener('submit', function(event) {
             let isValid = true;
+            const valor = contraNew.value;
 
-            if (contraNew.value.length < 8) {
-                errorLongitud.style.display = 'block';
+            const cumpleReglas = valor.length >= 8 &&
+                /[A-Z]/.test(valor) &&
+                /[a-z]/.test(valor) &&
+                /[0-9]/.test(valor);
+
+            if (!cumpleReglas) {
                 contraNew.classList.add('is-invalid');
                 isValid = false;
             } else {
-                errorLongitud.style.display = 'none';
                 contraNew.classList.remove('is-invalid');
             }
 
             if (contraNew.value !== confirmarContra.value) {
-                errorCoincidencia.style.display = 'block';
+                validarCoincidencia(contraNew, confirmarContra, errorCoincidencia);
                 confirmarContra.classList.add('is-invalid');
+                confirmarContra.focus();
                 isValid = false;
             } else {
-                errorCoincidencia.style.display = 'none';
                 confirmarContra.classList.remove('is-invalid');
             }
 
             if (!isValid) {
                 event.preventDefault();
-            }
-        });
-
-        contraNew.addEventListener('input', function() {
-            if (contraNew.value.length >= 8) {
-                errorLongitud.style.display = 'none';
-                contraNew.classList.remove('is-invalid');
-            }
-        });
-
-        confirmarContra.addEventListener('input', function() {
-            if (contraNew.value === confirmarContra.value) {
-                errorCoincidencia.style.display = 'none';
-                confirmarContra.classList.remove('is-invalid');
             }
         });
     }

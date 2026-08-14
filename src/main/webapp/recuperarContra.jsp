@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="text-center mt-2">
-                    <button type="submit" class="btn btn-primary fw-bold py-2 px-5 d-inline-flex">
+                    <button type="submit" class="btn btn-ingresar text-white fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
                         <i class="bi bi-envelope me-2" style="font-size: 1.2rem;"></i> Generar enlace
                     </button>
                 </div>
@@ -53,7 +53,6 @@
     </div>
 </div>
 
-<!-- Modal: se muestra solo cuando el correo ingresado no está registrado -->
 <div class="modal fade" id="modalCorreoNoExiste" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4">

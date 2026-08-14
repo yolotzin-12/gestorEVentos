@@ -1,5 +1,8 @@
 package com.example.events.model.models;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Evento {
     private int id;
     private int idOrganizador;
@@ -124,7 +127,11 @@ public class Evento {
         this.imagenUrl = imagenUrl;
     }
 
+    // CALCULA DINÁMICAMENTE LAS RESERVAS
     public int getTotalReservas() {
+        if (totalReservas <= 0 && capacidadMaxima > 0 && capacidadDisponible < capacidadMaxima) {
+            return capacidadMaxima - capacidadDisponible;
+        }
         return totalReservas;
     }
 
@@ -132,10 +139,22 @@ public class Evento {
         this.totalReservas = totalReservas;
     }
 
-    // true cuando la fecha/hora del evento ya pasó (se usa en eventos.jsp
-    // para pintar la tarjeta en gris y bloquear el acceso a reservar)
+    // EVALÚA DINÁMICAMENTE SI EL EVENTO YA SUCEDIÓ
     public boolean isEventoFinalizado() {
-        return eventoFinalizado;
+        if (this.fechaHora != null && !this.fechaHora.trim().isEmpty()) {
+            try {
+                String f = this.fechaHora.replace("T", " ");
+                if (f.length() == 16) f += ":00";
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime fechaEvento = LocalDateTime.parse(f, formatter);
+
+                return fechaEvento.isBefore(LocalDateTime.now());
+            } catch (Exception e) {
+                // Si la fecha falla en parsearse por formato, usa el atributo directo
+            }
+        }
+        return this.eventoFinalizado;
     }
 
     public void setEventoFinalizado(boolean eventoFinalizado) {
