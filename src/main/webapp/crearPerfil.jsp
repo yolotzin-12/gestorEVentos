@@ -64,7 +64,7 @@
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/logout" class="btn text-white py-3 px-4 fw-bold text-start" style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
+                    <a href="${pageContext.request.contextPath}/logout" class="btn sidebar-btn py-3 px-4 fw-bold text-danger text-start" onclick="confirmarCierreSesion(event)">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
