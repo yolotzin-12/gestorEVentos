@@ -87,17 +87,6 @@
                                 <input type="text" name="nombre" class="form-control rounded-3" id="nombre" placeholder="Tu nombre:" required>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <label for="matricula" class="form-label text-muted fw-semibold mb-1">Matrícula:</label>
-                                    <input type="text" name="matricula" class="form-control rounded-3" id="matricula" placeholder="Matrícula:" required>
-                                </div>
-                                <div class="col-6">
-                                    <label for="carrera" class="form-label text-muted fw-semibold mb-1">Carrera</label>
-                                    <input type="text" name="carrera" class="form-control rounded-3" id="carrera" placeholder="Carrera" required>
-                                </div>
-                            </div>
-
                             <div class="mb-3">
                                 <label for="email" class="form-label text-muted fw-semibold mb-1">Correo electrónico</label>
                                 <input type="email" name="email" class="form-control rounded-3" id="email" placeholder="Tu correo electrónico:" required>
