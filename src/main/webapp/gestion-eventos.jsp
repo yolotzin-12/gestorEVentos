@@ -44,7 +44,7 @@
 
                 <div id="seccion-eventos">
 
-                    <!-- Encabezado superior (Sin botón de crear evento) -->
+                    <!-- Encabezado superior -->
                     <div class="d-flex justify-content-between align-items-center pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f;">
                         <h4 class="fw-bold m-0" style="color: #1a1a1a;">
                             ${sessionScope.usuario.idRol == 1 ? 'GESTIÓN GENERAL DE EVENTOS' : 'EVENTOS'}
@@ -75,15 +75,15 @@
                                     <!-- ENCABEZADO CON AZUL BAJITO -->
                                     <thead>
                                     <tr>
-                                        <th scope="col" class="py-3 px-3" style="background-color: #e8f0fe !important; color: #1b365d !important;">Evento</th>
-                                        <th scope="col" class="py-3" style="background-color: #e8f0fe !important; color: #1b365d !important;">Estado</th>
-                                        <th scope="col" class="py-3" style="background-color: #e8f0fe !important; color: #1b365d !important;">Fecha</th>
+                                        <th scope="col" class="py-3 px-3">Evento</th>
+                                        <th scope="col" class="py-3">Estado</th>
+                                        <th scope="col" class="py-3">Fecha</th>
 
                                         <!-- Ocultar estas columnas si es Administrador (idRol == 1) -->
                                         <c:if test="${sessionScope.usuario.idRol != 1}">
-                                            <th scope="col" class="py-3" style="background-color: #e8f0fe !important; color: #1b365d !important;">Cupos</th>
-                                            <th scope="col" class="text-center py-3" style="background-color: #e8f0fe !important; color: #1b365d !important;">Reservas</th>
-                                            <th scope="col" class="text-center py-3" style="background-color: #e8f0fe !important; color: #1b365d !important;">Acciones</th>
+                                            <th scope="col" class="py-3">Cupos</th>
+                                            <th scope="col" class="text-center py-3">Reservas</th>
+                                            <th scope="col" class="text-center py-3">Acciones</th>
                                         </c:if>
                                     </tr>
                                     </thead>
@@ -91,12 +91,12 @@
                                     <tbody>
                                     <c:forEach items="${listaEventos}" var="evento">
                                         <tr>
-                                            <!-- Columna: Evento -->
+                                            <!-- Columna 1: Evento -->
                                             <td class="px-3 py-3">
                                                 <div class="fw-bold text-dark" style="font-size: 0.98rem;">${evento.nombre}</div>
                                             </td>
 
-                                            <!-- Columna: Estado -->
+                                            <!-- Columna 2: Estado -->
                                             <td class="py-3">
                                                 <c:choose>
                                                     <c:when test="${evento.eventoFinalizado}">
@@ -114,20 +114,9 @@
                                                 </c:choose>
                                             </td>
 
-
-                                            <!-- Columna: Fecha -->
+                                            <!-- Columna 3: Fecha -->
                                             <td class="py-3 text-nowrap text-secondary fw-medium" style="font-size: 0.95rem;">
                                                     ${evento.fechaHora}
-
-                                            <td class="text-nowrap text-muted fw-medium" style="font-size: 0.95rem;">${evento.fechaHora}</td>
-                                            <td class="text-muted fw-medium" style="font-size: 0.95rem;">
-                                                <span class="fw-bold text-dark">${evento.capacidadMaxima - evento.capacidadDisponible}</span> / ${evento.capacidadMaxima}
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge ${evento.totalReservas > 0 ? 'bg-primary' : 'bg-light text-dark border'} px-2 py-1 rounded-pill">
-                                                    <i class="bi bi-people-fill me-1"></i>${evento.totalReservas}
-                                                </span>
-
                                             </td>
 
                                             <!-- Columnas adicionales que solo verán usuarios NO administradores -->
