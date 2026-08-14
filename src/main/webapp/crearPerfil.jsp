@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<%-- Respaldo de sesión: Si no existe en request, toma el usuario de la sesión --%>
 <c:set var="u" value="${not empty requestScope.usuario ? requestScope.usuario : sessionScope.usuario}" />
 
 <!doctype html>
@@ -20,7 +19,6 @@
 
 <div class="container my-4">
 
-    <!-- Header Superior -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center gap-3">
             <img src="img/logo.png" alt="Logo SRAE" style="height: 50px;">
@@ -40,56 +38,42 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
-            <!-- MENÚ LATERAL (SIDEBAR CORREGIDO) -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
-                    <!-- 1. Catálogo Público -->
                     <a href="${pageContext.request.contextPath}/evento" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
 
-                    <!-- 2. Gestión de Eventos (Pasa por el Servlet) -->
                     <a href="${pageContext.request.contextPath}/evento?action=gestion" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                         <i class="bi bi-calendar-event me-3"></i> Eventos
                     </a>
 
-                    <!-- 3. Administrador (idRol == 1) -->
                     <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
                         <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                             <i class="bi bi-people me-3"></i> Usuarios
                         </a>
                     </c:if>
 
-                    <!-- 4. Cliente / Usuario Normal (idRol == 3) -->
                     <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 3}">
                         <a href="${pageContext.request.contextPath}/reserva" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                             <i class="bi bi-calendar-check me-3"></i> Mis reservas
                         </a>
                     </c:if>
 
-                    <!-- 5. Mi Perfil (Carga desde Servlet para refrescar datos) -->
                     <a href="${pageContext.request.contextPath}/usuarios?action=perfil" class="btn sidebar-btn py-3 px-4 fw-bold text-start active">
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
 
-
-                    <%-- SALIR (mismo estilo que en el resto de las páginas) --%>
-                    <a href="logout" class="btn sidebar-btn py-3 px-4 fw-bold text-start text-danger">
-
-                    <!-- 6. Salir -->
                     <a href="${pageContext.request.contextPath}/logout" class="btn text-white py-3 px-4 fw-bold text-start" style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
-
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
             </div>
 
-            <!-- CONTENIDO PRINCIPAL -->
             <div class="col-md-9">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">MI PERFIL</h4>
 
                 <div class="row g-4">
-                    <!-- DATOS PERSONALES -->
                     <div class="col-md-7">
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-3" style="color: #162e54;">Datos Personales</h5>
@@ -157,7 +141,6 @@
                         </div>
                     </div>
 
-                    <!-- SEGURIDAD (CAMBIAR CONTRASEÑA) -->
                     <div class="col-md-5">
                         <div class="p-3 bg-light rounded-4 border">
                             <h5 class="fw-bold mb-1" style="color: #162e54;">Seguridad</h5>
