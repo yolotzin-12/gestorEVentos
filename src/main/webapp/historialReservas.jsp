@@ -5,8 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<%--suppress XmlUnresolvedReference --%>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<%--suppress XmlUnresolvedReference --%>
     <meta http-equiv="Pragma" content="no-cache">
+<%--suppress XmlUnresolvedReference --%>
     <meta http-equiv="Expires" content="0">
     <title>Mis Reservas - SRAE</title>
 

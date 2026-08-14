@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <style>
-
     .navbar-custom {
         background-color: #0B1727 !important;
         padding: 0.8rem 1.5rem;
@@ -102,7 +101,9 @@
             </ul>
 
             <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+
+                <!-- BOTÓN NUEVO EVENTO (SOLO ORGANIZADOR - ROL 2) -->
+                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
                     <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn btn-nuevo-evento shadow-sm d-flex align-items-center text-decoration-none">
                         <i class="bi bi-plus-circle me-2"></i> Nuevo Evento
                     </a>

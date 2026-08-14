@@ -49,8 +49,6 @@ public class ReservaServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 
-            // Se valida que la reserva pertenezca al usuario logueado antes
-            // de devolver cualquier dato.
             if (r != null && r.getIdAsistente() == idAsistente) {
                 String json = String.format(
                         "{\"codigo\":\"%s\", \"evento\":\"%s\", \"descripcion\":\"%s\", \"fechaEvento\":\"%s\", \"lugar\":\"%s\", \"ubicacion\":\"%s\", \"estado\":\"%s\", \"fechaReserva\":\"%s\"}",
@@ -70,7 +68,6 @@ public class ReservaServlet extends HttpServlet {
             return;
         }
 
-        // Historial de Reservas — cada usuario ve únicamente lo que le corresponde
         String estado = request.getParameter("estado");
         String fecha = request.getParameter("fecha");
 
@@ -118,22 +115,29 @@ public class ReservaServlet extends HttpServlet {
 
             if (ok) {
                 try {
-                    String html = construirCorreoReserva(
-                            evento != null ? evento.getNombre() : "—",
-                            evento != null ? evento.getFechaHora() : "—",
-                            r.getCodigoReserva());
+                    String codReserva = (r.getCodigoReserva() != null && !r.getCodigoReserva().isBlank())
+                            ? r.getCodigoReserva() : "SRAE-PENDIENTE";
+
+                    String nomEvt = (evento != null && evento.getNombre() != null) ? evento.getNombre() : "Evento SRAE";
+                    String fecEvt = (evento != null && evento.getFechaHora() != null) ? evento.getFechaHora() : "Por confirmar";
+
+                    String html = construirCorreoReserva(nomEvt, fecEvt, codReserva);
+
+                    System.out.println(">>> Intentando enviar correo de reserva a: " + u.getEmail());
                     EmailSender.sendMail(u.getEmail(), "Confirmación de reserva - SRAE", html);
+
                 } catch (Exception ex) {
-                    System.err.println("Correo de reserva no enviado: " + ex.getMessage());
+                    System.err.println("❌ ERROR AL CONSTRUIR O ENVIAR CORREO:");
+                    ex.printStackTrace();
                 }
+            } else {
+                System.err.println("❌ La reserva NO se guardó en la base de datos (reservaDao.create devolvió false).");
             }
             response.sendRedirect(request.getContextPath() + "/reserva");
 
         } else if ("cancelar".equals(action)) {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
 
-            // Se toma el detalle ANTES de cancelar, para armar el correo
-            // y comprobar que la reserva es del usuario que la cancela.
             Reserva detalle = reservaDao.getDetalleById(idReserva);
             boolean esDelUsuario = detalle != null && detalle.getIdAsistente() == idAsistente;
 
@@ -141,13 +145,18 @@ public class ReservaServlet extends HttpServlet {
 
             if (ok) {
                 try {
-                    String html = construirCorreoCancelacion(
-                            detalle.getNombreEvento(),
-                            detalle.getFechaEvento(),
-                            detalle.getCodigoReserva());
+                    String nomEvt = (detalle.getNombreEvento() != null) ? detalle.getNombreEvento() : "Evento SRAE";
+                    String fecEvt = (detalle.getFechaEvento() != null) ? detalle.getFechaEvento() : "Por confirmar";
+                    String codReserva = (detalle.getCodigoReserva() != null) ? detalle.getCodigoReserva() : "SRAE-CANCELADO";
+
+                    String html = construirCorreoCancelacion(nomEvt, fecEvt, codReserva);
+
+                    System.out.println(">>> Intentando enviar correo de cancelación a: " + u.getEmail());
                     EmailSender.sendMail(u.getEmail(), "Cancelación de reserva - SRAE", html);
+
                 } catch (Exception ex) {
-                    System.err.println("Correo de cancelación no enviado: " + ex.getMessage());
+                    System.err.println("❌ ERROR AL ENVIAR CORREO DE CANCELACIÓN:");
+                    ex.printStackTrace();
                 }
             }
 
@@ -187,7 +196,7 @@ public class ReservaServlet extends HttpServlet {
         return """
             <html>
             <body style="margin:0; padding:0; background-color:#f5f6f8; font-family:Arial,sans-serif;">
-              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
                 <tr>
                   <td align="center">
                     <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
@@ -210,7 +219,7 @@ public class ReservaServlet extends HttpServlet {
                             Tu lugar ha quedado reservado. Aquí están los detalles:
                           </p>
 
-                          <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; border-radius:10px; padding:16px;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; border-radius:10px; padding:16px;">
                             <tr>
                               <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Evento:</strong></td>
                               <td style="padding:6px 0; color:#495057; font-size:14px; text-align:right;">{0}</td>
@@ -250,7 +259,7 @@ public class ReservaServlet extends HttpServlet {
         return """
             <html>
             <body style="margin:0; padding:0; background-color:#f5f6f8; font-family:Arial,sans-serif;">
-              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
                 <tr>
                   <td align="center">
                     <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
@@ -273,7 +282,7 @@ public class ReservaServlet extends HttpServlet {
                             Tu reserva ha sido cancelada y tu lugar ha sido liberado. Aquí están los detalles:
                           </p>
 
-                          <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; border-radius:10px; padding:16px;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; border-radius:10px; padding:16px;">
                             <tr>
                               <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Evento:</strong></td>
                               <td style="padding:6px 0; color:#495057; font-size:14px; text-align:right;">{0}</td>
