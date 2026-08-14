@@ -24,12 +24,6 @@
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
             </div>
         </div>
-        <div class="d-flex align-items-center">
-            <%-- CIERRA SESIÓN DIRECTO AL HACER CLIC --%>
-                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-        </div>
     </div>
 
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
@@ -67,8 +61,8 @@
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
 
-                    <%-- SALIR DIRECTO con ALERTA --%>
-                    <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
+                    <%-- SALIR (mismo estilo que en el resto de las páginas) --%>
+                    <a href="logout" class="btn sidebar-btn py-3 px-4 fw-bold text-start text-danger">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
@@ -215,8 +209,3 @@
 
 </body>
 </html>
-
-
-
-
-
