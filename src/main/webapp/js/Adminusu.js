@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const error = urlParams.get('error');
     const success = urlParams.get('success');
 
+    // Manejo de alertas (Errores)
     if (error === 'reservas_activas') {
         Swal.fire({
             icon: 'warning',
@@ -20,12 +21,32 @@ document.addEventListener("DOMContentLoaded", function() {
             confirmButtonColor: '#cc0000'
         });
         window.history.replaceState(null, null, window.location.pathname);
+    }
+
+    // Manejo de alertas (Éxitos)
+    else if (success === 'rol_actualizado_correo') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Rol actualizado',
+            text: 'Los privilegios del usuario se han modificado correctamente y se ha enviado un correo electrónico para notificarle.',
+            confirmButtonColor: '#0d8a5f'
+        });
+        window.history.replaceState(null, null, window.location.pathname);
 
     } else if (success === 'rol_actualizado') {
         Swal.fire({
             icon: 'success',
             title: 'Rol actualizado',
             text: 'Los privilegios del usuario se han modificado correctamente.',
+            confirmButtonColor: '#0d8a5f'
+        });
+        window.history.replaceState(null, null, window.location.pathname);
+
+    } else if (success === 'estado_actualizado_correo') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Estado actualizado',
+            text: 'El estado del usuario se ha modificado correctamente y se ha enviado un correo electrónico para notificarle.',
             confirmButtonColor: '#0d8a5f'
         });
         window.history.replaceState(null, null, window.location.pathname);
@@ -40,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
         window.history.replaceState(null, null, window.location.pathname);
     }
 
+    // Lógica de los filtros de búsqueda
     const inputBusqueda = document.getElementById('inputBusqueda');
     const selectFiltroRol = document.getElementById('selectFiltroRol');
     const selectFiltroEstado = document.getElementById('selectFiltroEstado');
@@ -80,27 +102,27 @@ document.addEventListener("DOMContentLoaded", function() {
     if (selectFiltroEstado) selectFiltroEstado.addEventListener('change', filtrarTabla);
 });
 
+// Funciones globales fuera del DOMContentLoaded
 function confirmarCambioEstado(checkbox, estabaActivo) {
-    if (estabaActivo && !checkbox.checked) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: '¿Estás seguro que quieres desactivar a este usuario?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#cc0000',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Aceptar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                checkbox.form.submit();
-            } else {
-                checkbox.checked = true;
-            }
-        });
-    } else {
-        checkbox.form.submit();
-    }
+    const accion = checkbox.checked ? 'reactivar' : 'desactivar';
+    const colorBoton = checkbox.checked ? '#0d8a5f' : '#cc0000';
+
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: `¿Estás seguro que quieres ${accion} a este usuario?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: colorBoton,
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            checkbox.form.submit();
+        } else {
+            checkbox.checked = estabaActivo;
+        }
+    });
 }
 
 function confirmarCambioRol(selectElement) {

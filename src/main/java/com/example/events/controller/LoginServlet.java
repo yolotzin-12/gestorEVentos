@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import com.example.events.model.Usuario;
 import com.example.events.model.dao.UsuarioDao;
+import com.example.events.utils.SessionRegistry; // <-- IMPORTACIÓN AGREGADA
 
 import java.io.IOException;
 
@@ -32,9 +33,17 @@ public class LoginServlet extends HttpServlet {
         Usuario usuario = dao.login(email, contra);
 
         if (usuario != null) {
+            if (!usuario.isActivo()) {
+                request.setAttribute("error", "Tu cuenta ha sido deshabilitada. Contacta al administrador.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+
             HttpSession session = request.getSession(true);
             session.setAttribute("usuario", usuario);
             session.setAttribute("idRol", usuario.getIdRol());
+
+            SessionRegistry.registrarSesion(usuario.getId(), session);
 
             response.sendRedirect(request.getContextPath() + "/evento");
         } else {

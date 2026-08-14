@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - SRAE</title>
-
     <link rel="stylesheet" href="css/pagprin.css">
     <link rel="stylesheet" href="css/administrarUsuarios.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -25,38 +24,33 @@
             </div>
         </div>
         <div class="d-flex align-items-center">
-            <%-- CIERRA SESIÓN DIRECTO AL HACER CLIC --%>
-                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
+            <a href="logout" class="btn text-white" style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
         </div>
     </div>
 
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
-            <!-- MENÚ LATERAL (SIDEBAR) CORREGIDO SEGÚN ROL -->
             <div class="col-md-3 mb-4 mb-md-0">
                 <div class="d-flex flex-column gap-1">
                     <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                         <i class="bi bi-house-door me-3"></i> Inicio
                     </a>
 
-                    <%-- SOLO CLIENTE / USUARIO NORMAL (idRol == 3) VE RESERVAS --%>
                     <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 3}">
                         <a href="reserva" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                             <i class="bi bi-calendar-check me-3"></i> Mis reservas
                         </a>
                     </c:if>
 
-                    <%-- ORGANIZADOR (idRol == 2) VE MIS EVENTOS --%>
                     <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
                         <a href="${pageContext.request.contextPath}/evento?action=misEventos" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                             <i class="bi bi-calendar-event me-3"></i> Mis eventos
                         </a>
                     </c:if>
 
-                    <%-- SOLO EL ADMINISTRADOR (idRol == 1) VE USUARIOS --%>
                     <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
                         <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold text-start">
                             <i class="bi bi-people me-3"></i> Usuarios
@@ -67,8 +61,7 @@
                         <i class="bi bi-person me-3"></i> Mi perfil
                     </a>
 
-                    <%-- SALIR DIRECTO con ALERTA --%>
-                    <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
+                    <a href="logout" class="btn text-white" style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
                         <i class="bi bi-box-arrow-left me-3"></i> Salir
                     </a>
                 </div>
@@ -110,15 +103,15 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="nombre" class="form-label fw-bold">Nombre:</label>
-                                        <input type="text" name="nombre" class="form-control" id="nombre" value="${usuario.nombre}" required>
+                                        <input type="text" name="nombre" class="form-control" id="nombre" value="${usuario.nombre}" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="apeP" class="form-label fw-bold">Apellido Paterno:</label>
-                                        <input type="text" name="apeP" class="form-control" id="apeP" value="${usuario.apellidoPaterno}" required>
+                                        <input type="text" name="apeP" class="form-control" id="apeP" value="${usuario.apellidoPaterno}" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="apeM" class="form-label fw-bold">Apellido Materno:</label>
-                                        <input type="text" name="apeM" class="form-control" id="apeM" value="${usuario.apellidoMaterno}" required>
+                                        <input type="text" name="apeM" class="form-control" id="apeM" value="${usuario.apellidoMaterno}" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="telefono" class="form-label fw-bold">Teléfono:</label>
@@ -212,11 +205,5 @@
 <script src="js/perfil.js"></script>
 <script src="js/cierresesion.js"></script>
 
-
 </body>
 </html>
-
-
-
-
-

@@ -98,7 +98,7 @@
                         <c:forEach var="u" items="${listaUsuarios}">
                             <tr class="fila-usuario">
                                 <td>
-                                    <img src="${not empty u.fotoUrl ? u.fotoUrl : 'img/avatar.png'}" alt="User" class="avatar-usuario ms-2" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                                    <img src="${not empty u.fotoUrl ? u.fotoUrl : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}" alt="User" class="avatar-usuario ms-2">
                                 </td>
                                 <td>
                                     <div class="fw-semibold text-dark item-nombre">

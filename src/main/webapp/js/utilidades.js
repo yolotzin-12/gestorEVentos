@@ -61,3 +61,26 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    let errorMsg = document.getElementById("serverError").value.trim();
+    let successMsg = document.getElementById("serverMensaje").value.trim();
+
+    if (errorMsg !== "" && errorMsg !== "null") {
+        Swal.fire({
+            icon: 'error',
+            title: 'No se pudo ingresar',
+            text: errorMsg,
+            confirmButtonColor: '#1b365d'
+        });
+    }
+
+    if (successMsg !== "" && successMsg !== "null") {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: successMsg,
+            confirmButtonColor: '#1b365d'
+        });
+    }
+});

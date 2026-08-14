@@ -15,11 +15,13 @@
 
     <div class="card p-4 shadow-lg tarjeta-personalizada">
         <div class="card-body text-center px-4">
-            <input type="hidden" id="serverError"
-                   value="<%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %>">
-            <input type="hidden" id="serverMensaje"
-                   value="<%= request.getAttribute("mensaje") != null ? request.getAttribute("mensaje") : "" %>">
+
+            <!-- Inputs ocultos para leer los mensajes enviados desde el Servlet -->
+            <input type="hidden" id="serverError" value="<%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %>">
+            <input type="hidden" id="serverMensaje" value="<%= request.getAttribute("mensaje") != null ? request.getAttribute("mensaje") : "" %>">
+
             <div id="alertasContainer"></div>
+
             <form action="login" method="POST">
                 <div class="mb-3 text-start">
                     <label for="email" class="form-label fw-bold label-formulario mb-1">Correo electrónico</label>
@@ -57,11 +59,13 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/validaciones.js"></script>
 <script src="js/utilidades.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/cierresesion.js"></script>
+
 
 </body>
 </html>
