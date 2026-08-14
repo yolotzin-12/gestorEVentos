@@ -108,7 +108,7 @@
                                             </td>
                                             <td class="text-nowrap text-muted fw-medium" style="font-size: 0.95rem;">${evento.fechaHora}</td>
                                             <td class="text-muted fw-medium" style="font-size: 0.95rem;">
-                                                <span class="fw-bold text-dark">${evento.capacidadDisponible}</span> / ${evento.capacidadMaxima}
+                                                <span class="fw-bold text-dark">${evento.capacidadMaxima - evento.capacidadDisponible}</span> / ${evento.capacidadMaxima}
                                             </td>
                                             <td class="text-center">
                                                 <span class="badge ${evento.totalReservas > 0 ? 'bg-primary' : 'bg-light text-dark border'} px-2 py-1 rounded-pill">
