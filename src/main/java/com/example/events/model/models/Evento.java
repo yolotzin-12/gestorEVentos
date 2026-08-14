@@ -15,6 +15,7 @@ public class Evento {
     private String fechaHora;
     private String estado;
     private int totalReservas;
+    private boolean eventoFinalizado;
 
     public Evento() {
     }
@@ -129,5 +130,15 @@ public class Evento {
 
     public void setTotalReservas(int totalReservas) {
         this.totalReservas = totalReservas;
+    }
+
+    // true cuando la fecha/hora del evento ya pasó (se usa en eventos.jsp
+    // para pintar la tarjeta en gris y bloquear el acceso a reservar)
+    public boolean isEventoFinalizado() {
+        return eventoFinalizado;
+    }
+
+    public void setEventoFinalizado(boolean eventoFinalizado) {
+        this.eventoFinalizado = eventoFinalizado;
     }
 }

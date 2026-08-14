@@ -16,7 +16,6 @@ import com.example.events.utils.EmailSender;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 import java.util.List;
 
 @WebServlet(name = "ReservaServlet", value = "/reserva")
@@ -36,7 +35,6 @@ public class ReservaServlet extends HttpServlet {
             return;
         }
 
-        // Anti-caché aplicado a TODA respuesta de este servlet
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
@@ -52,8 +50,7 @@ public class ReservaServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
 
             // Se valida que la reserva pertenezca al usuario logueado antes
-            // de devolver cualquier dato. Sin esto, cualquiera podía cambiar
-            // idReserva en la URL y ver reservas de otras personas.
+            // de devolver cualquier dato.
             if (r != null && r.getIdAsistente() == idAsistente) {
                 String json = String.format(
                         "{\"codigo\":\"%s\", \"evento\":\"%s\", \"descripcion\":\"%s\", \"fechaEvento\":\"%s\", \"lugar\":\"%s\", \"ubicacion\":\"%s\", \"estado\":\"%s\", \"fechaReserva\":\"%s\"}",
@@ -73,8 +70,7 @@ public class ReservaServlet extends HttpServlet {
             return;
         }
 
-        // Historial de Reservas — cada usuario ve únicamente lo que le
-        // corresponde, filtrado por su propio idAsistente (ya obtenido arriba).
+        // Historial de Reservas — cada usuario ve únicamente lo que le corresponde
         String estado = request.getParameter("estado");
         String fecha = request.getParameter("fecha");
 
@@ -112,21 +108,12 @@ public class ReservaServlet extends HttpServlet {
             boolean ok = reservaDao.create(r);
 
             if (ok) {
-                // Enviar correo de confirmación (HU-14)
                 try {
-                    String html = """
-                        <html><body style="font-family:Arial,sans-serif">
-                          <h2 style="color:#003b71">¡Reserva confirmada!</h2>
-                          <p><strong>Evento:</strong> {0}</p>
-                          <p><strong>Fecha:</strong> {1}</p>
-                          <p><strong>Código de reserva:</strong> {2}</p>
-                        </body></html>
-                        """;
-                    EmailSender.sendMail(u.getEmail(), "Confirmación de reserva - SRAE",
-                            MessageFormat.format(html,
-                                    evento != null ? evento.getNombre() : "—",
-                                    evento != null ? evento.getFechaHora() : "—",
-                                    r.getCodigoReserva()));
+                    String html = construirCorreoReserva(
+                            evento != null ? evento.getNombre() : "—",
+                            evento != null ? evento.getFechaHora() : "—",
+                            r.getCodigoReserva());
+                    EmailSender.sendMail(u.getEmail(), "Confirmación de reserva - SRAE", html);
                 } catch (Exception ex) {
                     System.err.println("Correo de reserva no enviado: " + ex.getMessage());
                 }
@@ -137,9 +124,7 @@ public class ReservaServlet extends HttpServlet {
             int idReserva = Integer.parseInt(request.getParameter("idReserva"));
 
             // Se toma el detalle ANTES de cancelar, para armar el correo
-            // y, sobre todo, para comprobar que la reserva es del usuario
-            // que la está intentando cancelar (evita que alguien cancele
-            // reservas ajenas manipulando el idReserva del formulario).
+            // y comprobar que la reserva es del usuario que la cancela.
             Reserva detalle = reservaDao.getDetalleById(idReserva);
             boolean esDelUsuario = detalle != null && detalle.getIdAsistente() == idAsistente;
 
@@ -147,20 +132,11 @@ public class ReservaServlet extends HttpServlet {
 
             if (ok) {
                 try {
-                    String html = """
-                        <html><body style="font-family:Arial,sans-serif">
-                          <h2 style="color:#cc0000">Reserva cancelada</h2>
-                          <p><strong>Evento:</strong> {0}</p>
-                          <p><strong>Fecha:</strong> {1}</p>
-                          <p><strong>Código de reserva:</strong> {2}</p>
-                          <p>Tu lugar ha sido liberado.</p>
-                        </body></html>
-                        """;
-                    EmailSender.sendMail(u.getEmail(), "Cancelación de reserva - SRAE",
-                            MessageFormat.format(html,
-                                    detalle.getNombreEvento(),
-                                    detalle.getFechaEvento(),
-                                    detalle.getCodigoReserva()));
+                    String html = construirCorreoCancelacion(
+                            detalle.getNombreEvento(),
+                            detalle.getFechaEvento(),
+                            detalle.getCodigoReserva());
+                    EmailSender.sendMail(u.getEmail(), "Cancelación de reserva - SRAE", html);
                 } catch (Exception ex) {
                     System.err.println("Correo de cancelación no enviado: " + ex.getMessage());
                 }
@@ -169,16 +145,12 @@ public class ReservaServlet extends HttpServlet {
             redirigirConFiltros(request, response);
 
         } else if ("limpiarHistorial".equals(action)) {
-            // Elimina del historial las reservas Canceladas y las Finalizadas
-            // (Utilizado, o Reservado con evento ya pasado). Las reservas
-            // activas (próximas) nunca se tocan.
             reservaDao.limpiarHistorial(idAsistente);
             redirigirConFiltros(request, response);
         }
     }
 
     private void redirigirConFiltros(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Se conservan los filtros que el usuario tenía aplicados en el historial
         String estadoFiltro = request.getParameter("filtroEstado");
         String fechaFiltro = request.getParameter("filtroFecha");
         StringBuilder redirect = new StringBuilder(request.getContextPath()).append("/reserva");
@@ -191,5 +163,131 @@ public class ReservaServlet extends HttpServlet {
             redirect.append(sep).append("fecha=").append(URLEncoder.encode(fechaFiltro, StandardCharsets.UTF_8));
         }
         response.sendRedirect(redirect.toString());
+    }
+
+    private static String construirCorreoReserva(String nombreEvento, String fechaEvento, String codigo) {
+        return """
+            <html>
+            <body style="margin:0; padding:0; background-color:#f5f6f8; font-family:Arial,sans-serif;">
+              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+
+                      <tr>
+                        <td style="background-color:#162e54; padding:24px; text-align:center;">
+                          <div style="color:#ffffff; font-weight:bold; font-size:26px; letter-spacing:2px; margin-bottom:6px;">
+                            SRAE
+                          </div>
+                          <div style="color:#ffffff; font-weight:bold; font-size:12px; letter-spacing:1px; opacity:0.85;">
+                            SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:32px 30px;">
+                          <h2 style="color:#0d8a5f; margin:0 0 12px;">¡Reserva confirmada!</h2>
+                          <p style="color:#495057; font-size:14px; line-height:1.6; margin:0 0 20px;">
+                            Tu lugar ha quedado reservado. Aquí están los detalles:
+                          </p>
+
+                          <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; border-radius:10px; padding:16px;">
+                            <tr>
+                              <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Evento:</strong></td>
+                              <td style="padding:6px 0; color:#495057; font-size:14px; text-align:right;">{0}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Fecha:</strong></td>
+                              <td style="padding:6px 0; color:#495057; font-size:14px; text-align:right;">{1}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Código de reserva:</strong></td>
+                              <td style="padding:6px 0; color:#0d8a5f; font-size:14px; font-weight:bold; text-align:right;">{2}</td>
+                            </tr>
+                          </table>
+
+                          <p style="color:#adb5bd; font-size:12px; margin-top:24px;">
+                            Guarda este código, te será útil para consultar o gestionar tu reserva.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="background-color:#f5f6f8; padding:16px; text-align:center; color:#adb5bd; font-size:11px;">
+                          SRAE &middot; Sistema de Reservación y Administración de Eventos
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
+            """.replace("{0}", nombreEvento).replace("{1}", fechaEvento).replace("{2}", codigo);
+    }
+
+    private static String construirCorreoCancelacion(String nombreEvento, String fechaEvento, String codigo) {
+        return """
+            <html>
+            <body style="margin:0; padding:0; background-color:#f5f6f8; font-family:Arial,sans-serif;">
+              <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; padding:30px 0;">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+
+                      <tr>
+                        <td style="background-color:#162e54; padding:24px; text-align:center;">
+                          <div style="color:#ffffff; font-weight:bold; font-size:26px; letter-spacing:2px; margin-bottom:6px;">
+                            SRAE
+                          </div>
+                          <div style="color:#ffffff; font-weight:bold; font-size:12px; letter-spacing:1px; opacity:0.85;">
+                            SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:32px 30px;">
+                          <h2 style="color:#cc0000; margin:0 0 12px;">Reserva cancelada</h2>
+                          <p style="color:#495057; font-size:14px; line-height:1.6; margin:0 0 20px;">
+                            Tu reserva ha sido cancelada y tu lugar ha sido liberado. Aquí están los detalles:
+                          </p>
+
+                          <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f5f6f8; border-radius:10px; padding:16px;">
+                            <tr>
+                              <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Evento:</strong></td>
+                              <td style="padding:6px 0; color:#495057; font-size:14px; text-align:right;">{0}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Fecha:</strong></td>
+                              <td style="padding:6px 0; color:#495057; font-size:14px; text-align:right;">{1}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding:6px 0; color:#162e54; font-size:14px;"><strong>Código de reserva:</strong></td>
+                              <td style="padding:6px 0; color:#cc0000; font-size:14px; font-weight:bold; text-align:right;">{2}</td>
+                            </tr>
+                          </table>
+
+                          <p style="color:#adb5bd; font-size:12px; margin-top:24px;">
+                            Si esto fue un error o cambias de opinión, puedes hacer una nueva reserva desde el catálogo de eventos.
+                          </p>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="background-color:#f5f6f8; padding:16px; text-align:center; color:#adb5bd; font-size:11px;">
+                          SRAE &middot; Sistema de Reservación y Administración de Eventos
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
+            """.replace("{0}", nombreEvento).replace("{1}", fechaEvento).replace("{2}", codigo);
     }
 }

@@ -18,10 +18,29 @@ public class ReservaDao implements Dao<Reserva, Integer> {
 
     @Override
     public boolean create(Reserva r) {
+        // Verifica que el evento exista, siga "Disponible" y su fecha aún no
+        // haya pasado. Sin esto, alguien podía forzar el POST del formulario
+        // (o manipular la URL) y reservar un evento ya finalizado si todavía
+        // tenía cupo disponible.
+        String sqlCheckEvento = "SELECT 1 FROM EVENTO WHERE id_evento = ? " +
+                "AND estado = 'Disponible' AND fecha_hora >= SYSTIMESTAMP";
         String sqlReserva = "INSERT INTO RESERVA(id_evento, id_asistente, codigo_reserva, estado) VALUES(?, ?, ?, 'Reservado')";
 
         try (Connection con = OracleConnectApp.getConnection()) {
             con.setAutoCommit(false);
+
+            boolean eventoValido = false;
+            try (PreparedStatement psCheck = con.prepareStatement(sqlCheckEvento)) {
+                psCheck.setInt(1, r.getIdEvento());
+                try (ResultSet rs = psCheck.executeQuery()) {
+                    eventoValido = rs.next();
+                }
+            }
+
+            if (!eventoValido) {
+                con.rollback();
+                return false;
+            }
 
             if (!eventoDao.decrementarDisponibilidad(r.getIdEvento(), con)) {
                 con.rollback();

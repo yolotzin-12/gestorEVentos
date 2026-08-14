@@ -92,7 +92,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="organizador" class="form-label fw-bold text-dark m-1">Asignar a Organizador</label>
+                        <div class="d-flex justify-content-between align-items-center m-1">
+                            <label for="organizador" class="form-label fw-bold text-dark mb-0">Asignar a Organizador</label>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalOrganizacion">
+                                    <i class="bi bi-building-add"></i> Asignar Organización
+                                </button>
+                            </div>
+                        </div>
                         <select name="idOrganizador" class="form-select p-2 rounded-3" id="organizador" required>
                             <option value="" disabled selected>Seleccione un organizador</option>
                             <c:forEach items="${listaOrganizadores}" var="org">
@@ -250,6 +257,37 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-danger" onclick="borrarEspacio()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalOrganizacion" tabindex="-1" aria-labelledby="modalOrganizacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white" style="background-color: #162e54;">
+                <h5 class="modal-title fw-bold" id="modalOrganizacionLabel">Asignar Organización a Organizador</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label for="selectOrgModal" class="form-label fw-bold">Seleccionar Organizador</label>
+                    <select id="selectOrgModal" class="form-select p-2">
+                        <option value="" disabled selected>Seleccione...</option>
+                        <c:forEach items="${listaOrganizadores}" var="org">
+                            <option value="${org.id}">${org.nombre} ${org.apellidoPaterno}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="nombreOrganizacion" class="form-label fw-bold">Nombre de la Organización</label>
+                    <input type="text" id="nombreOrganizacion" class="form-control p-2" placeholder="Ej. Empresa SA de CV">
+                </div>
+                <div id="mensajeOrganizacion" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarOrganizacion()">Guardar Organización</button>
             </div>
         </div>
     </div>
