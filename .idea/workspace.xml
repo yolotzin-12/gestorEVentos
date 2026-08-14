@@ -12,7 +12,6 @@
   <component name="ChangeListManager">
     <list default="true" id="29767a48-2371-42c6-baa7-539b1b4ad47a" name="Changes" comment="Correos implementados">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
