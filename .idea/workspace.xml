@@ -12,14 +12,13 @@
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="Correos implementados">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/js/Adminusu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/js/Adminusu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/js/cierresesion.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/js/cierresesion.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/css/eventos.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/css/eventos.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/dashboard-admin.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/dashboard-admin.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/dashboard-organizador.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/dashboard-organizador.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/detalle-evento.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/detalle-evento.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/eventos.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/misEventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/misEventos.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,10 +88,11 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Tomcat Server.Tomcat 10.1.55.executor": "Run",
     "Tomcat Server.Tomcat 10.1.56.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Merging silvana",
+    "git-widget-placeholder": "alexa",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -125,8 +125,7 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 10.1.55" value="FAILED" />
-              <entry key="Tomcat 10.1.56" value="FAILED" />
+              <entry key="Tomcat 10.1.55" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -134,7 +133,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="Tomcat 10.1.56" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.56" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+    <configuration name="Tomcat 10.1.55" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.55" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
         <artifact name="Events:war exploded">
@@ -149,7 +148,7 @@
         </artifact>
       </deployment>
       <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="9a15aa76-833f-4321-9725-1b65d3e639a4" />
+        <option name="BASE_DIRECTORY_NAME" value="72aa4388-914c-40e9-96e4-2cc4a880306b" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -157,7 +156,7 @@
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="51638" />
+        <option name="DEBUG_PORT" value="55488" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />

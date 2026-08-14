@@ -30,7 +30,14 @@
 
             <div class="d-flex align-items-center gap-2">
                 <a href="crearPerfil.jsp" class="icono-usuario">
-                    <i class="bi bi-person"></i>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.usuario.fotoUrl}">
+                            <img src="${sessionScope.usuario.fotoUrl}" alt="Perfil">
+                        </c:when>
+                        <c:otherwise>
+                            <i class="bi bi-person"></i>
+                        </c:otherwise>
+                    </c:choose>
                 </a>
                 <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
                     <i class="bi bi-box-arrow-right"></i>

@@ -1,4 +1,3 @@
-
 body.eventos-body {
     background-color: #f4f5fa;
     font-family: 'Montserrat', sans-serif;
@@ -48,6 +47,14 @@ body.eventos-body {
     justify-content: center;
     color: #162e54;
     font-size: 1.2rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.icono-usuario img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .btn-logout-eventos {
