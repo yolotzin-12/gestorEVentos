@@ -11,8 +11,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/eventos.css">
+    <link rel="stylesheet" href="css/navbar.css"> <!-- Aquí ya tienes los estilos de tu navbar -->
 
     <style>
+        /* Estilos exclusivos para tarjetas de eventos */
         .tarjeta-evento.evento-finalizado {
             opacity: 0.55;
             filter: grayscale(60%);
@@ -31,58 +33,15 @@
         }
     </style>
 </head>
-<body class="eventos-body d-flex flex-column min-vh-100">
+<body class="eventos-body d-flex flex-column min-vh-100 bg-light">
 
+<!-- ================= NAVBAR SUPERIOR ================= -->
+<jsp:include page="navbar.jsp">
+    <jsp:param name="activePage" value="eventos" />
+</jsp:include>
+
+<!-- ================= CONTENIDO PRINCIPAL ================= -->
 <main class="flex-grow-1">
-
-    <header class="eventos-header">
-        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-            <div class="d-flex align-items-center gap-2">
-                <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-                <img src="img/letras.png" alt="SRAE" style="height:120px;">
-            </div>
-
-            <nav class="eventos-nav">
-                <a href="${pageContext.request.contextPath}/evento" class="activo">
-                    Eventos
-                </a>
-
-                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                    <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
-                </c:if>
-
-                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
-                    <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
-                </c:if>
-            </nav>
-
-            <div class="d-flex align-items-center gap-2">
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                    <a href="evento?action=crear" class="btn btn-success btn-sm fw-bold me-2" style="background-color: #0d8a5f; border: none;">
-                        <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
-                    </a>
-                </c:if>
-                <a href="crearPerfil.jsp" class="icono-usuario">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.usuario.fotoUrl}">
-                            <img src="${sessionScope.usuario.fotoUrl}" alt="Perfil">
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-person"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </a>
-                <a href="logout" class="btn text-white" style="background-color: #cc0000;" title="Salir">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-
-        </div>
-    </header>
-
-    <hr class="divisor-teal">
-
     <div class="container">
 
         <div class="barra-filtros">
@@ -179,10 +138,9 @@
         </c:choose>
 
     </div>
-
 </main>
 
-<!-- Modal Flotante: Evento ya finalizado -->
+<!-- ================= MODAL ================= -->
 <div class="modal fade" id="modalEventoFinalizado" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-lg">
@@ -210,6 +168,10 @@
     </div>
 </div>
 
+<!-- ================= FOOTER INFERIOR ================= -->
+<jsp:include page="footer.jsp" />
+
+<!-- ================= SCRIPTS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/buscador.js"></script>
