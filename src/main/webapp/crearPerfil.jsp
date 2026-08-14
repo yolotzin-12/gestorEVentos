@@ -14,6 +14,14 @@
     <link rel="stylesheet" href="css/administrarUsuarios.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .cumplido {
+            color: #0d8a5f;
+        }
+        .no-cumplido {
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -172,9 +180,12 @@
                                             <i class="bi bi-eye"></i>
                                         </button>
                                     </div>
-                                    <div id="errorLongitud" class="text-danger mt-1" style="display: none; font-size: 0.85em;">
-                                        La contraseña debe tener al menos 8 caracteres.
-                                    </div>
+                                    <ul id="listaRequisitos" class="list-unstyled mt-2" style="display: none; font-size: 0.85em;">
+                                        <li id="req-longitud" class="no-cumplido"><i class="bi bi-x-circle-fill me-1"></i> Mínimo 8 caracteres</li>
+                                        <li id="req-mayuscula" class="no-cumplido"><i class="bi bi-x-circle-fill me-1"></i> Una letra mayúscula</li>
+                                        <li id="req-minuscula" class="no-cumplido"><i class="bi bi-x-circle-fill me-1"></i> Una letra minúscula</li>
+                                        <li id="req-numero" class="no-cumplido"><i class="bi bi-x-circle-fill me-1"></i> Un número</li>
+                                    </ul>
                                 </div>
 
                                 <div class="mb-3">

@@ -16,7 +16,7 @@
 <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
 
     <div class="mb-4 text-center">
-        <img src="img/logo.png" alt="Logo UTEZ" style="max-height: 80px;">
+        <img src="img/utez.png" alt="Logo UTEZ" style="max-height: 80px;">
     </div>
 
     <div class="card p-4 shadow-sm border-0 tarjeta-confirmacion text-center mb-4">
@@ -30,30 +30,17 @@
 
             <h4 class="fw-bold text-dark mb-4">Contraseña Actualizada<br>Correctamente</h4>
 
-            <div class="caja-seguridad text-start shadow-sm mb-2">
-                <h6 class="fw-bold text-dark mb-1" style="font-size: 0.9rem;">Gestión de Sesiones (Por Seguridad):</h6>
-                <p class="text-muted mb-3" style="font-size: 0.75rem; line-height: 1.2;">
-                    Como medida de seguridad, todas las sesiones activas en otros dispositivos han sido cerradas automáticamente.
-                </p>
-
-
-                <p class="text-muted text-center m-0" style="font-size: 0.75rem; font-style: italic;">
-                    Nota: El enlace de recuperación anterior (token de 30 mins) ya no es válido.
-                </p>
-            </div>
-
         </div>
     </div>
 
     <div class="text-center">
-        <a href="login.jsp" class="btn btn-volver-sesion shadow-sm">
+        <a href="login.jsp" class="btn btn-ingresar text-white fw-bold py-2 px-5 d-inline-flex align-items-center justify-content-center">
             Volver a Iniciar Sesión
         </a>
     </div>
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/cierresesion.js"></script>
 
