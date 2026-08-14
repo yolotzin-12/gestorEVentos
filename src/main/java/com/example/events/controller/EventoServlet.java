@@ -1,10 +1,13 @@
 package com.example.events.controller;
 
+import com.example.events.model.dao.AsistenteDao;
 import com.example.events.model.dao.CategoriaDao;
 import com.example.events.model.dao.EspacioDao;
 import com.example.events.model.dao.EventoDao;
 import com.example.events.model.dao.OrganizadorDao;
+import com.example.events.model.dao.ReservaDao;
 import com.example.events.model.models.Evento;
+import com.example.events.model.models.Reserva;
 import com.example.events.model.Usuario;
 
 import jakarta.servlet.ServletException;
@@ -105,7 +108,7 @@ public class EventoServlet extends HttpServlet {
             request.setAttribute("listaOrganizadores", oDao.getAllOrganizadores());
 
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
-                request.getRequestDispatcher("gestiondecatyubi.jsp").forward(request, response);
+                request.getRequestDispatcher("crearEventAdmin.jsp").forward(request, response);
             } else {
                 request.getRequestDispatcher("crearEvent.jsp").forward(request, response);
             }
@@ -161,6 +164,18 @@ public class EventoServlet extends HttpServlet {
                 }
 
                 request.setAttribute("evento", evento);
+
+                // Si el usuario logueado ya tiene una reserva activa para este
+                // evento, se lo indicamos a la vista para que muestre el aviso
+                // y el botón de cancelar en vez del formulario de reserva.
+                if (usuarioSesion != null) {
+                    AsistenteDao asisDao = new AsistenteDao();
+                    int idAsistente = asisDao.getIdAsistenteByUsuario(usuarioSesion.getId());
+                    ReservaDao reservaDao = new ReservaDao();
+                    Reserva reservaActiva = reservaDao.getReservaActivaDeUsuario(idEvento, idAsistente);
+                    request.setAttribute("reservaActiva", reservaActiva);
+                }
+
                 request.getRequestDispatcher("reservar.jsp").forward(request, response);
             } else {
                 response.sendRedirect(request.getContextPath() + "/evento");

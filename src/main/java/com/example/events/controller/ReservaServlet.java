@@ -101,6 +101,15 @@ public class ReservaServlet extends HttpServlet {
             int idEvento = Integer.parseInt(request.getParameter("idEvento"));
             Evento evento = eventoDao.getById(idEvento);
 
+            // No se permite una segunda reserva activa del mismo usuario para
+            // el mismo evento (por ejemplo, si reenvía el formulario o manipula
+            // el POST). Se le regresa a la pantalla de reserva, que mostrará
+            // el aviso de "ya reservaste" junto con la opción de cancelar.
+            if (reservaDao.getReservaActivaDeUsuario(idEvento, idAsistente) != null) {
+                response.sendRedirect(request.getContextPath() + "/evento?action=reservar&id=" + idEvento);
+                return;
+            }
+
             Reserva r = new Reserva();
             r.setIdEvento(idEvento);
             r.setIdAsistente(idAsistente);
@@ -140,6 +149,15 @@ public class ReservaServlet extends HttpServlet {
                 } catch (Exception ex) {
                     System.err.println("Correo de cancelación no enviado: " + ex.getMessage());
                 }
+            }
+
+            // Si la cancelación se hizo desde la pantalla de reservar (en vez
+            // del historial), se regresa ahí para que el usuario vea el
+            // formulario de reserva disponible de nuevo.
+            String origen = request.getParameter("origen");
+            if ("reservar".equals(origen) && detalle != null) {
+                response.sendRedirect(request.getContextPath() + "/evento?action=reservar&id=" + detalle.getIdEvento());
+                return;
             }
 
             redirigirConFiltros(request, response);
