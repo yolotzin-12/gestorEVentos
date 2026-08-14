@@ -25,11 +25,6 @@
                 <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
             </div>
         </div>
-        <div class="d-flex align-items-center">
-            <a href="logout" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;" title="Cerrar Sesión">
-                <i class="bi bi-box-arrow-right fs-5"></i>
-            </a>
-        </div>
     </div>
 
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
