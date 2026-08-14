@@ -2,7 +2,7 @@ let tiempoInactividad;
 
 function reiniciarTemporizador() {
     clearTimeout(tiempoInactividad);
-    tiempoInactividad = setTimeout(mostrarAlertaExpiracion, 30 * 60 * 1000);
+    tiempoInactividad = setTimeout(mostrarAlertaExpiracion, 1 * 60 * 1000);
 }
 
 function mostrarAlertaExpiracion() {
