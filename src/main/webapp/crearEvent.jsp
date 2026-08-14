@@ -31,15 +31,16 @@
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">CREACIÓN DEL EVENTO</h4>
 
-        <form action="evento" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="action" value="publicar">
+        <form action="evento" method="post" enctype="multipart/form-data" id="formCrearEvento">
+            <!-- Campo dinámico para controlar la acción (publicar / borrador) -->
+            <input type="hidden" name="action" id="actionField" value="publicar">
 
             <div class="row g-4">
 
                 <!-- COLUMNA IZQUIERDA: CAMPOS DE TEXTO Y SELECCIÓN -->
                 <div class="col-lg-6 d-flex flex-column justify-content-between">
 
-                    <!-- Categoría (Solo selección para Organizador) -->
+                    <!-- Categoría -->
                     <div class="mb-3">
                         <label for="idCategoria" class="form-label fw-bold text-dark mb-1">Categoría</label>
                         <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
@@ -56,7 +57,7 @@
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
-                    <!-- Espacio / Ubicación (Solo selección para Organizador) -->
+                    <!-- Espacio / Ubicación -->
                     <div class="mb-3">
                         <label for="idEspacio" class="form-label fw-bold text-dark mb-1">Espacio / Ubicación</label>
                         <select name="idEspacio" id="idEspacio" class="form-select p-2 rounded-3" required>
@@ -117,11 +118,11 @@
 
             <!-- BOTONES DE ACCIÓN FORMULARIO -->
             <div class="d-flex justify-content-end gap-2 mt-4">
-                <button type="submit" name="action" value="publicar" class="btn text-white fw-bold py-2 px-4 shadow-sm"
+                <button type="submit" onclick="document.getElementById('actionField').value='publicar';" class="btn text-white fw-bold py-2 px-4 shadow-sm"
                         style="background-color: #0d8a5f; border-radius: 10px;">
                     <i class="bi bi-send-fill me-2"></i> Publicar evento
                 </button>
-                <button type="submit" name="action" value="borrador" class="btn btn-secondary fw-bold py-2 px-4 shadow-sm"
+                <button type="submit" onclick="document.getElementById('actionField').value='borrador';" class="btn btn-secondary fw-bold py-2 px-4 shadow-sm"
                         style="border-radius: 10px;">
                     <i class="bi bi-floppy me-2"></i> Guardar borrador
                 </button>

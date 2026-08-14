@@ -64,7 +64,6 @@ public class EventoServlet extends HttpServlet {
             if (idParam != null && !idParam.isEmpty()) {
                 int idEvento = Integer.parseInt(idParam);
 
-
                 if (!puedeGestionar(usuarioSesion, idEvento)) {
                     response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
                     return;
@@ -115,7 +114,6 @@ public class EventoServlet extends HttpServlet {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
                 int idEvento = Integer.parseInt(idParam);
-
 
                 if (!puedeGestionar(usuarioSesion, idEvento)) {
                     response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
@@ -191,7 +189,6 @@ public class EventoServlet extends HttpServlet {
         if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
 
-
             if (!puedeGestionar(usuarioSesion, id)) {
                 response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
                 return;
@@ -210,9 +207,6 @@ public class EventoServlet extends HttpServlet {
             try {
                 int idEvento = Integer.parseInt(request.getParameter("id"));
 
-                // NUEVO: validación de dueño. Antes cualquier usuario logueado
-                // podía mandar un POST directo con action=actualizar&id=X y
-                // sobrescribir el evento de otro organizador.
                 if (!puedeGestionar(usuarioSesion, idEvento)) {
                     response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
                     return;
@@ -259,7 +253,7 @@ public class EventoServlet extends HttpServlet {
                 return;
             }
         }
-        else if ("publicar".equals(action) || "borrador".equals(action)) {
+        else if ("publicar".equalsIgnoreCase(action) || "borrador".equalsIgnoreCase(action)) {
             try {
                 Evento ev = new Evento();
                 ev.setNombre(request.getParameter("nombre"));
@@ -278,7 +272,13 @@ public class EventoServlet extends HttpServlet {
                 }
                 ev.setFechaHora(fechaRaw);
 
-                ev.setEstado("publicar".equals(action) ? "Disponible" : "Borrador");
+                // Asignación de estado: Si la acción es borrador -> "Borrador", de lo contrario -> "Disponible"
+                if ("borrador".equalsIgnoreCase(action)) {
+                    ev.setEstado("Borrador");
+                } else {
+                    ev.setEstado("Disponible");
+                }
+
                 ev.setIdEspacio(Integer.parseInt(request.getParameter("idEspacio")));
 
                 Part filePart = request.getPart("img");
@@ -323,7 +323,6 @@ public class EventoServlet extends HttpServlet {
 
         response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
     }
-
 
     private boolean puedeGestionar(Usuario usuarioSesion, int idEvento) {
         if (usuarioSesion == null) return false;

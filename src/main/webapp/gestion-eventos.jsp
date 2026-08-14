@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión - SRAE</title>
 
-    <!-- Hojas de estilo generales (las mismas que usas en Usuarios) -->
+    <!-- Hojas de estilo generales -->
     <link rel="stylesheet" href="css/fooyini.css">
     <link rel="stylesheet" href="css/pagprin.css">
 
@@ -16,43 +16,41 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        .btn-accion {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
+        /* Estilos optimizados para los botones de la tabla */
+        .btn-accion-grupo .btn {
+            border-radius: 8px !important;
+            padding: 0.35rem 0.6rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-accion-grupo .btn:hover {
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body class="bg-light">
 
-<!-- Header Superior (Fuera del container para que ocupe todo el ancho) -->
+<!-- Header Superior -->
 <jsp:include page="navbar.jsp">
     <jsp:param name="activePage" value="eventos" />
 </jsp:include>
 
 <div class="container my-4">
 
-    <!-- Tarjeta Principal Adaptada al Diseño de Usuarios -->
+    <!-- Tarjeta Principal Adaptada al Diseño -->
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
-
-            <!-- COLUMNA ÚNICA: CONTENIDO DE GESTIÓN -->
             <div class="col-12">
 
                 <div id="seccion-eventos">
 
-                    <!-- Encabezado con línea verde similar a Usuarios -->
+                    <!-- Encabezado con línea verde institucional -->
                     <div class="d-flex justify-content-between align-items-end pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f;">
                         <h4 class="fw-bold m-0" style="color: #1a1a1a;">
                             ${sessionScope.usuario.idRol == 1 ? 'GESTIÓN GENERAL DE EVENTOS' : 'EVENTOS'}
                         </h4>
 
                         <div class="d-flex gap-2 mb-1">
-                            <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn btn-success btn-sm fw-bold px-3 py-2 rounded-3" style="background-color: #0d8a5f; border: none;">
+                            <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn text-white btn-sm fw-bold px-3 py-2 rounded-3 shadow-sm" style="background-color: #0d8a5f; border: none;">
                                 <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
                             </a>
 
@@ -75,8 +73,8 @@
 
                         <c:otherwise>
                             <div class="table-responsive shadow-sm border rounded-3">
-                                <table class="table table-hover m-0 bg-white" id="tablaEventos">
-                                    <thead>
+                                <table class="table table-hover align-middle m-0 bg-white" id="tablaEventos">
+                                    <thead class="bg-light">
                                     <tr>
                                         <th scope="col" class="py-3 px-3 text-dark fw-bold border-bottom">Evento</th>
                                         <th scope="col" class="py-3 text-dark fw-bold border-bottom">Estado</th>
@@ -88,7 +86,7 @@
                                     </thead>
                                     <tbody>
                                     <c:forEach items="${listaEventos}" var="evento">
-                                        <tr class="align-middle">
+                                        <tr>
                                             <td class="px-3">
                                                 <div class="fw-semibold text-dark">${evento.nombre}</div>
                                             </td>
@@ -117,26 +115,65 @@
                                                     <i class="bi bi-people-fill me-1"></i>${evento.totalReservas}
                                                 </span>
                                             </td>
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}" class="btn btn-outline-secondary btn-accion" title="Ver Detalle">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
 
-                                                    <c:if test="${!evento.eventoFinalizado && evento.estado != 'Cancelado'}">
-                                                        <a href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}" class="btn btn-outline-primary btn-accion" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <a href="${pageContext.request.contextPath}/evento?action=cancelar&id=${evento.id}" class="btn btn-outline-warning text-dark btn-accion" title="Cancelar Evento" onclick="confirmarCancelar(event)">
-                                                            <i class="bi bi-slash-circle"></i>
-                                                        </a>
-                                                    </c:if>
+                                            <!-- COLUMNA DE ACCIONES CON NUEVO DISEÑO -->
+                                            <td class="text-center align-middle">
+                                                <div class="dropdown">
+                                                    <!-- Botón activador del menú -->
+                                                    <button class="btn btn-sm btn-light border shadow-sm rounded-3 dropdown-toggle fw-semibold text-secondary px-3"
+                                                            type="button"
+                                                            id="dropdownMenuAcciones${evento.id}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        <i class="bi bi-gear-fill me-1"></i> Acciones
+                                                    </button>
 
-                                                    <c:if test="${sessionScope.usuario.idRol == 1 || evento.eventoFinalizado || evento.estado == 'Cancelado'}">
-                                                        <a href="${pageContext.request.contextPath}/evento?action=delete&id=${evento.id}" class="btn btn-outline-danger btn-accion" title="Eliminar" onclick="confirmarEliminarEvento(event)">
-                                                            <i class="bi bi-trash"></i>
-                                                        </a>
-                                                    </c:if>
+                                                    <!-- Lista de opciones del menú -->
+                                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1" aria-labelledby="dropdownMenuAcciones${evento.id}">
+
+                                                        <!-- Opción: Ver Detalle -->
+                                                        <li>
+                                                            <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
+                                                               href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}">
+                                                                <i class="bi bi-eye-fill me-2 text-info fs-6"></i> Ver Detalle
+                                                            </a>
+                                                        </li>
+
+                                                        <c:if test="${!evento.eventoFinalizado && evento.estado != 'Cancelado'}">
+                                                            <!-- Divider opcional -->
+                                                            <li><hr class="dropdown-divider my-1"></li>
+
+                                                            <!-- Opción: Editar -->
+                                                            <li>
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
+                                                                   href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}">
+                                                                    <i class="bi bi-pencil-square me-2 text-primary fs-6"></i> Editar Evento
+                                                                </a>
+                                                            </li>
+
+                                                            <!-- Opción: Cancelar -->
+                                                            <li>
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
+                                                                   href="${pageContext.request.contextPath}/evento?action=cancelar&id=${evento.id}"
+                                                                   onclick="confirmarCancelar(event)">
+                                                                    <i class="bi bi-slash-circle-fill me-2 text-warning fs-6"></i> Cancelar Evento
+                                                                </a>
+                                                            </li>
+                                                        </c:if>
+
+                                                        <!-- Opción: Eliminar -->
+                                                        <c:if test="${sessionScope.usuario.idRol == 1 || evento.eventoFinalizado || evento.estado == 'Cancelado'}">
+                                                            <li><hr class="dropdown-divider my-1"></li>
+                                                            <li>
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-danger fw-medium"
+                                                                   href="${pageContext.request.contextPath}/evento?action=delete&id=${evento.id}"
+                                                                   onclick="confirmarEliminarEvento(event)">
+                                                                    <i class="bi bi-trash3-fill me-2 text-danger fs-6"></i> Eliminar Registro
+                                                                </a>
+                                                            </li>
+                                                        </c:if>
+
+                                                    </ul>
                                                 </div>
                                             </td>
                                         </tr>
@@ -149,7 +186,6 @@
                 </div>
 
             </div>
-
         </div>
     </div>
 
