@@ -85,6 +85,25 @@ public class EventoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/evento");
             }
         }
+        else if ("reservar".equals(action)) {
+            // Carga el evento real (fecha, lugar, aforo) para que reservar.jsp
+            // no muestre datos fijos/de mentira como antes.
+            String idParam = request.getParameter("id");
+            if (idParam != null && !idParam.isEmpty()) {
+                int idEvento = Integer.parseInt(idParam);
+                Evento evento = eventoDao.getById(idEvento);
+
+                if (evento == null) {
+                    response.sendRedirect(request.getContextPath() + "/evento");
+                    return;
+                }
+
+                request.setAttribute("evento", evento);
+                request.getRequestDispatcher("reservar.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/evento");
+            }
+        }
         else if ("gestion".equals(action)) {
             // VISTA DE GESTIÓN PARA ADMINISTRADOR (1) Y ORGANIZADOR (2)
             List<Evento> lista;

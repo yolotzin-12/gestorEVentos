@@ -46,7 +46,8 @@ public class EventoDao implements Dao<Evento, Integer> {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
                 "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN 1 ELSE 0 END AS finalizado " +
                 "FROM EVENTO e " +
                 "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
                 "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
@@ -71,7 +72,8 @@ public class EventoDao implements Dao<Evento, Integer> {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
                 "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN 1 ELSE 0 END AS finalizado " +
                 "FROM EVENTO e " +
                 "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
                 "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
@@ -126,7 +128,8 @@ public class EventoDao implements Dao<Evento, Integer> {
     public Evento getById(Integer id) {
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.id_categoria, e.nombre, " +
                 "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
-                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN 1 ELSE 0 END AS finalizado " +
                 "FROM EVENTO e JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
                 "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
                 "WHERE e.id_evento = ?";
@@ -227,6 +230,14 @@ public class EventoDao implements Dao<Evento, Integer> {
 
         try {
             e.setImagenUrl(rs.getString("imagen_url"));
+        } catch (SQLException ex) {
+        }
+
+        // "finalizado" solo viene calculado en getAll(), getByOrganizador() y
+        // getById(); en getByOrganizadorConReservas() no está en el SELECT,
+        // así que se ignora sin romper nada si la columna no existe aquí.
+        try {
+            e.setEventoFinalizado(rs.getInt("finalizado") == 1);
         } catch (SQLException ex) {
         }
 

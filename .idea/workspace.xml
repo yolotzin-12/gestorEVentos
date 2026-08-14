@@ -10,9 +10,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="">
+    <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="Correos implementados">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/ReservaServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/controller/UsuarioServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/AsistenteDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/events/model/dao/OrganizadorDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/administrarUsu.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/crearPerfil.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/js/Adminusu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/js/Adminusu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/js/cierresesion.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/js/cierresesion.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +92,7 @@
     "Tomcat Server.Tomcat 10.1.56.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "vanessa",
+    "git-widget-placeholder": "Merging silvana",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -118,7 +125,8 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 10.1.56" value="STOPPED" />
+              <entry key="Tomcat 10.1.55" value="FAILED" />
+              <entry key="Tomcat 10.1.56" value="FAILED" />
             </map>
           </value>
         </entry>
@@ -245,6 +253,15 @@
       <workItem from="1786125930812" duration="1829000" />
       <workItem from="1786546626503" duration="4283000" />
     </task>
+    <task id="LOCAL-00001" summary="Correos implementados">
+      <option name="closed" value="true" />
+      <created>1786607847529</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1786607847529</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,5 +277,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Correos implementados" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correos implementados" />
   </component>
 </project>
