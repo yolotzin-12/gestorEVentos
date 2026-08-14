@@ -1,28 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<c:set var="paginaActiva" value="${param.activePage}" />
-
 <style>
-    /* =========================================
-       Estilos Personalizados de la Navbar
-    ========================================= */
-    /* Fondo azul oscuro de la barra */
+
     .navbar-custom {
-        background-color: #0B1727 !important; /* Tono azul oscuro */
+        background-color: #0B1727 !important;
         padding: 0.8rem 1.5rem;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
-
-    /* Estilo del texto del logo */
     .navbar-brand-custom span {
         color: #ffffff;
         font-weight: 800;
         font-size: 1.4rem;
         letter-spacing: 0.5px;
     }
-
-    /* Enlaces de navegación */
     .navbar-custom .navbar-nav .nav-link {
         color: rgba(255, 255, 255, 0.7) !important;
         font-size: 0.95rem;
@@ -30,7 +21,7 @@
         padding: 8px 5px;
         font-weight: 500;
         transition: all 0.2s ease;
-        border-bottom: none !important; /* Evitar bordes extraños de Bootstrap */
+        border-bottom: none !important;
     }
     .navbar-custom .navbar-nav .nav-link:hover {
         color: #ffffff !important;
@@ -38,11 +29,9 @@
     .navbar-custom .navbar-nav .nav-link.active {
         color: #ffffff !important;
         font-weight: 600;
-        border-bottom: none !important; /* FORZAMOS QUE DESAPAREZCA LA LÍNEA BLANCA */
+        border-bottom: none !important;
         text-decoration: none !important;
     }
-
-    /* Botón verde de Nuevo Evento */
     .btn-nuevo-evento {
         background-color: #10895f !important;
         color: #ffffff !important;
@@ -55,8 +44,6 @@
     .btn-nuevo-evento:hover {
         background-color: #0c6948 !important;
     }
-
-    /* Botón cuadrado azul oscuro de cerrar sesión */
     .nav-icon-logout {
         background-color: #1e2b45 !important;
         color: #ffffff !important;
@@ -83,48 +70,44 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- ENLACES DINÁMICOS POR ROL -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-2 mt-lg-0 ms-4">
 
-                <!-- 1. INICIO -->
                 <li class="nav-item">
-                    <a class="nav-link ${paginaActiva == 'inicio' ? 'active' : ''}" href="${pageContext.request.contextPath}/evento">Inicio</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/evento">Inicio</a>
                 </li>
 
-                <!-- 2. EVENTOS -->
                 <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
                     <li class="nav-item">
-                        <a class="nav-link ${paginaActiva == 'eventos' ? 'active' : ''}" href="${pageContext.request.contextPath}/evento?action=gestion">Gestion de Eventos</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/evento?action=gestion">Gestion de Eventos</a>
                     </li>
                 </c:if>
 
-                <!-- 3. USUARIOS -->
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
                     <li class="nav-item">
-                        <a class="nav-link ${paginaActiva == 'usuarios' ? 'active' : ''}" href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/evento?action=crear">Gestión de categorias y ubicaciones</a>
                     </li>
                 </c:if>
 
+                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
+                    </li>
+                </c:if>
 
-                <!-- 4. MIS RESERVAS -->
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 3}">
                     <li class="nav-item">
-                        <a class="nav-link ${paginaActiva == 'reservas' ? 'active' : ''}" href="${pageContext.request.contextPath}/reserva">Mis reservas</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/reserva">Mis reservas</a>
                     </li>
                 </c:if>
             </ul>
 
-            <!-- BOTONES DE LA DERECHA -->
             <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-
-                <!-- Botón Nuevo Evento -->
                 <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
                     <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn btn-nuevo-evento shadow-sm d-flex align-items-center text-decoration-none">
                         <i class="bi bi-plus-circle me-2"></i> Nuevo Evento
                     </a>
                 </c:if>
 
-                <!-- Botón de Perfil (Con la imagen ajustada) -->
                 <a href="${pageContext.request.contextPath}/crearPerfil.jsp" class="text-decoration-none" title="Mi perfil">
                     <c:choose>
                         <c:when test="${not empty sessionScope.usuario.fotoUrl}">
@@ -138,7 +121,6 @@
                     </c:choose>
                 </a>
 
-                <!-- Botón de Cerrar Sesión -->
                 <a href="#" data-bs-toggle="modal" data-bs-target="#modalConfirmarLogout" class="nav-icon-logout shadow-sm d-flex align-items-center justify-content-center text-decoration-none" title="Cerrar sesión">
                     <i class="bi bi-box-arrow-right text-white fs-5"></i>
                 </a>
@@ -147,7 +129,6 @@
     </div>
 </nav>
 
-<!-- Modal de confirmación de cierre de sesión -->
 <div class="modal fade" id="modalConfirmarLogout" tabindex="-1" aria-labelledby="modalConfirmarLogoutLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -165,3 +146,5 @@
         </div>
     </div>
 </div>
+
+<script src="${pageContext.request.contextPath}/js/navbar.js"></script>

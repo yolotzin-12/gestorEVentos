@@ -6,14 +6,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Evento - SRAE</title>
+    <title>Crear Categoría y Ubicación - SRAE</title>
 
     <!-- Hojas de estilo generales -->
     <link rel="stylesheet" href="css/fooyini.css">
     <link rel="stylesheet" href="css/pagprin.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/perfil.css">
-    <link rel="stylesheet" href="css/navbar.css"> <!-- Se agrega el CSS de la navbar -->
+    <link rel="stylesheet" href="css/navbar.css">
 
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,29 +30,25 @@
 <main class="flex-grow-1">
     <div class="container my-4">
 
-        <!-- Enlace opcional para regresar fácilmente a la lista -->
+        <!-- Enlace para regresar -->
         <div class="mb-3">
             <a href="evento?action=gestion" class="text-decoration-none text-secondary fw-bold">
                 <i class="bi bi-arrow-left"></i> Volver a Gestión de Eventos
             </a>
         </div>
 
-        <!-- Tarjeta Principal del Formulario -->
+        <!-- Tarjeta Principal -->
         <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
-            <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">CREACIÓN DEL EVENTO</h4>
+            <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">GESTIÓN DE CATEGORÍAS Y UBICACIONES</h4>
 
-            <form action="evento" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="publicar">
+            <div class="row g-4">
 
-                <div class="row g-4">
-
-                    <!-- COLUMNA IZQUIERDA: CAMPOS DE TEXTO Y SELECCIÓN -->
-                    <div class="col-lg-6 d-flex flex-column justify-content-between">
-
-                        <!-- Categoría -->
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="idCategoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
+                <!-- SECCIÓN: CATEGORÍA -->
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label for="idCategoria" class="form-label fw-bold text-dark mb-0 fs-5">Categoría</label>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCategoria">
                                         <i class="bi bi-plus-lg"></i> Nueva
@@ -65,24 +61,23 @@
                                     </button>
                                 </div>
                             </div>
-                            <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
-                                <option value="" disabled selected>Selecciona una categoría</option>
-                                <c:forEach items="${listaCategorias}" var="cat">
-                                    <option value="${cat.idCategoria}">${cat.nombre}</option>
-                                </c:forEach>
-                            </select>
+                            <p class="text-muted small mb-3">Selecciona o administra las categorías disponibles para los eventos.</p>
                         </div>
+                        <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria">
+                            <option value="" disabled selected>Selecciona una categoría</option>
+                            <c:forEach items="${listaCategorias}" var="cat">
+                                <option value="${cat.idCategoria}">${cat.nombre}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
 
-                        <!-- Nombre del Evento -->
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label fw-bold text-dark mb-1">Nombre del evento</label>
-                            <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
-                        </div>
-
-                        <!-- Espacio / Ubicación -->
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="idEspacio" class="form-label fw-bold text-dark mb-0">Espacio / Ubicación</label>
+                <!-- SECCIÓN: ESPACIO / UBICACIÓN -->
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label for="idEspacio" class="form-label fw-bold text-dark mb-0 fs-5">Espacio / Ubicación</label>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEspacio">
                                         <i class="bi bi-plus-lg"></i> Nuevo
@@ -95,95 +90,23 @@
                                     </button>
                                 </div>
                             </div>
-                            <select name="idEspacio" id="idEspacio" class="form-select p-2 rounded-3" required>
-                                <option value="" disabled selected>Selecciona un espacio</option>
-                                <c:forEach items="${listaEspacios}" var="esp">
-                                    <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
-                                </c:forEach>
-                            </select>
+                            <p class="text-muted small mb-3">Selecciona o administra las ubicaciones y espacios disponibles.</p>
                         </div>
-
-                        <!-- Organizador -->
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label for="organizador" class="form-label fw-bold text-dark mb-0">Asignar a Organizador</label>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalOrganizacion">
-                                        <i class="bi bi-building-add"></i> Asignar Organización
-                                    </button>
-                                </div>
-                            </div>
-                            <select name="idOrganizador" class="form-select p-2 rounded-3" id="organizador" required>
-                                <option value="" disabled selected>Seleccione un organizador</option>
-                                <c:forEach items="${listaOrganizadores}" var="org">
-                                    <option value="${org.id}">${org.nombre} ${org.apellidoPaterno} (${org.organizacion})</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-
-                        <!-- Fecha y Hora -->
-                        <div class="mb-3">
-                            <label for="fecha" class="form-label fw-bold text-dark mb-1">Fecha y hora del evento</label>
-                            <input type="datetime-local" name="fecha" class="form-control p-2 rounded-3" id="fecha"
-                                   value="${not empty evento ? fn:substring(fn:replace(evento.fechaHora, ' ', 'T'), 0, 16) : ''}" required>
-                        </div>
-
-                        <!-- Capacidad Máxima -->
-                        <div class="mb-3">
-                            <label for="capacidad" class="form-label fw-bold text-dark mb-1">Capacidad máxima</label>
-                            <input type="number" name="capacidad" class="form-control p-2 rounded-3" id="capacidad" placeholder="Ej. 100" required min="1">
-                        </div>
-
-                    </div>
-
-                    <!-- COLUMNA DERECHA: IMAGEN Y DESCRIPCIÓN -->
-                    <div class="col-lg-6 d-flex flex-column">
-
-                        <label class="form-label fw-bold text-dark mb-1">Imagen del evento <i class="bi bi-image"></i></label>
-                        <div class="border text-center p-4 rounded-3 bg-white d-flex flex-column align-items-center justify-content-center mb-3" style="border-style: dashed !important; min-height: 250px;">
-
-                            <img id="preview" src="" alt="Previsualización" class="img-fluid rounded-3 mb-3 d-none" style="max-height: 200px; object-fit: cover; width: 100%;">
-
-                            <div id="cajaBoton">
-                                <label for="img" class="btn text-white fw-bold px-4 py-2 mb-2 shadow-sm" style="background-color: #0d8a5f; border-radius: 10px; cursor: pointer;">
-                                    <i class="bi bi-upload me-2"></i> Seleccionar imagen
-                                </label>
-                                <br>
-                                <small class="text-muted">Formatos permitidos: JPG, PNG, Máx 10MB</small>
-                            </div>
-
-                            <input type="file" name="img" id="img" accept="image/*" class="d-none" onchange="previsualizarImagen(this)">
-
-                            <label for="img" id="btnCambiar" class="btn btn-sm btn-outline-secondary mt-2 d-none" style="cursor: pointer;">
-                                Cambiar imagen
-                            </label>
-                        </div>
-
-                        <div class="mb-3 flex-grow-1 d-flex flex-column">
-                            <label for="descripcion" class="form-label fw-bold text-dark mb-1">Descripción del evento</label>
-                            <textarea name="descripcion" id="descripcion" class="form-control p-2 rounded-3 flex-grow-1" placeholder="Describe el evento..." required style="min-height: 120px;"></textarea>
-                        </div>
-
+                        <select name="idEspacio" id="idEspacio" class="form-select p-2 rounded-3">
+                            <option value="" disabled selected>Selecciona un espacio</option>
+                            <c:forEach items="${listaEspacios}" var="esp">
+                                <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
 
-                <!-- BOTONES DE ACCIÓN FORMULARIO -->
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <button type="submit" name="action" value="publicar" class="btn text-white fw-bold py-2 px-4 shadow-sm"
-                            style="background-color: #0d8a5f; border-radius: 10px;">
-                        <i class="bi bi-send-fill me-2"></i> Publicar evento
-                    </button>
-                    <button type="submit" name="action" value="borrador" class="btn btn-secondary fw-bold py-2 px-4 shadow-sm"
-                            style="border-radius: 10px;">
-                        <i class="bi bi-floppy me-2"></i> Guardar borrador
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </main>
 
-<!-- ================= MODALES ================= -->
+<!-- ================= MODALES CATEGORÍA ================= -->
 
 <!-- Modal Agregar Categoría -->
 <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
@@ -263,6 +186,8 @@
         </div>
     </div>
 </div>
+
+<!-- ================= MODALES ESPACIO / UBICACIÓN ================= -->
 
 <!-- Modal Agregar Espacio -->
 <div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
@@ -353,63 +278,11 @@
     </div>
 </div>
 
-<!-- Modal Asignar Organización -->
-<div class="modal fade" id="modalOrganizacion" tabindex="-1" aria-labelledby="modalOrganizacionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header text-white" style="background-color: #162e54;">
-                <h5 class="modal-title fw-bold" id="modalOrganizacionLabel">Asignar Organización a Organizador</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="mb-3">
-                    <label for="selectOrgModal" class="form-label fw-bold">Seleccionar Organizador</label>
-                    <select id="selectOrgModal" class="form-select p-2 rounded-3">
-                        <option value="" disabled selected>Seleccione...</option>
-                        <c:forEach items="${listaOrganizadores}" var="org">
-                            <option value="${org.id}">${org.nombre} ${org.apellidoPaterno}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="nombreOrganizacion" class="form-label fw-bold">Nombre de la Organización</label>
-                    <input type="text" id="nombreOrganizacion" class="form-control p-2 rounded-3" placeholder="Ej. Empresa SA de CV">
-                </div>
-                <div id="mensajeOrganizacion" class="mt-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="guardarOrganizacion()">Guardar Organización</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Scripts -->
 <script src="${pageContext.request.contextPath}/js/categorias.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/cierresesion.js"></script>
-
-<script>
-    // Función para previsualizar la imagen al subir un archivo
-    function previsualizarImagen(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var preview = document.getElementById('preview');
-                var cajaBoton = document.getElementById('cajaBoton');
-                var btnCambiar = document.getElementById('btnCambiar');
-
-                preview.src = e.target.result;
-                preview.classList.remove('d-none');
-                cajaBoton.classList.add('d-none');
-                btnCambiar.classList.remove('d-none');
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>
 
 </body>
 </html>
