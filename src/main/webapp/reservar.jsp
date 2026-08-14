@@ -182,7 +182,6 @@
 
                 var circulo = document.getElementById('circuloProgreso');
 
-                // Verde/teal mientras haya cupo, rojo en cuanto se llena (100%)
                 var colorProgreso = porcentaje >= 100 ? '#dc3545' : '#0d8a5f';
                 var colorFondo = '#162e54';
 
