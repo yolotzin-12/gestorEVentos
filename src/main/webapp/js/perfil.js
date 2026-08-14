@@ -62,6 +62,19 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+
+    const nombreInput = document.getElementById('nombre');
+    const apePInput = document.getElementById('apeP');
+    const apeMInput = document.getElementById('apeM');
+
+    function permitirSoloLetras(event) {
+        event.target.value = event.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    }
+
+    if (nombreInput) nombreInput.addEventListener('input', permitirSoloLetras);
+    if (apePInput) apePInput.addEventListener('input', permitirSoloLetras);
+    if (apeMInput) apeMInput.addEventListener('input', permitirSoloLetras);
+
     const alertasContainer = document.getElementById('alertasContainerPerfil');
     const serverErrorInput = document.getElementById('serverErrorPerfil');
     const serverSuccessInput = document.getElementById('serverSuccessPerfil');
