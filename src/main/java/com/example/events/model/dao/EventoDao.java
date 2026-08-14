@@ -27,7 +27,7 @@ public class EventoDao implements Dao<Evento, Integer> {
             ps.setInt(7, e.getCapacidadMaxima());
             ps.setString(8, e.getFechaHora());
             ps.setString(9, e.getEstado() != null ? e.getEstado() : "Borrador");
-            ps.setString(10, e.getImagenUrl()); // Guarda la ruta de la imagen
+            ps.setString(10, e.getImagenUrl());
 
             int filas = ps.executeUpdate();
             if (filas > 0) {
@@ -68,6 +68,33 @@ public class EventoDao implements Dao<Evento, Integer> {
         return lista;
     }
 
+    // Método para Administrador (Rol 1): Obtiene TODOS los eventos sin filtrar por estado
+    public List<Evento> getAllAdmin() {
+        List<Evento> lista = new ArrayList<>();
+        String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
+                "e.descripcion, e.capacidad_maxima, e.capacidad_disponible, " +
+                "e.fecha_hora, e.estado, e.imagen_url, esp.ubicacion, c.nombre AS nombre_categoria, " +
+                "(SELECT COUNT(*) FROM RESERVA r WHERE r.id_evento = e.id_evento AND r.estado = 'Reservado') AS total_reservas, " +
+                "CASE WHEN e.fecha_hora < SYSTIMESTAMP THEN 1 ELSE 0 END AS finalizado " +
+                "FROM EVENTO e " +
+                "JOIN ESPACIO esp ON e.id_espacio = esp.id_espacio " +
+                "JOIN CATEGORIA c ON e.id_categoria = c.id_categoria " +
+                "ORDER BY e.fecha_hora DESC";
+
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Evento e = mapear(rs);
+                e.setTotalReservas(rs.getInt("total_reservas"));
+                lista.add(e);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lista;
+    }
+
     public List<Evento> getByOrganizador(int idOrganizador) {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
@@ -94,8 +121,7 @@ public class EventoDao implements Dao<Evento, Integer> {
         return lista;
     }
 
-    // HU-07: Panel "Mis eventos" del organizador -> nombre, estado, lugares
-    // disponibles y cuántas reservas tiene cada evento.
+    // Panel "Mis eventos" del organizador -> incluye conteo de reservas
     public List<Evento> getByOrganizadorConReservas(int idOrganizador) {
         List<Evento> lista = new ArrayList<>();
         String sql = "SELECT e.id_evento, e.id_organizador, e.id_espacio, e.nombre, " +
@@ -148,9 +174,6 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     @Override
     public boolean update(Evento e) {
-        // Se actualizan también categoría, espacio y capacidad disponible
-        // (esta última se iguala a la máxima, ya que solo se llega aquí
-        // editando un evento que todavía no tiene reservas confirmadas).
         String sql = "UPDATE EVENTO SET nombre=?, descripcion=?, id_categoria=?, id_espacio=?, " +
                 "capacidad_maxima=?, capacidad_disponible=?, " +
                 "fecha_hora=TO_TIMESTAMP(?, 'YYYY-MM-DD HH24:MI:SS'), estado=?, imagen_url=? WHERE id_evento=?";
@@ -174,12 +197,39 @@ public class EventoDao implements Dao<Evento, Integer> {
         }
     }
 
+    // Cambiar estado del evento (ej: 'Cancelado', 'Disponible', 'Borrador')
+    public boolean cambiarEstado(int idEvento, String nuevoEstado) {
+        String sql = "UPDATE EVENTO SET estado = ? WHERE id_evento = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevoEstado);
+            ps.setInt(2, idEvento);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
     @Override
     public boolean delete(Integer id) {
         String sql = "DELETE FROM EVENTO WHERE id_evento = ?";
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    // Elimina eventos pasados o cancelados pertenecientes a un organizador específico
+    public boolean limpiarHistorialOrganizador(int idOrganizador) {
+        String sql = "DELETE FROM EVENTO WHERE id_organizador = ? AND (estado = 'Cancelado' OR fecha_hora < SYSTIMESTAMP)";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idOrganizador);
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -233,9 +283,6 @@ public class EventoDao implements Dao<Evento, Integer> {
         } catch (SQLException ex) {
         }
 
-        // "finalizado" solo viene calculado en getAll(), getByOrganizador() y
-        // getById(); en getByOrganizadorConReservas() no está en el SELECT,
-        // así que se ignora sin romper nada si la columna no existe aquí.
         try {
             e.setEventoFinalizado(rs.getInt("finalizado") == 1);
         } catch (SQLException ex) {

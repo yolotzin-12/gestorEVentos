@@ -13,13 +13,12 @@
     <link rel="stylesheet" href="css/eventos.css">
 
     <style>
-        /* Tarjeta atenuada para eventos que ya pasaron */
         .tarjeta-evento.evento-finalizado {
             opacity: 0.55;
             filter: grayscale(60%);
         }
         .tarjeta-evento.evento-finalizado .tarjeta-evento-link {
-            cursor: not-allowed;
+            cursor: pointer;
         }
         .badge-finalizado {
             background-color: #6c757d;
@@ -67,7 +66,7 @@
                 <a href="crearPerfil.jsp" class="icono-usuario">
                     <i class="bi bi-person"></i>
                 </a>
-                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
+                <a href="logout" class="btn text-white" style="background-color: #cc0000;" title="Salir">
                     <i class="bi bi-box-arrow-right"></i>
                 </a>
             </div>
@@ -106,7 +105,7 @@
                                 <c:choose>
                                     <c:when test="${evento.eventoFinalizado}">
                                         <a href="#" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;"
-                                           onclick="mostrarEventoFinalizado(event)">
+                                           onclick="mostrarEventoFinalizado(event, '${evento.id}', '${fn:escapeXml(evento.nombre)}')">
                                             <div class="encabezado-evento">
                                                 <div class="d-flex justify-content-between align-items-start gap-2">
                                                     <h3>${evento.nombre}</h3>
@@ -176,21 +175,29 @@
 
 </main>
 
-<!-- Modal: evento ya finalizado -->
+<!-- Modal Flotante: Evento ya finalizado -->
 <div class="modal fade" id="modalEventoFinalizado" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold" style="color:#162e54;">
-                    <i class="bi bi-calendar-x-fill text-secondary me-2"></i>Evento finalizado
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-secondary text-white border-0 rounded-top-4">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-calendar-x-fill me-2"></i>EVENTO FINALIZADO
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
-                <p class="mb-0">Este evento ya se llevó a cabo y ya no se pueden hacer reservaciones. Explora los demás eventos disponibles.</p>
+            <div class="modal-body p-4 text-center">
+                <h5 id="modalNombreEvento" class="fw-bold mb-3" style="color: #162e54;"></h5>
+                <p class="text-muted mb-0">Este evento ya ha concluido y no admite más reservaciones.</p>
             </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-confirmar rounded-3" data-bs-dismiss="modal">Entendido</button>
+            <div class="modal-footer border-0 d-flex justify-content-between bg-light rounded-bottom-4">
+                <button type="button" class="btn btn-secondary px-4 rounded-3" data-bs-dismiss="modal">Entendido</button>
+
+                <%-- BOTÓN ELIMINAR EVENTO PARA EL ORGANIZADOR (Rol 2) O ADMIN (Rol 1) --%>
+                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+                    <a id="btnEliminarEventoModal" href="#" class="btn btn-danger fw-bold rounded-3" onclick="confirmarEliminarModal(event)">
+                        <i class="bi bi-trash-fill me-1"></i> Eliminar evento
+                    </a>
+                </c:if>
             </div>
         </div>
     </div>
@@ -200,13 +207,38 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/buscador.js"></script>
 <script src="js/categorias.js"></script>
-<script src="js/cierresesion.js"></script>
 
 <script>
-    function mostrarEventoFinalizado(event) {
+    function mostrarEventoFinalizado(event, idEvento, nombreEvento) {
         event.preventDefault();
+
+        document.getElementById('modalNombreEvento').innerText = nombreEvento;
+
+        var btnEliminar = document.getElementById('btnEliminarEventoModal');
+        if (btnEliminar) {
+            btnEliminar.setAttribute('href', '${pageContext.request.contextPath}/evento?action=delete&id=' + idEvento);
+        }
+
         var modal = new bootstrap.Modal(document.getElementById('modalEventoFinalizado'));
         modal.show();
+    }
+
+    function confirmarEliminarModal(e) {
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+        Swal.fire({
+            title: '¿Eliminar evento?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 </script>
 

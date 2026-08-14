@@ -2,6 +2,11 @@ package com.example.events.controller;
 
 import com.example.events.model.dao.CategoriaDao;
 import com.example.events.model.dao.EspacioDao;
+import com.example.events.model.dao.EventoDao;
+import com.example.events.model.dao.OrganizadorDao;
+import com.example.events.model.models.Evento;
+import com.example.events.model.Usuario;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,12 +14,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import com.example.events.model.Usuario;
-import com.example.events.model.models.Evento;
-import com.example.events.model.dao.EventoDao;
-import com.example.events.model.dao.OrganizadorDao;
+import jakarta.servlet.http.Part;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 @WebServlet(name = "EventoServlet", value = "/evento")
@@ -35,20 +39,59 @@ public class EventoServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         Usuario usuarioSesion = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
 
-        // Si la sesión guarda el usuario como "user" en lugar de "usuario"
         if (usuarioSesion == null && session != null) {
             usuarioSesion = (Usuario) session.getAttribute("user");
         }
 
-        if ("crear".equals(action)) {
+        // GESTIÓN Y MIS EVENTOS (Muestran la tabla de administración en gestion-eventos.jsp)
+        if ("gestion".equals(action) || "misEventos".equals(action)) {
+            List<Evento> lista;
+            if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
+                // Admin ve TODOS los eventos
+                lista = eventoDao.getAllAdmin();
+            } else if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
+                // Organizador ve SOLO sus eventos con métricas de reservas
+                int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+                lista = eventoDao.getByOrganizadorConReservas(idOrg);
+            } else {
+                lista = eventoDao.getAll();
+            }
+
+            request.setAttribute("listaEventos", lista);
+            request.getRequestDispatcher("gestion-eventos.jsp").forward(request, response);
+        }
+        else if ("cancelar".equals(action)) {
+            String idParam = request.getParameter("id");
+            if (idParam != null && !idParam.isEmpty()) {
+                int idEvento = Integer.parseInt(idParam);
+                eventoDao.cambiarEstado(idEvento, "Cancelado");
+            }
+            response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
+        }
+        else if ("limpiarHistorial".equals(action)) {
+            if (usuarioSesion != null) {
+                int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+                eventoDao.limpiarHistorialOrganizador(idOrg);
+            }
+            response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
+        }
+        else if ("delete".equals(action)) {
+            String idParam = request.getParameter("id");
+            if (idParam != null && !idParam.isEmpty()) {
+                int id = Integer.parseInt(idParam);
+                eventoDao.delete(id);
+            }
+            response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
+        }
+        else if ("crear".equals(action)) {
             EspacioDao espDao = new EspacioDao();
             request.setAttribute("listaEspacios", espDao.getAllEspacios());
 
             CategoriaDao catDao = new CategoriaDao();
             request.setAttribute("listaCategorias", catDao.getCategoriasActivas());
 
-            OrganizadorDao orgDao = new OrganizadorDao();
-            request.setAttribute("listaOrganizadores", orgDao.getAllOrganizadores());
+            OrganizadorDao oDao = new OrganizadorDao();
+            request.setAttribute("listaOrganizadores", oDao.getAllOrganizadores());
 
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
                 request.getRequestDispatcher("crearEventAdmin.jsp").forward(request, response);
@@ -71,7 +114,7 @@ public class EventoServlet extends HttpServlet {
 
                 request.getRequestDispatcher("EditarEvent.jsp").forward(request, response);
             } else {
-                response.sendRedirect(request.getContextPath() + "/evento");
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
             }
         }
         else if ("detalle".equals(action)) {
@@ -80,14 +123,16 @@ public class EventoServlet extends HttpServlet {
                 int idEvento = Integer.parseInt(idParam);
                 Evento evento = eventoDao.getById(idEvento);
                 request.setAttribute("evento", evento);
+
+                String origen = request.getParameter("origen");
+                request.setAttribute("origenNavegacion", origen != null ? origen : "principal");
+
                 request.getRequestDispatcher("detalle-evento.jsp").forward(request, response);
             } else {
-                response.sendRedirect(request.getContextPath() + "/evento");
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
             }
         }
         else if ("reservar".equals(action)) {
-            // Carga el evento real (fecha, lugar, aforo) para que reservar.jsp
-            // no muestre datos fijos/de mentira como antes.
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
                 int idEvento = Integer.parseInt(idParam);
@@ -104,22 +149,8 @@ public class EventoServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/evento");
             }
         }
-        else if ("gestion".equals(action)) {
-            // VISTA DE GESTIÓN PARA ADMINISTRADOR (1) Y ORGANIZADOR (2)
-            List<Evento> lista;
-            if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
-                int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
-                lista = eventoDao.getByOrganizador(idOrg);
-            } else {
-                lista = eventoDao.getAll();
-            }
-            request.setAttribute("listaEventos", lista);
-
-            // Intenta redirigir a gestionEventos.jsp o la vista correspondiente
-            request.getRequestDispatcher("gestionEventos.jsp").forward(request, response);
-        }
         else {
-            // ACCIÓN POR DEFECTO: VISTA PÚBLICA DE EVENTOS (Para Cliente / Rol 3)
+            // VISTA PRINCIPAL/PÚBLICA (Catálogo de tarjetas)
             List<Evento> lista = eventoDao.getAll();
             request.setAttribute("listaEventos", lista);
             request.getRequestDispatcher("eventos.jsp").forward(request, response);
@@ -144,12 +175,11 @@ public class EventoServlet extends HttpServlet {
             boolean eliminado = eventoDao.delete(id);
 
             if (eliminado) {
-                response.sendRedirect(request.getContextPath() + "/evento?success=deleted");
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion&success=deleted");
             } else {
-                response.sendRedirect(request.getContextPath() + "/evento?error=delete_failed");
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=delete_failed");
             }
             return;
-
         }
         else if ("actualizar".equals(action)) {
             try {
@@ -169,14 +199,14 @@ public class EventoServlet extends HttpServlet {
                 }
                 ev.setFechaHora(fechaRaw);
 
-                jakarta.servlet.http.Part filePart = request.getPart("img");
+                Part filePart = request.getPart("img");
                 if (filePart != null && filePart.getSize() > 0) {
-                    String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                    String uploadPath = getServletContext().getRealPath("") + java.io.File.separator + "img" + java.io.File.separator + "eventos";
-                    java.io.File uploadDir = new java.io.File(uploadPath);
-                    if (!uploadDir.exists()) uploadDir.mkdir();
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    String uploadPath = getServletContext().getRealPath("") + File.separator + "img" + File.separator + "eventos";
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) uploadDir.mkdirs();
 
-                    String filePath = uploadPath + java.io.File.separator + fileName;
+                    String filePath = uploadPath + File.separator + fileName;
                     filePart.write(filePath);
                     ev.setImagenUrl("img/eventos/" + fileName);
                 }
@@ -184,14 +214,14 @@ public class EventoServlet extends HttpServlet {
                 boolean actualizado = eventoDao.update(ev);
 
                 if (actualizado) {
-                    response.sendRedirect(request.getContextPath() + "/evento?success=edited");
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&success=edited");
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/evento?error=update_failed");
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=update_failed");
                 }
                 return;
             } catch (Exception e) {
                 System.err.println("Error editando evento: " + e.getMessage());
-                response.sendRedirect(request.getContextPath() + "/evento?error=invalid_data");
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=invalid_data");
                 return;
             }
         }
@@ -217,22 +247,25 @@ public class EventoServlet extends HttpServlet {
                 ev.setEstado("publicar".equals(action) ? "Disponible" : "Borrador");
                 ev.setIdEspacio(Integer.parseInt(request.getParameter("idEspacio")));
 
-                jakarta.servlet.http.Part filePart = request.getPart("img");
+                Part filePart = request.getPart("img");
                 if (filePart != null && filePart.getSize() > 0) {
-                    String fileName = java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 
-                    String uploadPath = getServletContext().getRealPath("") + java.io.File.separator + "img" + java.io.File.separator + "eventos";
-                    java.io.File uploadDir = new java.io.File(uploadPath);
-                    if (!uploadDir.exists()) uploadDir.mkdir();
+                    String uploadPath = getServletContext().getRealPath("") + File.separator + "img" + File.separator + "eventos";
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) uploadDir.mkdirs();
 
-                    String filePath = uploadPath + java.io.File.separator + fileName;
+                    String filePath = uploadPath + File.separator + fileName;
                     filePart.write(filePath);
 
                     ev.setImagenUrl("img/eventos/" + fileName);
                 }
 
                 if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
-                    ev.setIdOrganizador(Integer.parseInt(request.getParameter("idOrganizador")));
+                    String idOrgParam = request.getParameter("idOrganizador");
+                    if (idOrgParam != null && !idOrgParam.isEmpty()) {
+                        ev.setIdOrganizador(Integer.parseInt(idOrgParam));
+                    }
                 } else if (usuarioSesion != null) {
                     int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                     ev.setIdOrganizador(idOrg);
@@ -241,19 +274,19 @@ public class EventoServlet extends HttpServlet {
                 boolean creado = eventoDao.create(ev);
 
                 if (creado) {
-                    response.sendRedirect(request.getContextPath() + "/evento?success=" + action);
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&success=" + action);
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/evento?error=create_failed");
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=create_failed");
                 }
                 return;
 
             } catch (NumberFormatException e) {
                 System.err.println("Error procesando datos del evento: " + e.getMessage());
-                response.sendRedirect(request.getContextPath() + "/evento?error=invalid_data");
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=invalid_data");
                 return;
             }
         }
 
-        response.sendRedirect(request.getContextPath() + "/evento");
+        response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
     }
 }
