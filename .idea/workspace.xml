@@ -10,8 +10,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b9c6dd57-adee-48cb-a481-4b587e996cba" name="Changes" comment="Correos implementados">
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/AdministradorDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/AsistenteDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/CategoriaDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/EspacioDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/EventoDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/OrganizadorDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/ReservaDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/TokenRecuperacionDaoTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/example/events/model/dao/UsuarioDaoTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/reservar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/reservar.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +30,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="Class" />
         <option value="Jsp File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -41,12 +49,12 @@
     &quot;assignee&quot;: &quot;axel-ds&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/yolotzin-12/gestorEVentos.git",
-    "accountId": "a33505ac-7b9c-48d2-9392-2e2ab106b099"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/yolotzin-12/gestorEVentos.git&quot;,
+    &quot;accountId&quot;: &quot;a33505ac-7b9c-48d2-9392-2e2ab106b099&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -80,6 +88,15 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.testconnection.executor": "Run",
+    "JUnit.AdministradorDaoTest.executor": "Run",
+    "JUnit.AsistenteDaoTest.executor": "Run",
+    "JUnit.CategoriaDaoTest.executor": "Run",
+    "JUnit.EspacioDaoTest.executor": "Run",
+    "JUnit.EventoDaoTest.executor": "Run",
+    "JUnit.OrganizadorDaoTest.executor": "Run",
+    "JUnit.ReservaDaoTest.executor": "Run",
+    "JUnit.TokenRecuperacionDaoTest.executor": "Run",
+    "JUnit.UsuarioDaoTest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -122,6 +139,7 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
+              <entry key="Tomcat 10.1.55" value="STOPPED" />
               <entry key="Tomcat 10.1.56" value="STOPPED" />
             </map>
           </value>
@@ -129,7 +147,82 @@
       </map>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.TokenRecuperacionDaoTest">
+    <configuration name="EspacioDaoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Events" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.events.model.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.events.model.dao" />
+      <option name="MAIN_CLASS_NAME" value="com.example.events.model.dao.EspacioDaoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EventoDaoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Events" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.events.model.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.events.model.dao" />
+      <option name="MAIN_CLASS_NAME" value="com.example.events.model.dao.EventoDaoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrganizadorDaoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Events" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.events.model.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.events.model.dao" />
+      <option name="MAIN_CLASS_NAME" value="com.example.events.model.dao.OrganizadorDaoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ReservaDaoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Events" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.events.model.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.events.model.dao" />
+      <option name="MAIN_CLASS_NAME" value="com.example.events.model.dao.ReservaDaoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TokenRecuperacionDaoTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Events" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.events.model.dao.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.example.events.model.dao" />
+      <option name="MAIN_CLASS_NAME" value="com.example.events.model.dao.TokenRecuperacionDaoTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Tomcat 10.1.55" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.55" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
@@ -141,8 +234,6 @@
       </deployment>
       <server-settings>
         <option name="BASE_DIRECTORY_NAME" value="9a15aa76-833f-4321-9725-1b65d3e639a4" />
-        <option name="HTTP_PORT" value="8081" />
-        <option name="JNDI_PORT" value="1100" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -220,6 +311,23 @@
         </option>
       </method>
     </configuration>
+    <list>
+      <item itemvalue="JUnit.EspacioDaoTest" />
+      <item itemvalue="JUnit.EventoDaoTest" />
+      <item itemvalue="JUnit.OrganizadorDaoTest" />
+      <item itemvalue="JUnit.ReservaDaoTest" />
+      <item itemvalue="JUnit.TokenRecuperacionDaoTest" />
+      <item itemvalue="Tomcat Server.Tomcat 10.1.55" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TokenRecuperacionDaoTest" />
+        <item itemvalue="JUnit.ReservaDaoTest" />
+        <item itemvalue="JUnit.OrganizadorDaoTest" />
+        <item itemvalue="JUnit.EventoDaoTest" />
+        <item itemvalue="JUnit.EspacioDaoTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
