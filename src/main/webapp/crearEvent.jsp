@@ -31,7 +31,7 @@
             <a href="evento" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #162e54;">
                 <i class="bi bi-eye"></i> Ver Eventos
             </a>
-            <a href="evento" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
+            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
                 <i class="bi bi-box-arrow-right fs-5"></i>
             </a>
         </div>
@@ -46,18 +46,11 @@
             <div class="row">
                 <div class="col-md-6 d-flex flex-column justify-content-between">
 
+                    <!-- El Organizador solo puede ELEGIR entre las categorías que el
+                         Administrador ya dio de alta. No se muestran botones de
+                         crear/editar/eliminar categoría (eso es exclusivo de Admin). -->
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center m-1">
-                            <label for="idCategoria" class="form-label fw-bold text-dark mb-0">Categoría</label>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCategoria">
-                                    <i class="bi bi-plus-lg"></i> Nueva
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </button>
-                            </div>
-                        </div>
+                        <label for="idCategoria" class="form-label fw-bold text-dark m-1">Categoría</label>
                         <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
                             <c:forEach items="${listaCategorias}" var="cat">
@@ -71,39 +64,14 @@
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
+                    <!-- Igual que categoría: el Organizador solo elige entre los
+                         espacios que el Administrador ya dio de alta. -->
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center m-1">
-                            <label for="idEspacio" class="form-label fw-bold text-dark mb-0">Espacio / Ubicación</label>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEspacio">
-                                    <i class="bi bi-plus-lg"></i> Nuevo
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modalEliminarEspacio">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </button>
-                            </div>
-                        </div>
+                        <label for="idEspacio" class="form-label fw-bold text-dark m-1">Espacio / Ubicación</label>
                         <select name="idEspacio" id="idEspacio" class="form-select p-2 rounded-3" required>
                             <option value="" disabled selected>Selecciona un espacio</option>
                             <c:forEach items="${listaEspacios}" var="esp">
                                 <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center m-1">
-                            <label for="organizador" class="form-label fw-bold text-dark mb-0">Asignar a Organizador</label>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalOrganizacion">
-                                    <i class="bi bi-pencil-square"></i> Asignar Org.
-                                </button>
-                            </div>
-                        </div>
-                        <select name="idOrganizador" class="form-select p-2 rounded-3" id="organizador" required>
-                            <option value="" disabled selected>Seleccione un organizador</option>
-                            <c:forEach items="${listaOrganizadores}" var="org">
-                                <option value="${org.id}">${org.nombre} ${org.apellidoPaterno} (${not empty org.organizacion ? org.organizacion : 'Sin Organización'})</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -163,133 +131,6 @@
                 </button>
             </div>
         </form>
-    </div>
-</div>
-
-<div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header text-white" style="background-color: #162e54;">
-                <h5 class="modal-title fw-bold" id="modalCategoriaLabel">Agregar Nueva Categoría</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <label for="nombreCategoria" class="form-label fw-bold">Nombre de la Categoría</label>
-                <input type="text" id="nombreCategoria" class="form-control p-2" placeholder="Ej. Taller de robótica">
-                <div id="mensajeCategoria" class="mt-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="guardarCategoria()">Guardar Categoría</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEliminarCategoria" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header text-white bg-danger">
-                <h5 class="modal-title fw-bold">Eliminar Categoría</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <p>Selecciona la categoría a eliminar. No se pueden eliminar si ya tienen eventos asignados.</p>
-                <select id="selectEliminarCat" class="form-select p-2">
-                    <option value="" disabled selected>Seleccione...</option>
-                    <c:forEach items="${listaCategorias}" var="cat">
-                        <option value="${cat.idCategoria}">${cat.nombre}</option>
-                    </c:forEach>
-                </select>
-                <div id="mensajeEliminarCat" class="mt-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" onclick="borrarCategoria()">Eliminar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEspacio" tabindex="-1" aria-labelledby="modalEspacioLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header text-white" style="background-color: #162e54;">
-                <h5 class="modal-title fw-bold" id="modalEspacioLabel">Agregar Nuevo Espacio</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="mb-3">
-                    <label for="nombreEspacio" class="form-label fw-bold">Nombre del Espacio</label>
-                    <input type="text" id="nombreEspacio" class="form-control p-2" placeholder="Ej. Auditorio Principal">
-                </div>
-                <div class="mb-3">
-                    <label for="ubicacionEspacio" class="form-label fw-bold">Ubicación (Opcional)</label>
-                    <input type="text" id="ubicacionEspacio" class="form-control p-2" placeholder="Ej. Edificio B">
-                </div>
-                <div id="mensajeEspacio" class="mt-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="guardarEspacio()">Guardar Espacio</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalEliminarEspacio" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header text-white bg-danger">
-                <h5 class="modal-title fw-bold">Eliminar Espacio</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <p>Selecciona el espacio a eliminar. No se puede eliminar si ya tiene eventos programados.</p>
-                <select id="selectEliminarEsp" class="form-select p-2">
-                    <option value="" disabled selected>Seleccione...</option>
-                    <c:forEach items="${listaEspacios}" var="esp">
-                        <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
-                    </c:forEach>
-                </select>
-                <div id="mensajeEliminarEsp" class="mt-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" onclick="borrarEspacio()">Eliminar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalOrganizacion" tabindex="-1" aria-labelledby="modalOrganizacionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header text-white" style="background-color: #162e54;">
-                <h5 class="modal-title fw-bold" id="modalOrganizacionLabel">Asignar Organización a Organizador</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="mb-3">
-                    <label for="selectOrgModal" class="form-label fw-bold">Seleccionar Organizador</label>
-                    <select id="selectOrgModal" class="form-select p-2">
-                        <option value="" disabled selected>Seleccione...</option>
-                        <c:forEach items="${listaOrganizadores}" var="org">
-                            <option value="${org.id}">${org.nombre} ${org.apellidoPaterno}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="nombreOrganizacion" class="form-label fw-bold">Nombre de la Organización / Institución</label>
-                    <input type="text" id="nombreOrganizacion" class="form-control p-2" placeholder="Ej. UTEZ, Facultad de Ciencias...">
-                </div>
-                <div id="mensajeOrganizacion" class="mt-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="guardarOrganizacion()">Guardar Organización</button>
-            </div>
-        </div>
     </div>
 </div>
 

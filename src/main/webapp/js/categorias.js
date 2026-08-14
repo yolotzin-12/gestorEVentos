@@ -92,6 +92,17 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+
+    const selectEditarCat = document.getElementById('selectEditarCat');
+    if (selectEditarCat) {
+        selectEditarCat.addEventListener('change', cargarDatosCategoria);
+    }
+
+    const selectEditarEsp = document.getElementById('selectEditarEsp');
+    if (selectEditarEsp) {
+        selectEditarEsp.addEventListener('change', cargarDatosEspacio);
+    }
 });
 
 function confirmarEliminarEvento(idEvento, nombreEvento) {
@@ -168,6 +179,75 @@ function guardarCategoria() {
         });
 }
 
+function cargarDatosCategoria() {
+    const select = document.getElementById('selectEditarCat');
+    const mensajeDiv = document.getElementById('mensajeEditarCat');
+    const inputNombre = document.getElementById('nombreEditarCategoria');
+    const id = select.value;
+
+    if (!id) return;
+
+    fetch('api/categoria?id=' + id)
+        .then(response => {
+            if (!response.ok) throw new Error('No encontrada');
+            return response.json();
+        })
+        .then(categoria => {
+            inputNombre.value = categoria.nombre;
+            mensajeDiv.innerHTML = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mensajeDiv.innerHTML = '<span class="text-danger">No se pudo cargar la categoría.</span>';
+        });
+}
+
+function editarCategoria() {
+    const select = document.getElementById('selectEditarCat');
+    const inputNombre = document.getElementById('nombreEditarCategoria');
+    const mensajeDiv = document.getElementById('mensajeEditarCat');
+
+    const id = select.value;
+    const nombre = inputNombre.value;
+
+    if (!id) {
+        mensajeDiv.innerHTML = '<span class="text-danger">Selecciona una categoría a editar.</span>';
+        return;
+    }
+    if (!nombre.trim()) {
+        mensajeDiv.innerHTML = '<span class="text-danger">El nombre no puede estar vacío.</span>';
+        return;
+    }
+
+    fetch('api/categoria', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ idCategoria: parseInt(id), nombre: nombre.trim() })
+    })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                Swal.fire({
+                    title: '¡Categoría Actualizada!',
+                    text: result.message,
+                    icon: 'success',
+                    confirmButtonColor: '#0d8a5f'
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                mensajeDiv.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-triangle"></i> ${result.message}</span>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mensajeDiv.innerHTML = '<span class="text-danger">Ocurrió un error de red.</span>';
+        });
+}
+
 function guardarEspacio() {
     const nombre = document.getElementById("nombreEspacio").value;
     const ubicacion = document.getElementById("ubicacionEspacio").value;
@@ -220,6 +300,83 @@ function guardarEspacio() {
                 icon: 'error',
                 confirmButtonColor: '#cc0000'
             });
+        });
+}
+
+function cargarDatosEspacio() {
+    const select = document.getElementById('selectEditarEsp');
+    const mensajeDiv = document.getElementById('mensajeEditarEsp');
+    const inputNombre = document.getElementById('nombreEditarEspacio');
+    const inputUbicacion = document.getElementById('ubicacionEditarEspacio');
+    const id = select.value;
+
+    if (!id) return;
+
+    fetch('api/espacio?id=' + id)
+        .then(response => {
+            if (!response.ok) throw new Error('No encontrado');
+            return response.json();
+        })
+        .then(espacio => {
+            inputNombre.value = espacio.nombreEspacio || '';
+            inputUbicacion.value = espacio.ubicacion || '';
+            mensajeDiv.innerHTML = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mensajeDiv.innerHTML = '<span class="text-danger">No se pudo cargar el espacio.</span>';
+        });
+}
+
+
+function editarEspacio() {
+    const select = document.getElementById('selectEditarEsp');
+    const inputNombre = document.getElementById('nombreEditarEspacio');
+    const inputUbicacion = document.getElementById('ubicacionEditarEspacio');
+    const mensajeDiv = document.getElementById('mensajeEditarEsp');
+
+    const id = select.value;
+    const nombre = inputNombre.value;
+    const ubicacion = inputUbicacion.value;
+
+    if (!id) {
+        mensajeDiv.innerHTML = '<span class="text-danger">Selecciona un espacio a editar.</span>';
+        return;
+    }
+    if (!nombre.trim()) {
+        mensajeDiv.innerHTML = '<span class="text-danger">El nombre del espacio es obligatorio.</span>';
+        return;
+    }
+
+    fetch('api/espacio', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            idEspacio: parseInt(id),
+            nombreEspacio: nombre.trim(),
+            ubicacion: ubicacion
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    title: '¡Espacio Actualizado!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonColor: '#0d8a5f'
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                mensajeDiv.innerHTML = `<span class="text-danger"><i class="bi bi-exclamation-triangle"></i> ${data.message}</span>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mensajeDiv.innerHTML = '<span class="text-danger">Ocurrió un error al guardar.</span>';
         });
 }
 

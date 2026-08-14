@@ -43,7 +43,6 @@ public class EventoServlet extends HttpServlet {
             usuarioSesion = (Usuario) session.getAttribute("user");
         }
 
-        // GESTIÓN Y MIS EVENTOS (Muestran la tabla de administración en gestion-eventos.jsp)
         if ("gestion".equals(action) || "misEventos".equals(action)) {
             List<Evento> lista;
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
@@ -64,6 +63,13 @@ public class EventoServlet extends HttpServlet {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
                 int idEvento = Integer.parseInt(idParam);
+
+
+                if (!puedeGestionar(usuarioSesion, idEvento)) {
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
+                    return;
+                }
+
                 eventoDao.cambiarEstado(idEvento, "Cancelado");
             }
             response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
@@ -79,6 +85,12 @@ public class EventoServlet extends HttpServlet {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
                 int id = Integer.parseInt(idParam);
+
+                if (!puedeGestionar(usuarioSesion, id)) {
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
+                    return;
+                }
+
                 eventoDao.delete(id);
             }
             response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
@@ -103,6 +115,13 @@ public class EventoServlet extends HttpServlet {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
                 int idEvento = Integer.parseInt(idParam);
+
+
+                if (!puedeGestionar(usuarioSesion, idEvento)) {
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
+                    return;
+                }
+
                 Evento evento = eventoDao.getById(idEvento);
                 request.setAttribute("evento", evento);
 
@@ -150,7 +169,6 @@ public class EventoServlet extends HttpServlet {
             }
         }
         else {
-            // VISTA PRINCIPAL/PÚBLICA (Catálogo de tarjetas)
             List<Evento> lista = eventoDao.getAll();
             request.setAttribute("listaEventos", lista);
             request.getRequestDispatcher("eventos.jsp").forward(request, response);
@@ -172,6 +190,13 @@ public class EventoServlet extends HttpServlet {
 
         if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
+
+
+            if (!puedeGestionar(usuarioSesion, id)) {
+                response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
+                return;
+            }
+
             boolean eliminado = eventoDao.delete(id);
 
             if (eliminado) {
@@ -184,6 +209,15 @@ public class EventoServlet extends HttpServlet {
         else if ("actualizar".equals(action)) {
             try {
                 int idEvento = Integer.parseInt(request.getParameter("id"));
+
+                // NUEVO: validación de dueño. Antes cualquier usuario logueado
+                // podía mandar un POST directo con action=actualizar&id=X y
+                // sobrescribir el evento de otro organizador.
+                if (!puedeGestionar(usuarioSesion, idEvento)) {
+                    response.sendRedirect(request.getContextPath() + "/evento?action=gestion&error=forbidden");
+                    return;
+                }
+
                 Evento ev = eventoDao.getById(idEvento);
 
                 ev.setNombre(request.getParameter("nombre"));
@@ -288,5 +322,22 @@ public class EventoServlet extends HttpServlet {
         }
 
         response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
+    }
+
+
+    private boolean puedeGestionar(Usuario usuarioSesion, int idEvento) {
+        if (usuarioSesion == null) return false;
+
+        if (usuarioSesion.getIdRol() == 1) return true;
+
+        if (usuarioSesion.getIdRol() == 2) {
+            Evento evento = eventoDao.getById(idEvento);
+            if (evento == null) return false;
+
+            int idOrgSesion = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+            return idOrgSesion == evento.getIdOrganizador();
+        }
+
+        return false;
     }
 }

@@ -26,8 +26,7 @@ public class CategoriaDao {
 
     public List<Categoria> getCategoriasActivas() {
         List<Categoria> lista = new ArrayList<>();
-        // Consultamos solo las categorías activas según tu script de BD
-        String sql = "SELECT id_categoria, nombre FROM Categoria WHERE activa = 1";
+        String sql = "SELECT id_categoria, nombre FROM Categoria WHERE activa = 1 ORDER BY nombre";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -45,6 +44,40 @@ public class CategoriaDao {
         return lista;
     }
 
+    public Categoria getCategoriaById(int idCategoria) {
+        String sql = "SELECT id_categoria, nombre FROM Categoria WHERE id_categoria = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idCategoria);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Categoria c = new Categoria();
+                    c.setIdCategoria(rs.getInt("id_categoria"));
+                    c.setNombre(rs.getString("nombre"));
+                    return c;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean actualizarCategoria(int idCategoria, String nombre) {
+        String sql = "UPDATE Categoria SET nombre = ? WHERE id_categoria = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setInt(2, idCategoria);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public String eliminarCategoria(int idCategoria) {
         String sql = "DELETE FROM Categoria WHERE id_categoria = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -55,7 +88,6 @@ public class CategoriaDao {
             return filasAffected > 0 ? "success" : "not_found";
 
         } catch (SQLException e) {
-            // Error 2292 en Oracle: "integrity constraint violated - child record found"
             if (e.getErrorCode() == 2292) {
                 return "in_use";
             }

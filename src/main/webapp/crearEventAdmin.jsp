@@ -53,6 +53,9 @@
                                 <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalCategoria">
                                     <i class="bi bi-plus-lg"></i> Nueva
                                 </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEditarCategoria">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </button>
                                 <button type="button" class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria">
                                     <i class="bi bi-trash"></i> Eliminar
                                 </button>
@@ -77,6 +80,9 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEspacio">
                                     <i class="bi bi-plus-lg"></i> Nuevo
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#modalEditarEspacio">
+                                    <i class="bi bi-pencil-square"></i> Editar
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modalEliminarEspacio">
                                     <i class="bi bi-trash"></i> Eliminar
@@ -186,6 +192,38 @@
     </div>
 </div>
 
+<!-- NUEVO: modal de edición de categoría -->
+<div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-labelledby="modalEditarCategoriaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white" style="background-color: #162e54;">
+                <h5 class="modal-title fw-bold" id="modalEditarCategoriaLabel">Editar Categoría</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label for="selectEditarCat" class="form-label fw-bold">Selecciona la Categoría</label>
+                    <select id="selectEditarCat" class="form-select p-2">
+                        <option value="" disabled selected>Seleccione...</option>
+                        <c:forEach items="${listaCategorias}" var="cat">
+                            <option value="${cat.idCategoria}">${cat.nombre}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="nombreEditarCategoria" class="form-label fw-bold">Nuevo Nombre</label>
+                    <input type="text" id="nombreEditarCategoria" class="form-control p-2" placeholder="Ej. Taller de robótica">
+                </div>
+                <div id="mensajeEditarCat" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="editarCategoria()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="modalEliminarCategoria" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -232,6 +270,42 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="guardarEspacio()">Guardar Espacio</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NUEVO: modal de edición de espacio -->
+<div class="modal fade" id="modalEditarEspacio" tabindex="-1" aria-labelledby="modalEditarEspacioLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white" style="background-color: #162e54;">
+                <h5 class="modal-title fw-bold" id="modalEditarEspacioLabel">Editar Espacio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <label for="selectEditarEsp" class="form-label fw-bold">Selecciona el Espacio</label>
+                    <select id="selectEditarEsp" class="form-select p-2">
+                        <option value="" disabled selected>Seleccione...</option>
+                        <c:forEach items="${listaEspacios}" var="esp">
+                            <option value="${esp.idEspacio}">${esp.nombreEspacio} - ${esp.ubicacion}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="nombreEditarEspacio" class="form-label fw-bold">Nombre del Espacio</label>
+                    <input type="text" id="nombreEditarEspacio" class="form-control p-2" placeholder="Ej. Auditorio Principal">
+                </div>
+                <div class="mb-3">
+                    <label for="ubicacionEditarEspacio" class="form-label fw-bold">Ubicación (Opcional)</label>
+                    <input type="text" id="ubicacionEditarEspacio" class="form-control p-2" placeholder="Ej. Edificio B">
+                </div>
+                <div id="mensajeEditarEsp" class="mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="editarEspacio()">Guardar Cambios</button>
             </div>
         </div>
     </div>
