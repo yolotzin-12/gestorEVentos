@@ -10,7 +10,6 @@ import java.util.List;
 
 public class UsuarioDao {
 
-    // Encripta SHA-256
     public static String hashSHA256(String texto) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -23,7 +22,6 @@ public class UsuarioDao {
         }
     }
 
-    // Registra usuario
     public boolean create(Usuario usuario) {
         if (usuario == null || usuario.getEmail() == null) return false;
 
@@ -71,7 +69,6 @@ public class UsuarioDao {
             if (con != null) {
                 try { con.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             }
-            System.err.println(" Error al registrar usuario: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
@@ -81,7 +78,6 @@ public class UsuarioDao {
         }
     }
 
-    // Valida credenciales, trae foto y teléfono de cualquiera de los 3 roles
     public Usuario login(String email, String password) {
         if (email == null || password == null) return null;
 
@@ -93,7 +89,7 @@ public class UsuarioDao {
                 "LEFT JOIN ASISTENTE a ON u.id_usuario = a.id_usuario " +
                 "LEFT JOIN ORGANIZADOR o ON u.id_usuario = o.id_usuario " +
                 "LEFT JOIN ADMINISTRADOR ad ON u.id_usuario = ad.id_usuario " +
-                "WHERE LOWER(u.correo_electronico) = ? AND c.hash_contrasena = ? AND u.activo = 1";
+                "WHERE LOWER(u.correo_electronico) = ? AND c.hash_contrasena = ?";
 
         try (Connection con = OracleConnectApp.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -111,22 +107,17 @@ public class UsuarioDao {
                     u.setApellidoMaterno(rs.getString("apellido_materno"));
                     u.setEmail(rs.getString("correo_electronico"));
                     u.setActivo(rs.getInt("activo") == 1);
-
-                    // Recuperamos la foto y el teléfono
                     u.setFotoUrl(rs.getString("foto_url"));
                     u.setTelefono(rs.getString("telefono"));
-
                     return u;
                 }
             }
         } catch (SQLException e) {
-            System.err.println(" Error en login: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
-    // Obtiene todos los usuarios registrados
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT ID_USUARIO, ID_ROL, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, CORREO_ELECTRONICO, ACTIVO, FOTO_URL FROM USUARIO ORDER BY ID_USUARIO ASC";
@@ -156,7 +147,6 @@ public class UsuarioDao {
         return lista;
     }
 
-    // Marca un usuario como inactivo
     public boolean deshabilitar(int idUsuario) {
         String sql = "UPDATE USUARIO SET activo = 0 WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -169,7 +159,6 @@ public class UsuarioDao {
         }
     }
 
-    // Modifica el estado activo/inactivo de un usuario
     public boolean cambiarEstado(int idUsuario, boolean estado) {
         String sql = "UPDATE USUARIO SET activo = ? WHERE id_usuario = ?";
         try (Connection con = OracleConnectApp.getConnection();
@@ -183,9 +172,8 @@ public class UsuarioDao {
         }
     }
 
-    // Actualiza el rol validando previamente que el usuario no tenga reservas activas
     public int asignarRol(int idUsuario, int idRolNuevo) {
-        int resultado = 0; // 0 = Error, 1 = Éxito, -1 = Tiene reservas
+        int resultado = 0;
         Connection con = null;
         PreparedStatement psCheckReservas = null;
         PreparedStatement psActualizarRol = null;
@@ -201,7 +189,7 @@ public class UsuarioDao {
                 psCheckReservas.setInt(1, idUsuario);
                 try (ResultSet rsCheck = psCheckReservas.executeQuery()) {
                     if (rsCheck.next() && rsCheck.getInt(1) > 0) {
-                        return -1; // Aborta la operación y avisa que tiene reservas
+                        return -1;
                     }
                 }
             }
@@ -234,7 +222,7 @@ public class UsuarioDao {
             }
 
             con.commit();
-            resultado = 1; // Éxito
+            resultado = 1;
 
         } catch (SQLException e) {
             if (con != null) {
@@ -282,7 +270,28 @@ public class UsuarioDao {
         return null;
     }
 
-    // Fuerza una actualización de contraseña
+    public Usuario getById(int idUsuario) {
+        String sql = "SELECT id_usuario, nombre, correo_electronico FROM USUARIO WHERE id_usuario = ?";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id_usuario"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setEmail(rs.getString("correo_electronico"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean actualizarContrasena(int idUsuario, String nuevaContrasena) {
         String sqlActualizar = "UPDATE CONTRASENA SET hash_contrasena = ? WHERE id_usuario = ? AND activa = 1";
 
@@ -295,16 +304,13 @@ public class UsuarioDao {
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println(" Error al actualizar contraseña: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    // Cambia la contraseña desde el perfil
     public boolean cambiarContrasenaPerfil(int idUsuario, String contraActual, String nuevaContrasena) {
         String sqlVerificar = "SELECT id_usuario FROM CONTRASENA WHERE id_usuario = ? AND hash_contrasena = ? AND activa = 1";
-        // Un solo UPDATE para evitar el bloqueo en paralelo de Oracle
         String sqlActualizar = "UPDATE CONTRASENA SET hash_contrasena = ? WHERE id_usuario = ? AND activa = 1";
 
         try (Connection con = OracleConnectApp.getConnection()) {
@@ -326,19 +332,16 @@ public class UsuarioDao {
             }
 
         } catch (SQLException e) {
-            System.err.println(" Error en cambiarContrasenaPerfil: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    // Actualiza datos, foto y el teléfono dependiendo del rol
     public boolean actualizarPerfil(Usuario u) {
         String sqlUsuario = "UPDATE USUARIO SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, correo_electronico = ?, foto_url = ? WHERE id_usuario = ?";
         String sqlTelefono = "";
         String sqlInsert = "";
 
-        // 1 = Admin, 2 = Organizador, 3 = Asistente
         if (u.getIdRol() == 1) {
             sqlTelefono = "UPDATE ADMINISTRADOR SET telefono = ? WHERE id_usuario = ?";
             sqlInsert = "INSERT INTO ADMINISTRADOR (id_usuario, telefono, nivel_acceso) VALUES (?, ?, 'total')";
@@ -355,7 +358,6 @@ public class UsuarioDao {
             con = OracleConnectApp.getConnection();
             con.setAutoCommit(false);
 
-            // Actualizamos tabla USUARIO (incluye la foto)
             try (PreparedStatement psU = con.prepareStatement(sqlUsuario)) {
                 psU.setString(1, u.getNombre());
                 psU.setString(2, u.getApellidoPaterno());
@@ -366,14 +368,12 @@ public class UsuarioDao {
                 psU.executeUpdate();
             }
 
-            // Actualizamos el TELÉFONO en la tabla correcta
             if (!sqlTelefono.isEmpty()) {
                 try (PreparedStatement psT = con.prepareStatement(sqlTelefono)) {
                     psT.setString(1, u.getTelefono());
                     psT.setInt(2, u.getId());
                     int filasActualizadas = psT.executeUpdate();
 
-                    // Si el usuario no existía en su tabla hija, lo insertamos
                     if (filasActualizadas == 0 && !sqlInsert.isEmpty()) {
                         try (PreparedStatement psI = con.prepareStatement(sqlInsert)) {
                             psI.setInt(1, u.getId());
