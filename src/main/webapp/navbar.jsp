@@ -83,8 +83,7 @@
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/evento?action=crear">Gestión de categorias y ubicaciones</a>
-                    </li>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/evento?action=crear">Gestión de categorias y ubicaciones</a>                    </li>
                 </c:if>
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">

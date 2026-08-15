@@ -108,7 +108,7 @@ public class EventoServlet extends HttpServlet {
             request.setAttribute("listaOrganizadores", oDao.getAllOrganizadores());
 
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
-                request.getRequestDispatcher("crearEventAdmin.jsp").forward(request, response);
+                request.getRequestDispatcher("gestiondecatyubi.jsp").forward(request, response);
             } else {
                 request.getRequestDispatcher("crearEvent.jsp").forward(request, response);
             }
