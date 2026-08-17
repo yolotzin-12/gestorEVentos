@@ -71,7 +71,7 @@
                                 <c:choose>
                                     <c:when test="${evento.eventoFinalizado}">
                                         <a href="#" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;"
-                                           onclick="mostrarEventoFinalizado(event, '${evento.id}', '${fn:escapeXml(evento.nombre)}')">
+                                           onclick="mostrarEventoFinalizado(event, '${evento.id}', '${fn:escapeXml(evento.nombre)}', ${evento.idOrganizador})">
                                             <div class="encabezado-evento">
                                                 <div class="d-flex justify-content-between align-items-start gap-2">
                                                     <h3>${evento.nombre}</h3>
@@ -157,12 +157,11 @@
             <div class="modal-footer border-0 d-flex justify-content-between bg-light rounded-bottom-4">
                 <button type="button" class="btn btn-secondary px-4 rounded-3" data-bs-dismiss="modal">Entendido</button>
 
-                <%-- BOTÓN ELIMINAR EVENTO PARA EL ORGANIZADOR (Rol 2) O ADMIN (Rol 1) --%>
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                    <a id="btnEliminarEventoModal" href="#" class="btn btn-danger fw-bold rounded-3" onclick="confirmarEliminarModal(event)">
-                        <i class="bi bi-trash-fill me-1"></i> Eliminar evento
-                    </a>
-                </c:if>
+                <%-- El botón se muestra/oculta dinámicamente vía JS, comparando
+                     el dueño del evento con el organizador en sesión --%>
+                <a id="btnEliminarEventoModal" href="#" class="btn btn-danger fw-bold rounded-3" style="display:none;" onclick="confirmarEliminarModal(event)">
+                    <i class="bi bi-trash-fill me-1"></i> Eliminar evento
+                </a>
             </div>
         </div>
     </div>
@@ -178,14 +177,29 @@
 <script src="js/categorias.js"></script>
 
 <script>
-    function mostrarEventoFinalizado(event, idEvento, nombreEvento) {
+    // Rol e id del organizador en sesión (null/-1 si no aplica).
+    // Se usan en el modal para decidir si se muestra "Eliminar evento".
+    const ROL_USUARIO = <c:out value="${sessionScope.usuario != null ? sessionScope.usuario.idRol : 0}"/>;
+    const ID_ORGANIZADOR_SESION = <c:out value="${not empty idOrganizadorSesion ? idOrganizadorSesion : -1}"/>;
+
+    function mostrarEventoFinalizado(event, idEvento, nombreEvento, idOrganizadorEvento) {
         event.preventDefault();
 
         document.getElementById('modalNombreEvento').innerText = nombreEvento;
 
         var btnEliminar = document.getElementById('btnEliminarEventoModal');
         if (btnEliminar) {
-            btnEliminar.setAttribute('href', '${pageContext.request.contextPath}/evento?action=delete&id=' + idEvento);
+            // Solo el organizador dueño del evento puede ver el botón.
+            // El admin (rol 1) nunca lo ve.
+            var esDueno = (ROL_USUARIO === 2 && idOrganizadorEvento === ID_ORGANIZADOR_SESION);
+
+            if (esDueno) {
+                btnEliminar.style.display = 'inline-block';
+                btnEliminar.setAttribute('href', '${pageContext.request.contextPath}/evento?action=delete&id=' + idEvento);
+            } else {
+                btnEliminar.style.display = 'none';
+                btnEliminar.removeAttribute('href');
+            }
         }
 
         var modal = new bootstrap.Modal(document.getElementById('modalEventoFinalizado'));
@@ -195,6 +209,7 @@
     function confirmarEliminarModal(e) {
         e.preventDefault();
         const url = e.currentTarget.getAttribute('href');
+        if (!url) return;
         Swal.fire({
             title: '¿Eliminar evento?',
             text: "Esta acción no se puede deshacer.",

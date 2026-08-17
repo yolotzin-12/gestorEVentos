@@ -49,12 +49,13 @@ public class EventoServlet extends HttpServlet {
         if ("gestion".equals(action) || "misEventos".equals(action)) {
             List<Evento> lista;
             if (usuarioSesion != null && usuarioSesion.getIdRol() == 1) {
-                // Admin ve TODOS los eventos
+                // Admin ve TODOS los eventos (solo lectura, sin editar/eliminar)
                 lista = eventoDao.getAllAdmin();
             } else if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
                 // Organizador ve SOLO sus eventos con métricas de reservas
                 int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
                 lista = eventoDao.getByOrganizadorConReservas(idOrg);
+                request.setAttribute("idOrganizadorSesion", idOrg);
             } else {
                 lista = eventoDao.getAll();
             }
@@ -144,6 +145,14 @@ public class EventoServlet extends HttpServlet {
                 Evento evento = eventoDao.getById(idEvento);
                 request.setAttribute("evento", evento);
 
+                // Si es organizador, mandamos su id para que el JSP pueda
+                // comparar si el evento mostrado le pertenece y así
+                // decidir si muestra los botones Editar/Eliminar
+                if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
+                    int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+                    request.setAttribute("idOrganizadorSesion", idOrg);
+                }
+
                 String origen = request.getParameter("origen");
                 request.setAttribute("origenNavegacion", origen != null ? origen : "principal");
 
@@ -165,9 +174,6 @@ public class EventoServlet extends HttpServlet {
 
                 request.setAttribute("evento", evento);
 
-                // Si el usuario logueado ya tiene una reserva activa para este
-                // evento, se lo indicamos a la vista para que muestre el aviso
-                // y el botón de cancelar en vez del formulario de reserva.
                 if (usuarioSesion != null) {
                     AsistenteDao asisDao = new AsistenteDao();
                     int idAsistente = asisDao.getIdAsistenteByUsuario(usuarioSesion.getId());
@@ -184,6 +190,14 @@ public class EventoServlet extends HttpServlet {
         else {
             List<Evento> lista = eventoDao.getAll();
             request.setAttribute("listaEventos", lista);
+
+            // Si es organizador, calculamos su id para que el JSP/JS pueda
+            // comparar qué eventos son suyos y así mostrar el botón eliminar
+            if (usuarioSesion != null && usuarioSesion.getIdRol() == 2) {
+                int idOrg = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+                request.setAttribute("idOrganizadorSesion", idOrg);
+            }
+
             request.getRequestDispatcher("eventos.jsp").forward(request, response);
         }
     }
@@ -287,7 +301,6 @@ public class EventoServlet extends HttpServlet {
                 }
                 ev.setFechaHora(fechaRaw);
 
-                // Asignación de estado: Si la acción es borrador -> "Borrador", de lo contrario -> "Disponible"
                 if ("borrador".equalsIgnoreCase(action)) {
                     ev.setEstado("Borrador");
                 } else {
@@ -339,19 +352,20 @@ public class EventoServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/evento?action=gestion");
     }
 
+    /**
+     * Solo el ORGANIZADOR DUEÑO del evento puede editar, cancelar o eliminar.
+     * El administrador (rol 1) NO tiene permiso para estas acciones,
+     * aunque pueda ver todos los eventos en modo lectura.
+     */
     private boolean puedeGestionar(Usuario usuarioSesion, int idEvento) {
         if (usuarioSesion == null) return false;
 
-        if (usuarioSesion.getIdRol() == 1) return true;
+        if (usuarioSesion.getIdRol() != 2) return false; // admin u otros roles: sin permiso
 
-        if (usuarioSesion.getIdRol() == 2) {
-            Evento evento = eventoDao.getById(idEvento);
-            if (evento == null) return false;
+        Evento evento = eventoDao.getById(idEvento);
+        if (evento == null) return false;
 
-            int idOrgSesion = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
-            return idOrgSesion == evento.getIdOrganizador();
-        }
-
-        return false;
+        int idOrgSesion = orgDao.getIdOrganizadorByUsuario(usuarioSesion.getId());
+        return idOrgSesion == evento.getIdOrganizador();
     }
 }

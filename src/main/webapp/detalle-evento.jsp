@@ -72,27 +72,38 @@
                                 </p>
                             </div>
 
-                            <!-- VALIDACIÓN SEGÚN EL ROL DE USUARIO -->
+                            <!-- VALIDACIÓN SEGÚN EL ROL DE USUARIO Y PROPIEDAD DEL EVENTO -->
                             <div class="mt-3">
                                 <c:choose>
-                                    <%-- SI ES ORGANIZADOR O ADMIN: Opciones de gestión --%>
-                                    <c:when test="${sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2}">
+                                    <%-- CASO 1: Organizador y ES EL DUEÑO del evento -> Editar / Eliminar --%>
+                                    <c:when test="${sessionScope.usuario != null
+                                                    && sessionScope.usuario.idRol == 2
+                                                    && evento.idOrganizador == idOrganizadorSesion}">
                                         <div class="d-flex gap-2">
 
                                             <a href="evento?action=editar&id=${evento.id}" class="btn btn-outline-success w-50 fw-bold py-2 rounded-3">
                                                 <i class="bi bi-pencil-square me-1"></i> Editar
                                             </a>
 
-                                            <form action="evento" method="post" class="w-50" onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
+                                            <form id="formEliminarEvento" action="evento" method="post" class="w-50">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="id" value="${evento.id}">
-                                                <button type="submit" class="btn btn-outline-danger w-100 fw-bold py-2 rounded-3">
+                                                <button type="button" class="btn btn-outline-danger w-100 fw-bold py-2 rounded-3" onclick="confirmarEliminarDetalle()">
                                                     <i class="bi bi-trash me-1"></i> Eliminar
                                                 </button>
                                             </form>
                                         </div>
                                     </c:when>
 
+                                    <%-- CASO 2: Admin, o Organizador viendo un evento QUE NO ES SUYO -> solo lectura --%>
+                                    <c:when test="${sessionScope.usuario != null
+                                                    && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
+                                        <div class="alert alert-light border text-muted mb-0 rounded-3 text-center py-2">
+                                            <i class="bi bi-eye-fill me-1"></i> Solo puedes visualizar este evento.
+                                        </div>
+                                    </c:when>
+
+                                    <%-- CASO 3: Asistente / visitante -> Reservar --%>
                                     <c:otherwise>
                                         <a href="evento?action=reservar&id=${evento.id}" class="text-decoration-none w-100">
                                             <button type="button" class="btn fs-5 w-100 d-flex align-items-center justify-content-center gap-2" style="background-color:#0d8a5f; color:#fff; font-weight:bold; border-radius:10px; padding:10px; border:none;">
@@ -138,6 +149,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/cierresesion.js"></script>
+
+<script>
+    function confirmarEliminarDetalle() {
+        Swal.fire({
+            title: 'Eliminar evento',
+            text: '¿Estás seguro de eliminar este evento? Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('formEliminarEvento').submit();
+            }
+        });
+    }
+</script>
 
 </body>
 </html>
