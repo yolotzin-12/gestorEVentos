@@ -50,17 +50,16 @@
                             ${sessionScope.usuario.idRol == 1 ? 'GESTIÓN GENERAL DE EVENTOS' : 'EVENTOS'}
                         </h4>
 
-                        <div class="d-flex gap-2 mb-1">
-                            <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn text-white btn-sm fw-bold px-3 py-2 rounded-3 shadow-sm" style="background-color: #0d8a5f; border: none;">
-                                <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
-                            </a>
-
-                            <c:if test="${sessionScope.usuario.idRol != 1 && not empty listaEventos}">
-                                <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" id="btnLimpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
-                                    <i class="bi bi-broom me-1"></i> Limpiar
-                                </a>
-                            </c:if>
-                        </div>
+                        <%-- El admin (idRol == 1) NO puede limpiar historial, solo gestiona/visualiza --%>
+                        <c:if test="${sessionScope.usuario.idRol != 1}">
+                            <div class="d-flex gap-2 mb-1">
+                                <c:if test="${not empty listaEventos}">
+                                    <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" id="btnLimpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
+                                        <i class="bi bi-broom me-1"></i> Limpiar
+                                    </a>
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
 
                     <!-- Contenido / Tabla -->
@@ -73,7 +72,7 @@
                         </c:when>
 
                         <c:otherwise>
-                            <div class="table-responsive shadow-sm border rounded-3 overflow-hidden">
+                            <div class="table-responsive shadow-sm border rounded-3">
                                 <table class="table table-hover align-middle m-0 bg-white" id="tablaEventos">
 
                                     <!-- ENCABEZADO CON AZUL BAJITO -->
@@ -151,7 +150,7 @@
 
                                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1" aria-labelledby="dropdownMenuAcciones${evento.id}">
 
-                                                        <!-- Opción: Ver Detalle (visible para todos) -->
+                                                        <!-- Opción: Ver Detalle (visible para todos, incluido admin) -->
                                                         <li>
                                                             <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
                                                                href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}">
@@ -159,8 +158,9 @@
                                                             </a>
                                                         </li>
 
-                                                            <%-- Editar / Cancelar: SOLO el organizador dueño del evento --%>
-                                                        <c:if test="${sessionScope.usuario.idRol == 2
+                                                            <%-- Editar / Cancelar: SOLO organizador (idRol == 2) dueño del evento. --%>
+                                                        <c:if test="${sessionScope.usuario.idRol != 1
+                                                                      && sessionScope.usuario.idRol == 2
                                                                       && evento.idOrganizador == idOrganizadorSesion
                                                                       && !evento.eventoFinalizado
                                                                       && evento.estado != 'Cancelado'}">
@@ -182,8 +182,9 @@
                                                             </li>
                                                         </c:if>
 
-                                                            <%-- Eliminar: SOLO el organizador dueño, y solo si ya finalizó o está cancelado --%>
-                                                        <c:if test="${sessionScope.usuario.idRol == 2
+                                                            <%-- Eliminar: SOLO organizador (idRol == 2) dueño del evento --%>
+                                                        <c:if test="${sessionScope.usuario.idRol != 1
+                                                                      && sessionScope.usuario.idRol == 2
                                                                       && evento.idOrganizador == idOrganizadorSesion
                                                                       && (evento.eventoFinalizado || evento.estado == 'Cancelado')}">
                                                             <li><hr class="dropdown-divider my-1"></li>
