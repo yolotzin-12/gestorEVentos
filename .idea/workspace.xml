@@ -10,8 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29767a48-2371-42c6-baa7-539b1b4ad47a" name="Changes" comment="Correos implementados">
-      <change beforePath="$PROJECT_DIR$/.idea/webContexts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
+    <list default="true" id="29767a48-2371-42c6-baa7-539b1b4ad47a" name="Changes" comment="gestion reparada2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" afterDir="false" />
     </list>
@@ -58,7 +57,7 @@
   "keyToString": {
     "Tomcat Server.Tomcat 10.1.55.executor": "Run",
     "Tomcat Server.Tomcat 10.1.56.executor": "Run",
-    "git-widget-placeholder": "main"
+    "git-widget-placeholder": "silvana"
   }
 }]]></component>
   <component name="RunDashboard">
@@ -191,6 +190,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="gestion reparada2" />
+    <option name="LAST_COMMIT_MESSAGE" value="gestion reparada2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
