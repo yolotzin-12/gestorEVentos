@@ -55,7 +55,7 @@
                             </a>
 
                             <c:if test="${sessionScope.usuario.idRol != 1 && not empty listaEventos}">
-                                <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
+                                <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" id="btnLimpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
                                     <i class="bi bi-broom me-1"></i> Limpiar
                                 </a>
                             </c:if>
@@ -131,7 +131,7 @@
                                                     <!-- Lista de opciones del menú -->
                                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1" aria-labelledby="dropdownMenuAcciones${evento.id}">
 
-                                                        <!-- Opción: Ver Detalle -->
+                                                        <!-- Opción: Ver Detalle (visible para todos) -->
                                                         <li>
                                                             <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
                                                                href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}">
@@ -139,11 +139,13 @@
                                                             </a>
                                                         </li>
 
-                                                        <c:if test="${!evento.eventoFinalizado && evento.estado != 'Cancelado'}">
-                                                            <!-- Divider opcional -->
+                                                            <%-- Editar / Cancelar: SOLO el organizador dueño del evento --%>
+                                                        <c:if test="${sessionScope.usuario.idRol == 2
+                                                                      && evento.idOrganizador == idOrganizadorSesion
+                                                                      && !evento.eventoFinalizado
+                                                                      && evento.estado != 'Cancelado'}">
                                                             <li><hr class="dropdown-divider my-1"></li>
 
-                                                            <!-- Opción: Editar -->
                                                             <li>
                                                                 <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
                                                                    href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}">
@@ -151,9 +153,8 @@
                                                                 </a>
                                                             </li>
 
-                                                            <!-- Opción: Cancelar -->
                                                             <li>
-                                                                <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium btn-cancelar-evento"
                                                                    href="${pageContext.request.contextPath}/evento?action=cancelar&id=${evento.id}"
                                                                    onclick="confirmarCancelar(event)">
                                                                     <i class="bi bi-slash-circle-fill me-2 text-warning fs-6"></i> Cancelar Evento
@@ -161,11 +162,13 @@
                                                             </li>
                                                         </c:if>
 
-                                                        <!-- Opción: Eliminar -->
-                                                        <c:if test="${sessionScope.usuario.idRol == 1 || evento.eventoFinalizado || evento.estado == 'Cancelado'}">
+                                                            <%-- Eliminar: SOLO el organizador dueño, y solo si ya finalizó o está cancelado --%>
+                                                        <c:if test="${sessionScope.usuario.idRol == 2
+                                                                      && evento.idOrganizador == idOrganizadorSesion
+                                                                      && (evento.eventoFinalizado || evento.estado == 'Cancelado')}">
                                                             <li><hr class="dropdown-divider my-1"></li>
                                                             <li>
-                                                                <a class="dropdown-item py-2 d-flex align-items-center text-danger fw-medium"
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-danger fw-medium btn-eliminar-evento"
                                                                    href="${pageContext.request.contextPath}/evento?action=delete&id=${evento.id}"
                                                                    onclick="confirmarEliminarEvento(event)">
                                                                     <i class="bi bi-trash3-fill me-2 text-danger fs-6"></i> Eliminar Registro
@@ -198,21 +201,69 @@
 
 <script>
     function confirmarCancelar(e) {
-        if (!confirm('¿Estás seguro de que deseas cancelar este evento?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+
+        Swal.fire({
+            title: 'Cancelar evento',
+            text: '¿Estás seguro de que deseas cancelar este evento?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 
     function confirmarEliminarEvento(e) {
-        if (!confirm('¿Deseas eliminar este evento definitivamente?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+
+        Swal.fire({
+            title: 'Eliminar registro',
+            text: '¿Deseas eliminar este evento definitivamente? Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 
     function confirmarLimpiar(e) {
-        if (!confirm('¿Deseas limpiar el historial de eventos cancelados y finalizados?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+
+        Swal.fire({
+            title: 'Limpiar historial',
+            text: '¿Deseas limpiar el historial de eventos cancelados y finalizados?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, limpiar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 </script>
 
