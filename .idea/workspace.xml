@@ -10,7 +10,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29767a48-2371-42c6-baa7-539b1b4ad47a" name="Changes" comment="Correos implementados" />
+    <list default="true" id="29767a48-2371-42c6-baa7-539b1b4ad47a" name="Changes" comment="Correos implementados">
+      <change beforePath="$PROJECT_DIR$/.idea/webContexts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/gestion-eventos.jsp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,13 +54,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Tomcat Server.Tomcat 10.1.55.executor&quot;: &quot;Run&quot;,
-    &quot;Tomcat Server.Tomcat 10.1.56.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;vanessa&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Tomcat Server.Tomcat 10.1.55.executor": "Run",
+    "Tomcat Server.Tomcat 10.1.56.executor": "Run",
+    "git-widget-placeholder": "main"
   }
-}</component>
+}]]></component>
   <component name="RunDashboard">
     <option name="configurationStatuses">
       <map>
@@ -64,6 +68,7 @@
           <value>
             <map>
               <entry key="Tomcat 10.1.55" value="STOPPED" />
+              <entry key="Tomcat 10.1.56" value="STOPPED" />
             </map>
           </value>
         </entry>
