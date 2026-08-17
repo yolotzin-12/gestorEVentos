@@ -50,11 +50,6 @@
                             ${sessionScope.usuario.idRol == 1 ? 'GESTIÓN GENERAL DE EVENTOS' : 'EVENTOS'}
                         </h4>
 
-
-                        <c:if test="${sessionScope.usuario.idRol != 1 && not empty listaEventos}">
-                            <div>
-                                <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
-
                         <div class="d-flex gap-2 mb-1">
                             <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn text-white btn-sm fw-bold px-3 py-2 rounded-3 shadow-sm" style="background-color: #0d8a5f; border: none;">
                                 <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
@@ -62,11 +57,10 @@
 
                             <c:if test="${sessionScope.usuario.idRol != 1 && not empty listaEventos}">
                                 <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" id="btnLimpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
-
                                     <i class="bi bi-broom me-1"></i> Limpiar
                                 </a>
-                            </div>
-                        </c:if>
+                            </c:if>
+                        </div>
                     </div>
 
                     <!-- Contenido / Tabla -->
@@ -93,8 +87,8 @@
                                         <c:if test="${sessionScope.usuario.idRol != 1}">
                                             <th scope="col" class="py-3">Cupos</th>
                                             <th scope="col" class="text-center py-3">Reservas</th>
-                                            <th scope="col" class="text-center py-3">Acciones</th>
                                         </c:if>
+                                        <th scope="col" class="text-center py-3">Acciones</th>
                                     </tr>
                                     </thead>
 
@@ -142,20 +136,20 @@
                                                         <i class="bi bi-people-fill me-1"></i>${evento.totalReservas}
                                                     </span>
                                                 </td>
+                                            </c:if>
 
+                                            <!-- Acciones (Menú Desplegable Dropdown) -->
+                                            <td class="py-3 text-center">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-light border shadow-sm rounded-3 dropdown-toggle fw-semibold text-secondary px-3"
+                                                            type="button"
+                                                            id="dropdownMenuAcciones${evento.id}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        <i class="bi bi-gear-fill me-1"></i> Acciones
+                                                    </button>
 
-                                                <!-- Acciones (Menú Desplegable Dropdown) -->
-                                                <td class="py-3 text-center">
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-sm btn-light border shadow-sm rounded-3 dropdown-toggle fw-semibold text-secondary px-3"
-                                                                type="button"
-                                                                id="dropdownMenuAcciones${evento.id}"
-                                                                data-bs-toggle="dropdown"
-                                                                aria-expanded="false">
-                                                            <i class="bi bi-gear-fill me-1"></i> Acciones
-                                                        </button>
-
-                                                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1" aria-labelledby="dropdownMenuAcciones${evento.id}">
+                                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1" aria-labelledby="dropdownMenuAcciones${evento.id}">
 
                                                         <!-- Opción: Ver Detalle (visible para todos) -->
                                                         <li>
@@ -172,46 +166,12 @@
                                                                       && evento.estado != 'Cancelado'}">
                                                             <li><hr class="dropdown-divider my-1"></li>
 
-
                                                             <li>
                                                                 <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
-                                                                   href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}">
-                                                                    <i class="bi bi-eye-fill me-2 text-info fs-6"></i> Ver Detalle
+                                                                   href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}">
+                                                                    <i class="bi bi-pencil-square me-2 text-primary fs-6"></i> Editar Evento
                                                                 </a>
                                                             </li>
-
-
-                                                            <c:if test="${!evento.eventoFinalizado && evento.estado != 'Cancelado'}">
-                                                                <li><hr class="dropdown-divider my-1"></li>
-                                                                <li>
-                                                                    <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
-                                                                       href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}">
-                                                                        <i class="bi bi-pencil-square me-2 text-primary fs-6"></i> Editar Evento
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
-                                                                       href="${pageContext.request.contextPath}/evento?action=cancelar&id=${evento.id}"
-                                                                       onclick="confirmarCancelar(event)">
-                                                                        <i class="bi bi-slash-circle-fill me-2 text-warning fs-6"></i> Cancelar Evento
-                                                                    </a>
-                                                                </li>
-                                                            </c:if>
-
-                                                            <c:if test="${sessionScope.usuario.idRol == 1 || evento.eventoFinalizado || evento.estado == 'Cancelado'}">
-                                                                <li><hr class="dropdown-divider my-1"></li>
-                                                                <li>
-                                                                    <a class="dropdown-item py-2 d-flex align-items-center text-danger fw-medium"
-                                                                       href="${pageContext.request.contextPath}/evento?action=delete&id=${evento.id}"
-                                                                       onclick="confirmarEliminarEvento(event)">
-                                                                        <i class="bi bi-trash3-fill me-2 text-danger fs-6"></i> Eliminar Registro
-                                                                    </a>
-                                                                </li>
-                                                            </c:if>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </c:if>
 
                                                             <li>
                                                                 <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium btn-cancelar-evento"
@@ -236,7 +196,9 @@
                                                             </li>
                                                         </c:if>
 
-
+                                                    </ul>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
