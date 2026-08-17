@@ -42,7 +42,7 @@
 
 <!-- ================= CONTENIDO PRINCIPAL ================= -->
 <main class="flex-grow-1">
-    <div class="container">
+    <div class="container mt-4">
 
         <div class="barra-filtros">
             <div class="buscador-evento">
