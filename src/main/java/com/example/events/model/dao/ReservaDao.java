@@ -24,6 +24,11 @@ public class ReservaDao implements Dao<Reserva, Integer> {
         // tenía cupo disponible.
         String sqlCheckEvento = "SELECT 1 FROM EVENTO WHERE id_evento = ? " +
                 "AND estado = 'Disponible' AND fecha_hora >= SYSTIMESTAMP";
+        // Un mismo asistente no puede tener dos reservas activas ("Reservado")
+        // para el mismo evento. Se valida aquí, dentro de la transacción, para
+        // que no se pueda esquivar reenviando el formulario o el POST a mano.
+        String sqlCheckDuplicado = "SELECT 1 FROM RESERVA WHERE id_evento = ? AND id_asistente = ? " +
+                "AND LOWER(estado) = 'reservado'";
         String sqlReserva = "INSERT INTO RESERVA(id_evento, id_asistente, codigo_reserva, estado) VALUES(?, ?, ?, 'Reservado')";
 
         try (Connection con = OracleConnectApp.getConnection()) {
@@ -38,6 +43,20 @@ public class ReservaDao implements Dao<Reserva, Integer> {
             }
 
             if (!eventoValido) {
+                con.rollback();
+                return false;
+            }
+
+            boolean yaReservo;
+            try (PreparedStatement psDup = con.prepareStatement(sqlCheckDuplicado)) {
+                psDup.setInt(1, r.getIdEvento());
+                psDup.setInt(2, r.getIdAsistente());
+                try (ResultSet rs = psDup.executeQuery()) {
+                    yaReservo = rs.next();
+                }
+            }
+
+            if (yaReservo) {
                 con.rollback();
                 return false;
             }
@@ -162,6 +181,28 @@ public class ReservaDao implements Dao<Reserva, Integer> {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    /**
+     * Devuelve la reserva activa ("Reservado") que un asistente ya tiene para
+     * un evento en particular, o null si no tiene ninguna. Se usa para evitar
+     * que un mismo usuario reserve dos veces el mismo evento y para mostrarle
+     * la opción de cancelar en vez del formulario de reserva.
+     */
+    public Reserva getReservaActivaDeUsuario(int idEvento, int idAsistente) {
+        String sql = "SELECT id_reserva, id_evento, id_asistente, codigo_reserva, estado, fecha_hora_reserva " +
+                "FROM RESERVA WHERE id_evento = ? AND id_asistente = ? AND LOWER(estado) = 'reservado'";
+        try (Connection con = OracleConnectApp.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idEvento);
+            ps.setInt(2, idAsistente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return mapear(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Reserva getDetalleById(int idReserva) {

@@ -50,6 +50,7 @@
         <c:set var="cupoDisp" value="${evento.capacidadDisponible}" />
         <c:set var="registrados" value="${cupoMax - cupoDisp}" />
         <c:set var="sinCupo" value="${cupoDisp <= 0}" />
+        <c:set var="yaReservado" value="${not empty reservaActiva}" />
 
         <%-- Separa fecha y hora si vienen juntas como "dd/mm/aaaa hh:mm" --%>
         <c:set var="fechaHoraTexto" value="${evento.fechaHora}" />
@@ -77,41 +78,67 @@
 
                     <div class="col-md-7 pe-md-4 border-end">
 
-                        <form action="reserva" method="post" id="formReserva">
+                        <c:choose>
+                            <%-- El usuario ya tiene una reserva activa para este evento:
+                                 se muestra el aviso y la opción de cancelarla, en vez del
+                                 formulario de reserva. --%>
+                            <c:when test="${yaReservado}">
+                                <div class="d-flex flex-column h-100 justify-content-center align-items-start">
+                                    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+                                        <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                                        <div>
+                                            Ya tienes una reserva para este evento.<br>
+                                            <span class="text-muted" style="font-size:0.9rem;">
+                                                Código: <strong>${reservaActiva.codigoReserva}</strong>
+                                            </span>
+                                        </div>
+                                    </div>
 
-                            <input type="hidden" name="action" value="reservar">
-                            <input type="hidden" name="idEvento" value="${evento.id}">
+                                    <button type="button" class="btn btn-outline-danger fw-bold py-2 px-4 shadow-sm fs-5"
+                                            data-bs-toggle="modal" data-bs-target="#modalCancelarReserva">
+                                        <i class="bi bi-x-circle me-2"></i> Cancelar reserva
+                                    </button>
+                                </div>
+                            </c:when>
 
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label text-muted fw-semibold mb-1">Nombre completo</label>
-                                <input type="text" name="nombre" class="form-control rounded-3" id="nombre" placeholder="Tu nombre:" required>
-                            </div>
+                            <c:otherwise>
+                                <form action="reserva" method="post" id="formReserva">
 
-                            <div class="mb-3">
-                                <label for="email" class="form-label text-muted fw-semibold mb-1">Correo electrónico</label>
-                                <input type="email" name="email" class="form-control rounded-3" id="email" placeholder="Tu correo electrónico:" required>
-                            </div>
+                                    <input type="hidden" name="action" value="reservar">
+                                    <input type="hidden" name="idEvento" value="${evento.id}">
 
-                            <div class="mb-4">
-                                <label for="asistencia" class="form-label text-muted fw-semibold mb-1">Motivo de asistencia</label>
-                                <input type="text" name="asistencia" class="form-control rounded-3" id="asistencia" placeholder="Proyecto académico:" required>
-                            </div>
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label text-muted fw-semibold mb-1">Nombre completo</label>
+                                        <input type="text" name="nombre" class="form-control rounded-3" id="nombre" placeholder="Tu nombre:" required>
+                                    </div>
 
-                            <div class="text-start">
-                                <c:choose>
-                                    <c:when test="${sinCupo}">
-                                        <button type="button" id="btnSinCupo" class="btn btn-confirmar fw-bold py-2 px-4 shadow-sm fs-5" style="opacity:0.6; cursor:not-allowed;">
-                                            <i class="bi bi-x-circle me-2"></i> Sin cupo disponible
-                                        </button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button type="submit" class="btn btn-confirmar fw-bold py-2 px-4 shadow-sm fs-5">
-                                            <i class="bi bi-check-lg me-2"></i> Confirmar reserva
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </form>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label text-muted fw-semibold mb-1">Correo electrónico</label>
+                                        <input type="email" name="email" class="form-control rounded-3" id="email" placeholder="Tu correo electrónico:" required>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="asistencia" class="form-label text-muted fw-semibold mb-1">Motivo de asistencia</label>
+                                        <input type="text" name="asistencia" class="form-control rounded-3" id="asistencia" placeholder="Proyecto académico:" required>
+                                    </div>
+
+                                    <div class="text-start">
+                                        <c:choose>
+                                            <c:when test="${sinCupo}">
+                                                <button type="button" id="btnSinCupo" class="btn btn-confirmar fw-bold py-2 px-4 shadow-sm fs-5" style="opacity:0.6; cursor:not-allowed;">
+                                                    <i class="bi bi-x-circle me-2"></i> Sin cupo disponible
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="submit" class="btn btn-confirmar fw-bold py-2 px-4 shadow-sm fs-5">
+                                                    <i class="bi bi-check-lg me-2"></i> Confirmar reserva
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </form>
+                            </c:otherwise>
+                        </c:choose>
 
                     </div>
 
@@ -148,6 +175,36 @@
 
             </div>
         </div>
+
+        <%-- Modal: confirmar cancelación de la reserva ya existente --%>
+        <c:if test="${yaReservado}">
+            <div class="modal fade" id="modalCancelarReserva" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title fw-bold" style="color:#162e54;">
+                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Cancelar reserva
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-0">¿Estás seguro o segura de que deseas cancelar esta reserva? Tu lugar quedará liberado y recibirás un correo confirmando la cancelación.</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">No, volver</button>
+                            <form action="reserva" method="post">
+                                <input type="hidden" name="action" value="cancelar">
+                                <input type="hidden" name="idReserva" value="${reservaActiva.id}">
+                                <input type="hidden" name="origen" value="reservar">
+                                <button type="submit" class="btn btn-danger rounded-3">
+                                    <i class="bi bi-check-lg me-1"></i> Sí, cancelar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:if>
 
         <!-- Modal: no hay disponibilidad -->
         <div class="modal fade" id="modalSinCupo" tabindex="-1" aria-hidden="true">

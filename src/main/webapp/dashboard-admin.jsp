@@ -16,36 +16,9 @@
 
 <main class="flex-grow-1">
 
-    <header class="eventos-header">
-        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-            <div class="d-flex align-items-center gap-2">
-                <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-                <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
-
-            <nav class="eventos-nav">
-                <a href="evento" class="activo">Eventos</a>
-                <a href="administrarUsu.jsp">Usuarios</a>
-            </nav>
-
-            <div class="d-flex align-items-center gap-2">
-                <a href="crearPerfil.jsp" class="icono-usuario">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.usuario.fotoUrl}">
-                            <img src="${sessionScope.usuario.fotoUrl}" alt="Perfil">
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-person"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </a>
-                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-
-        </div>
-    </header>
+    <jsp:include page="navbar.jsp">
+        <jsp:param name="activePage" value="eventos" />
+    </jsp:include>
 
     <hr class="divisor-teal">
 

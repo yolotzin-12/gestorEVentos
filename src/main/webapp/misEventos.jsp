@@ -51,14 +51,14 @@
 
         .sidebar-btn:hover {
             background-color: #f8fafc;
-            color: #162e54;
+            color: #0B1727; /* Color de tu navbar */
         }
 
-        /* Botón Activo (Azul Oscuro) */
+        /* Botón Activo (Azul Oscuro de la Nav Bar) */
         .sidebar-btn.active {
-            background-color: #11294a;
+            background-color: #0B1727; /* Color de tu navbar */
             color: #ffffff;
-            border-color: #11294a;
+            border-color: #0B1727; /* Color de tu navbar */
         }
 
         /* Botón Salir (Rojo) */
@@ -75,7 +75,7 @@
 
         /* Títulos y Secciones */
         .section-title {
-            color: #11294a;
+            color: #0B1727; /* Color de tu navbar */
             font-weight: 700;
             font-size: 1.5rem;
             border-bottom: 3px solid #0d8a5f;
@@ -94,7 +94,7 @@
         }
 
         .tabla-eventos th {
-            color: #11294a;
+            color: #0B1727; /* Color de tu navbar */
             font-weight: 700;
             padding: 12px 16px;
             border-bottom: 2px solid #e2e8f0;
@@ -116,48 +116,9 @@
 <div class="container py-4">
 
     <!-- Header Superior con Logo SRAE -->
-    <header class="d-flex justify-content-between align-items-center mb-3 px-2">
-        <div class="d-flex align-items-center gap-3">
-            <img src="img/logo.png" alt="Logo SRAE" style="height: 50px;">
-            <div>
-                <h5 class="fw-bold m-0" style="color: #11294a; letter-spacing: 0.5px;">SRAE</h5>
-                <small class="text-muted fw-semibold" style="font-size: 0.75rem;">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
-            </div>
-
-
-            <nav class="eventos-nav">
-                <a href="${pageContext.request.contextPath}/evento">Eventos</a>
-                <a href="${pageContext.request.contextPath}/evento?action=misEventos" class="activo">Mis eventos</a>
-            </nav>
-
-            <div class="d-flex align-items-center gap-2">
-                <a href="evento?action=crear" class="btn btn-success btn-sm fw-bold me-2" style="background-color: #0d8a5f; border: none;">
-                    <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
-                </a>
-                <a href="crearPerfil.jsp" class="icono-usuario">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.usuario.fotoUrl}">
-                            <img src="${sessionScope.usuario.fotoUrl}" alt="Perfil">
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-person"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </a>
-                <a href="logout" class="btn text-white ..." style="background-color: #cc0000;" onclick="confirmarCierreSesion(event)">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-
-
-        </div>
-        <div>
-            <a href="logout" class="btn btn-danger btn-sm rounded-3 px-3 py-2" title="Cerrar sesión" onclick="confirmarCierreSesion(event)">
-                <i class="bi bi-box-arrow-right fs-6"></i>
-            </a>
-
-        </div>
-    </header>
+    <jsp:include page="navbar.jsp">
+        <jsp:param name="activePage" value="eventos" />
+    </jsp:include>
 
     <!-- Tarjeta Principal con Estructura de Columnas (Sidebar + Contenido) -->
     <div class="main-card">
@@ -231,7 +192,7 @@
                                 <tbody>
                                 <c:forEach items="${listaEventos}" var="evento">
                                     <tr>
-                                        <td class="fw-bold" style="color: #11294a;">${evento.nombre}</td>
+                                        <td class="fw-bold" style="color: #0B1727;">${evento.nombre}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${evento.eventoFinalizado}">

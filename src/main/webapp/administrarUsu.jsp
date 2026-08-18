@@ -13,48 +13,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<jsp:include page="navbar.jsp">
+    <jsp:param name="activePage" value="eventos" />
+</jsp:include>
+
 <body class="bg-light">
 
 <div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-            <img src="img/letras.png" alt="SRAE" style="height:120px;">
-            <div>
-                <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
-                <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
-            </div>
-        </div>
-    </div>
+    <!-- Se eliminó el bloque del logotipo y título del sistema -->
 
     <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <div class="row">
 
-            <div class="col-md-3 mb-4 mb-md-0">
-                <div class="d-flex flex-column gap-1">
-                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
-                        <i class="bi bi-house-door me-3"></i> Inicio
-                    </a>
-
-                    <a href="evento" class="btn sidebar-btn py-3 px-4 fw-bold">
-                        <i class="bi bi-calendar-event me-3"></i> Eventos
-                    </a>
-
-                    <a href="${pageContext.request.contextPath}/usuarios" class="btn sidebar-btn py-3 px-4 fw-bold active">
-                        <i class="bi bi-people me-3"></i> Usuarios
-                    </a>
-
-                    <a href="crearPerfil.jsp" class="btn sidebar-btn py-3 px-4 fw-bold">
-                        <i class="bi bi-person me-3"></i> Mi perfil
-                    </a>
-
-                    <a href="logout" class="btn sidebar-btn py-3 px-4 fw-bold text-danger">
-                        <i class="bi bi-box-arrow-left me-3"></i> Salir
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-9">
+            <!-- El contenido principal ahora ocupa las 12 columnas completas (col-12) -->
+            <div class="col-12">
                 <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">ADMINISTRAR USUARIOS</h4>
 
                 <div class="row mb-4 gx-2">
@@ -153,6 +125,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/Adminusu.js"></script>
 <script src="js/cierresesion.js"></script>
+
+<jsp:include page="logoutModal.jsp" />
 
 </body>
 </html>

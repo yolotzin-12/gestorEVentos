@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!doctype html>
@@ -8,49 +8,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Evento - SRAE</title>
 
+    <!-- Hojas de estilo generales -->
     <link rel="stylesheet" href="css/fooyini.css">
     <link rel="stylesheet" href="css/pagprin.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/perfil.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="bg-light">
 
-<div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center">
-            <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-            <img src="img/letras.png" alt="SRAE" style="height:120px;">
-            <div>
-                <h5 class="fw-bold m-0" style="color: #162e54;">SRAE</h5>
-                <small class="text-muted fw-semibold">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
-            </div>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-            <a href="evento" class="btn text-white fw-bold p-2 rounded-3 shadow-sm" style="background-color: #162e54;">
-                <i class="bi bi-eye"></i> Ver Eventos
-            </a>
-            <a href="index.jsp" class="btn text-white d-flex align-items-center justify-content-center p-2 rounded-3" style="background-color: #cc0000; width: 40px; height: 40px;">
-                <i class="bi bi-box-arrow-right fs-5"></i>
-            </a>
-        </div>
-    </div>
+<!-- Navbar Principal -->
+<jsp:include page="navbar.jsp">
+    <jsp:param name="activePage" value="eventos" />
+</jsp:include>
 
-    <div class="card p-4 shadow-sm border-0 rounded-4">
+<div class="container my-4">
+
+    <!-- Tarjeta Principal del Formulario -->
+    <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
         <h4 class="fw-bold pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f; color: #1a1a1a;">CREACIÓN DEL EVENTO</h4>
 
-        <form action="evento" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="action" value="publicar">
+        <form action="evento" method="post" enctype="multipart/form-data" id="formCrearEvento">
+            <!-- Campo dinámico para controlar la acción (publicar / borrador) -->
+            <input type="hidden" name="action" id="actionField" value="publicar">
 
-            <div class="row">
-                <div class="col-md-6 d-flex flex-column justify-content-between">
+            <div class="row g-4">
 
-                    <!-- El Organizador solo puede ELEGIR entre las categorías que el
-                         Administrador ya dio de alta. No se muestran botones de
-                         crear/editar/eliminar categoría (eso es exclusivo de Admin). -->
+                <!-- COLUMNA IZQUIERDA: CAMPOS DE TEXTO Y SELECCIÓN -->
+                <div class="col-lg-6 d-flex flex-column justify-content-between">
+
+                    <!-- Categoría -->
                     <div class="mb-3">
-                        <label for="idCategoria" class="form-label fw-bold text-dark m-1">Categoría</label>
+                        <label for="idCategoria" class="form-label fw-bold text-dark mb-1">Categoría</label>
                         <select name="idCategoria" class="form-select p-2 rounded-3" id="idCategoria" required>
                             <option value="" disabled selected>Selecciona una categoría</option>
                             <c:forEach items="${listaCategorias}" var="cat">
@@ -59,15 +51,15 @@
                         </select>
                     </div>
 
+                    <!-- Nombre del Evento -->
                     <div class="mb-3">
-                        <label for="nombre" class="form-label fw-bold text-dark m-1">Nombre del evento</label>
+                        <label for="nombre" class="form-label fw-bold text-dark mb-1">Nombre del evento</label>
                         <input type="text" name="nombre" class="form-control p-2 rounded-3" id="nombre" placeholder="Ingresa el nombre del evento" required>
                     </div>
 
-                    <!-- Igual que categoría: el Organizador solo elige entre los
-                         espacios que el Administrador ya dio de alta. -->
+                    <!-- Espacio / Ubicación -->
                     <div class="mb-3">
-                        <label for="idEspacio" class="form-label fw-bold text-dark m-1">Espacio / Ubicación</label>
+                        <label for="idEspacio" class="form-label fw-bold text-dark mb-1">Espacio / Ubicación</label>
                         <select name="idEspacio" id="idEspacio" class="form-select p-2 rounded-3" required>
                             <option value="" disabled selected>Selecciona un espacio</option>
                             <c:forEach items="${listaEspacios}" var="esp">
@@ -76,24 +68,27 @@
                         </select>
                     </div>
 
+                    <!-- Fecha y hora -->
                     <div class="mb-3">
-                        <label for="fecha" class="form-label fw-bold text-dark m-1">Fecha y hora del evento</label>
+                        <label for="fecha" class="form-label fw-bold text-dark mb-1">Fecha y hora del evento</label>
                         <input type="datetime-local" name="fecha" class="form-control p-2 rounded-3" id="fecha"
                                value="${not empty evento ? fn:substring(fn:replace(evento.fechaHora, ' ', 'T'), 0, 16) : ''}" required>
                     </div>
 
-
+                    <!-- Capacidad Máxima -->
                     <div class="mb-3">
-                        <label for="capacidad" class="form-label fw-bold text-dark m-1">Capacidad máxima</label>
+                        <label for="capacidad" class="form-label fw-bold text-dark mb-1">Capacidad máxima</label>
                         <input type="number" name="capacidad" class="form-control p-2 rounded-3" id="capacidad" placeholder="Ej. 100" required min="1">
                     </div>
 
                 </div>
 
-                <div class="col-md-6 d-flex flex-column">
+                <!-- COLUMNA DERECHA: IMAGEN Y DESCRIPCIÓN -->
+                <div class="col-lg-6 d-flex flex-column">
 
-                    <label class="form-label fw-bold text-dark m-1">Imagen del evento <i class="bi bi-image"></i></label>
-                    <div class="border text-center p-4 rounded-3 bg-white d-flex flex-column align-items-center justify-content-center mb-3" style="border-style: dashed !important; min-height: 250px;">
+                    <!-- Carga de Imagen -->
+                    <label class="form-label fw-bold text-dark mb-1">Imagen del evento <i class="bi bi-image"></i></label>
+                    <div class="border text-center p-4 rounded-3 bg-white d-flex flex-column align-items-center justify-content-center mb-3" style="border-style: dashed !important; border-color: #dee2e6 !important; min-height: 250px;">
 
                         <img id="preview" src="" alt="Previsualización" class="img-fluid rounded-3 mb-3 d-none" style="max-height: 200px; object-fit: cover; width: 100%;">
 
@@ -112,21 +107,23 @@
                         </label>
                     </div>
 
+                    <!-- Descripción -->
                     <div class="mb-3 flex-grow-1 d-flex flex-column">
-                        <label for="descripcion" class="form-label fw-bold text-dark m-1">Descripción del evento</label>
-                        <textarea name="descripcion" id="descripcion" class="form-control p-2 rounded-3 flex-grow-1" placeholder="Describe el evento..." required style="min-height: 120px;"></textarea>
+                        <label for="descripcion" class="form-label fw-bold text-dark mb-1">Descripción del evento</label>
+                        <textarea name="descripcion" id="descripcion" class="form-control p-2 rounded-3 flex-grow-1" placeholder="Describe el evento..." required style="min-height: 120px; resize: none;"></textarea>
                     </div>
 
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end mt-4">
-                <button type="submit" name="action" value="publicar" class="btn text-white fw-bold py-2 px-4"
+            <!-- BOTONES DE ACCIÓN FORMULARIO -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="submit" onclick="document.getElementById('actionField').value='publicar';" class="btn text-white fw-bold py-2 px-4 shadow-sm"
                         style="background-color: #0d8a5f; border-radius: 10px;">
                     <i class="bi bi-send-fill me-2"></i> Publicar evento
                 </button>
-                <button type="submit" name="action" value="borrador" class="btn fw-bold py-2 px-4 ms-2"
-                        style="background-color: #6c757d; border-radius: 10px; color: white;">
+                <button type="submit" onclick="document.getElementById('actionField').value='borrador';" class="btn btn-secondary fw-bold py-2 px-4 shadow-sm"
+                        style="border-radius: 10px;">
                     <i class="bi bi-floppy me-2"></i> Guardar borrador
                 </button>
             </div>
@@ -134,10 +131,31 @@
     </div>
 </div>
 
+<!-- Scripts -->
 <script src="${pageContext.request.contextPath}/js/categorias.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/cierresesion.js"></script>
+
+<!-- Script para la previsualización de la imagen -->
+<script>
+    function previsualizarImagen(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var preview = document.getElementById('preview');
+                var cajaBoton = document.getElementById('cajaBoton');
+                var btnCambiar = document.getElementById('btnCambiar');
+
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+                cajaBoton.classList.add('d-none');
+                btnCambiar.classList.remove('d-none');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 
 </body>
 </html>

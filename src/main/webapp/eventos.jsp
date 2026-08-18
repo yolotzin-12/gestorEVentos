@@ -11,8 +11,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/eventos.css">
+    <link rel="stylesheet" href="css/navbar.css"> <!-- Aquí ya tienes los estilos de tu navbar -->
 
     <style>
+        /* Estilos exclusivos para tarjetas de eventos */
         .tarjeta-evento.evento-finalizado {
             opacity: 0.55;
             filter: grayscale(60%);
@@ -31,59 +33,16 @@
         }
     </style>
 </head>
-<body class="eventos-body d-flex flex-column min-vh-100">
+<body class="eventos-body d-flex flex-column min-vh-100 bg-light">
 
+<!-- ================= NAVBAR SUPERIOR ================= -->
+<jsp:include page="navbar.jsp">
+    <jsp:param name="activePage" value="eventos" />
+</jsp:include>
+
+<!-- ================= CONTENIDO PRINCIPAL ================= -->
 <main class="flex-grow-1">
-
-    <header class="eventos-header">
-        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-            <div class="d-flex align-items-center gap-2">
-                <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-                <img src="img/letras.png" alt="SRAE" style="height:120px;">
-            </div>
-
-            <nav class="eventos-nav">
-                <a href="${pageContext.request.contextPath}/evento" class="activo">
-                    Eventos
-                </a>
-
-                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 2}">
-                    <a href="${pageContext.request.contextPath}/evento?action=misEventos">Mis eventos</a>
-                </c:if>
-
-                <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
-                    <a href="${pageContext.request.contextPath}/usuarios">Usuarios</a>
-                </c:if>
-            </nav>
-
-            <div class="d-flex align-items-center gap-2">
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                    <a href="evento?action=crear" class="btn btn-success btn-sm fw-bold me-2" style="background-color: #0d8a5f; border: none;">
-                        <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
-                    </a>
-                </c:if>
-                <a href="crearPerfil.jsp" class="icono-usuario">
-                    <c:choose>
-                        <c:when test="${not empty sessionScope.usuario.fotoUrl}">
-                            <img src="${sessionScope.usuario.fotoUrl}" alt="Perfil">
-                        </c:when>
-                        <c:otherwise>
-                            <i class="bi bi-person"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </a>
-                <a href="logout" class="btn text-white" style="background-color: #cc0000;" title="Salir">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-
-        </div>
-    </header>
-
-    <hr class="divisor-teal">
-
-    <div class="container">
+    <div class="container mt-4">
 
         <div class="barra-filtros">
             <div class="buscador-evento">
@@ -112,7 +71,7 @@
                                 <c:choose>
                                     <c:when test="${evento.eventoFinalizado}">
                                         <a href="#" class="tarjeta-evento-link d-flex flex-column h-100" style="text-decoration: none; color: inherit;"
-                                           onclick="mostrarEventoFinalizado(event, '${evento.id}', '${fn:escapeXml(evento.nombre)}')">
+                                           onclick="mostrarEventoFinalizado(event, '${evento.id}', '${fn:escapeXml(evento.nombre)}', ${evento.idOrganizador})">
                                             <div class="encabezado-evento">
                                                 <div class="d-flex justify-content-between align-items-start gap-2">
                                                     <h3>${evento.nombre}</h3>
@@ -179,10 +138,9 @@
         </c:choose>
 
     </div>
-
 </main>
 
-<!-- Modal Flotante: Evento ya finalizado -->
+<!-- ================= MODAL ================= -->
 <div class="modal fade" id="modalEventoFinalizado" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-lg">
@@ -199,31 +157,49 @@
             <div class="modal-footer border-0 d-flex justify-content-between bg-light rounded-bottom-4">
                 <button type="button" class="btn btn-secondary px-4 rounded-3" data-bs-dismiss="modal">Entendido</button>
 
-                <%-- BOTÓN ELIMINAR EVENTO PARA EL ORGANIZADOR (Rol 2) O ADMIN (Rol 1) --%>
-                <c:if test="${sessionScope.usuario != null && (sessionScope.usuario.idRol == 1 || sessionScope.usuario.idRol == 2)}">
-                    <a id="btnEliminarEventoModal" href="#" class="btn btn-danger fw-bold rounded-3" onclick="confirmarEliminarModal(event)">
-                        <i class="bi bi-trash-fill me-1"></i> Eliminar evento
-                    </a>
-                </c:if>
+                <%-- El botón se muestra/oculta dinámicamente vía JS, comparando
+                     el dueño del evento con el organizador en sesión --%>
+                <a id="btnEliminarEventoModal" href="#" class="btn btn-danger fw-bold rounded-3" style="display:none;" onclick="confirmarEliminarModal(event)">
+                    <i class="bi bi-trash-fill me-1"></i> Eliminar evento
+                </a>
             </div>
         </div>
     </div>
 </div>
 
+<!-- ================= FOOTER INFERIOR ================= -->
+<jsp:include page="footer.jsp" />
+
+<!-- ================= SCRIPTS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="js/buscador.js"></script>
 <script src="js/categorias.js"></script>
 
 <script>
-    function mostrarEventoFinalizado(event, idEvento, nombreEvento) {
+    // Rol e id del organizador en sesión (null/-1 si no aplica).
+    // Se usan en el modal para decidir si se muestra "Eliminar evento".
+    const ROL_USUARIO = <c:out value="${sessionScope.usuario != null ? sessionScope.usuario.idRol : 0}"/>;
+    const ID_ORGANIZADOR_SESION = <c:out value="${not empty idOrganizadorSesion ? idOrganizadorSesion : -1}"/>;
+
+    function mostrarEventoFinalizado(event, idEvento, nombreEvento, idOrganizadorEvento) {
         event.preventDefault();
 
         document.getElementById('modalNombreEvento').innerText = nombreEvento;
 
         var btnEliminar = document.getElementById('btnEliminarEventoModal');
         if (btnEliminar) {
-            btnEliminar.setAttribute('href', '${pageContext.request.contextPath}/evento?action=delete&id=' + idEvento);
+            // Solo el organizador dueño del evento puede ver el botón.
+            // El admin (rol 1) nunca lo ve.
+            var esDueno = (ROL_USUARIO === 2 && idOrganizadorEvento === ID_ORGANIZADOR_SESION);
+
+            if (esDueno) {
+                btnEliminar.style.display = 'inline-block';
+                btnEliminar.setAttribute('href', '${pageContext.request.contextPath}/evento?action=delete&id=' + idEvento);
+            } else {
+                btnEliminar.style.display = 'none';
+                btnEliminar.removeAttribute('href');
+            }
         }
 
         var modal = new bootstrap.Modal(document.getElementById('modalEventoFinalizado'));
@@ -233,6 +209,7 @@
     function confirmarEliminarModal(e) {
         e.preventDefault();
         const url = e.currentTarget.getAttribute('href');
+        if (!url) return;
         Swal.fire({
             title: '¿Eliminar evento?',
             text: "Esta acción no se puede deshacer.",

@@ -16,29 +16,9 @@
 
 <main class="flex-grow-1">
 
-    <header class="eventos-header">
-        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-
-            <div class="d-flex align-items-center gap-2">
-                <img src="img/logo.png" alt="Logo SRAE" style="height:70px;">
-                <img src="img/letras.png" alt="SRAE" style="height:120px;">            </div>
-
-            <nav class="eventos-nav">
-                <a href="evento" class="activo">Eventos</a>
-                <a href="historialReservas.jsp">Mis reservas</a>
-            </nav>
-
-            <div class="d-flex align-items-center gap-2">
-                <a href="crearPerfil.jsp" class="icono-usuario">
-                    <i class="bi bi-person"></i>
-                </a>
-                <a href="logout" class="btn-logout-eventos">
-                    <i class="bi bi-box-arrow-right"></i>
-                </a>
-            </div>
-
-        </div>
-    </header>
+    <jsp:include page="navbar.jsp">
+        <jsp:param name="activePage" value="inicio" />
+    </jsp:include>
 
     <hr class="divisor-teal">
 

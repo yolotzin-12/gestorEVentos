@@ -7,188 +7,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión - SRAE</title>
 
+    <!-- Hojas de estilo generales -->
+    <link rel="stylesheet" href="css/fooyini.css">
+    <link rel="stylesheet" href="css/pagprin.css">
+
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        body {
-            background-color: #f4f6f8;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-        }
-
-        .main-card {
-            background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            padding: 2rem;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Menú Lateral (Sidebar) */
-        .sidebar-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .sidebar-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #2c3e50;
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-btn:hover {
-            background-color: #f8fafc;
-            color: #162e54;
-        }
-
-        .sidebar-btn.active {
-            background-color: #11294a;
-            color: #ffffff;
-            border-color: #11294a;
-        }
-
-        .sidebar-btn-danger {
-            background-color: #cc0000;
-            color: #ffffff;
-            border: none;
-        }
-
-        .sidebar-btn-danger:hover {
-            background-color: #a30000;
-            color: #ffffff;
-        }
-
-        .section-title {
-            color: #11294a;
-            font-weight: 700;
-            font-size: 1.5rem;
-            border-bottom: 3px solid #0d8a5f;
-            padding-bottom: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .tabla-custom {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .tabla-custom thead {
-            background-color: #f8fafc;
-        }
-
-        .tabla-custom th {
-            color: #11294a;
-            font-weight: 700;
-            padding: 12px 16px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .btn-accion {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
+        /* Fuerza el color azul bajito en las celdas del encabezado (Th) */
+        #tablaEventos thead th {
+            background-color: #e8f0fe !important; /* Azul bajito suave */
+            color: #1b365d !important;             /* Texto azul marino */
+            font-weight: 700 !important;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 2px solid #cbd5e1 !important;
         }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container py-4">
+<!-- Header Superior -->
+<jsp:include page="navbar.jsp">
+    <jsp:param name="activePage" value="eventos" />
+</jsp:include>
 
-    <!-- Header Superior -->
-    <header class="d-flex justify-content-between align-items-center mb-3 px-2">
-        <div class="d-flex align-items-center gap-3">
-            <img src="img/logo.png" alt="Logo SRAE" style="height: 50px;">
-            <div>
-                <h5 class="fw-bold m-0" style="color: #11294a; letter-spacing: 0.5px;">SRAE</h5>
-                <small class="text-muted fw-semibold" style="font-size: 0.75rem;">SISTEMA DE RESERVACIÓN Y ADMINISTRACIÓN DE EVENTOS</small>
-            </div>
-        </div>
-        <div>
-            <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger btn-sm rounded-3 px-3 py-2" title="Cerrar sesión" onclick="confirmarCierreSesion(event)">
-                <i class="bi bi-box-arrow-right fs-6"></i>
-            </a>
-        </div>
-    </header>
+<div class="container my-4">
 
-    <!-- Contenido Principal -->
-    <div class="main-card">
-        <div class="row g-4">
-
-            <!-- COLUMNA IZQUIERDA: MENÚ LATERAL -->
-            <div class="col-lg-3 col-md-4">
-                <nav class="sidebar-menu">
-                    <%-- Inicio te lleva al catálogo público --%>
-                    <a href="${pageContext.request.contextPath}/evento" class="sidebar-btn">
-                        <i class="bi bi-house-door fs-5"></i>
-                        <span>Inicio</span>
-                    </a>
-
-                    <%-- Eventos (gestion carga la lista completa en lugar de misEventos) --%>
-                    <a href="${pageContext.request.contextPath}/evento?action=gestion" class="sidebar-btn active">
-                        <i class="bi bi-calendar-event fs-5"></i>
-                        <span>Eventos</span>
-                    </a>
-
-                    <%-- Usuarios solo para Administrador --%>
-                    <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
-                        <a href="${pageContext.request.contextPath}/usuarios" class="sidebar-btn">
-                            <i class="bi bi-people fs-5"></i>
-                            <span>Usuarios</span>
-                        </a>
-                    </c:if>
-
-                    <%-- Mi perfil --%>
-                    <a href="${pageContext.request.contextPath}/crearPerfil.jsp" class="sidebar-btn">
-                        <i class="bi bi-person fs-5"></i>
-                        <span>Mi perfil</span>
-                    </a>
-
-                    <%-- Salir --%>
-                    <a href="${pageContext.request.contextPath}/logout" class="sidebar-btn sidebar-btn-danger mt-2" onclick="confirmarCierreSesion(event)">
-                        <i class="bi bi-box-arrow-right fs-5"></i>
-                        <span>Salir</span>
-                    </a>
-                </nav>
-            </div>
-
-            <!-- COLUMNA DERECHA: CONTENIDO DE GESTIÓN -->
-            <div class="col-lg-9 col-md-8">
+    <!-- Tarjeta Principal -->
+    <div class="card p-4 shadow-sm border-0 rounded-4 bg-white">
+        <div class="row">
+            <div class="col-12">
 
                 <div id="seccion-eventos">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="section-title m-0">
+
+                    <!-- Encabezado superior -->
+                    <div class="d-flex justify-content-between align-items-center pb-2 mb-4" style="border-bottom: 3px solid #0d8a5f;">
+                        <h4 class="fw-bold m-0" style="color: #1a1a1a;">
                             ${sessionScope.usuario.idRol == 1 ? 'GESTIÓN GENERAL DE EVENTOS' : 'EVENTOS'}
-                        </h3>
+                        </h4>
 
-                        <div class="d-flex gap-2">
-                            <a href="${pageContext.request.contextPath}/evento?action=crear" class="btn btn-success btn-sm fw-bold px-3 py-2" style="background-color: #0d8a5f; border: none;">
-                                <i class="bi bi-plus-circle me-1"></i> Nuevo Evento
-                            </a>
-
-                            <c:if test="${sessionScope.usuario.idRol != 1 && not empty listaEventos}">
-                                <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2" onclick="confirmarLimpiar(event)">
-                                    <i class="bi bi-broom me-1"></i> Limpiar
-                                </a>
-                            </c:if>
-                        </div>
+                        <%-- El admin (idRol == 1) NO puede limpiar historial, solo gestiona/visualiza --%>
+                        <c:if test="${sessionScope.usuario.idRol != 1}">
+                            <div class="d-flex gap-2 mb-1">
+                                <c:if test="${not empty listaEventos}">
+                                    <a href="${pageContext.request.contextPath}/evento?action=limpiarHistorial" id="btnLimpiarHistorial" class="btn btn-outline-danger btn-sm fw-semibold px-3 py-2 rounded-3" onclick="confirmarLimpiar(event)">
+                                        <i class="bi bi-broom me-1"></i> Limpiar
+                                    </a>
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
 
+                    <!-- Contenido / Tabla -->
                     <c:choose>
                         <c:when test="${empty listaEventos}">
                             <div class="text-center py-5 border rounded-4 bg-light">
@@ -198,67 +72,132 @@
                         </c:when>
 
                         <c:otherwise>
-                            <div class="table-responsive">
-                                <table class="table align-middle bg-white border tabla-custom">
+                            <div class="table-responsive shadow-sm border rounded-3">
+                                <table class="table table-hover align-middle m-0 bg-white" id="tablaEventos">
+
+                                    <!-- ENCABEZADO CON AZUL BAJITO -->
                                     <thead>
                                     <tr>
-                                        <th>Evento</th>
-                                        <th>Estado</th>
-                                        <th>Fecha</th>
-                                        <th>Cupos</th>
-                                        <th class="text-center">Reservas</th>
-                                        <th class="text-center">Acciones</th>
+                                        <th scope="col" class="py-3 px-3">Evento</th>
+                                        <th scope="col" class="py-3">Estado</th>
+                                        <th scope="col" class="py-3">Fecha</th>
+
+                                        <!-- Ocultar estas columnas si es Administrador (idRol == 1) -->
+                                        <c:if test="${sessionScope.usuario.idRol != 1}">
+                                            <th scope="col" class="py-3">Cupos</th>
+                                            <th scope="col" class="text-center py-3">Reservas</th>
+                                        </c:if>
+                                        <th scope="col" class="text-center py-3">Acciones</th>
                                     </tr>
                                     </thead>
+
                                     <tbody>
                                     <c:forEach items="${listaEventos}" var="evento">
                                         <tr>
-                                            <td class="fw-bold" style="color: #11294a;">${evento.nombre}</td>
-                                            <td>
+                                            <!-- Columna 1: Evento -->
+                                            <td class="px-3 py-3">
+                                                <div class="fw-bold text-dark" style="font-size: 0.98rem;">${evento.nombre}</div>
+                                            </td>
+
+                                            <!-- Columna 2: Estado -->
+                                            <td class="py-3">
                                                 <c:choose>
                                                     <c:when test="${evento.eventoFinalizado}">
-                                                        <span class="badge bg-secondary px-2 py-1">Finalizado</span>
+                                                        <span class="badge bg-secondary px-3 py-2 rounded-pill">Finalizado</span>
                                                     </c:when>
                                                     <c:when test="${evento.estado == 'Cancelado'}">
-                                                        <span class="badge bg-danger px-2 py-1">Cancelado</span>
+                                                        <span class="badge bg-danger px-3 py-2 rounded-pill">Cancelado</span>
                                                     </c:when>
                                                     <c:when test="${evento.estado == 'Borrador'}">
-                                                        <span class="badge bg-warning text-dark px-2 py-1">Borrador</span>
+                                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Borrador</span>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <span class="badge bg-success px-2 py-1">Disponible</span>
+                                                        <span class="badge px-3 py-2 rounded-pill text-white" style="background-color: #0d8a5f !important;">Disponible</span>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td class="text-nowrap" style="font-size: 0.9rem;">${evento.fechaHora}</td>
-                                            <td style="font-size: 0.9rem;">
-                                                <span class="fw-bold">${evento.capacidadDisponible}</span> / ${evento.capacidadMaxima}
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge ${evento.totalReservas > 0 ? 'bg-primary' : 'bg-light text-dark border'} px-2 py-1">
-                                                    <i class="bi bi-people-fill me-1"></i>${evento.totalReservas}
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-1">
-                                                    <a href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}" class="btn btn-outline-secondary btn-accion" title="Ver Detalle">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
 
-                                                    <c:if test="${!evento.eventoFinalizado && evento.estado != 'Cancelado'}">
-                                                        <a href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}" class="btn btn-outline-primary btn-accion" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <a href="${pageContext.request.contextPath}/evento?action=cancelar&id=${evento.id}" class="btn btn-outline-warning text-dark btn-accion" title="Cancelar Evento" onclick="confirmarCancelar(event)">
-                                                            <i class="bi bi-slash-circle"></i>
-                                                        </a>
-                                                    </c:if>
+                                            <!-- Columna 3: Fecha -->
+                                            <td class="py-3 text-nowrap text-secondary fw-medium" style="font-size: 0.95rem;">
+                                                    ${evento.fechaHora}
+                                            </td>
 
-                                                    <c:if test="${sessionScope.usuario.idRol == 1 || evento.eventoFinalizado || evento.estado == 'Cancelado'}">
-                                                        <a href="${pageContext.request.contextPath}/evento?action=delete&id=${evento.id}" class="btn btn-outline-danger btn-accion" title="Eliminar" onclick="confirmarEliminarEvento(event)">
-                                                            <i class="bi bi-trash"></i>
-                                                        </a>
-                                                    </c:if>
+                                            <!-- Columnas adicionales que solo verán usuarios NO administradores -->
+                                            <c:if test="${sessionScope.usuario.idRol != 1}">
+                                                <!-- Cupos -->
+                                                <td class="py-3 text-muted fw-medium" style="font-size: 0.95rem;">
+                                                    <span class="fw-bold text-dark">${evento.capacidadDisponible}</span> / ${evento.capacidadMaxima}
+                                                </td>
+
+                                                <!-- Reservas -->
+                                                <td class="py-3 text-center">
+                                                    <span class="badge ${evento.totalReservas > 0 ? 'bg-primary' : 'bg-light text-dark border'} px-2 py-1 rounded-pill">
+                                                        <i class="bi bi-people-fill me-1"></i>${evento.totalReservas}
+                                                    </span>
+                                                </td>
+                                            </c:if>
+
+                                            <!-- Acciones (Menú Desplegable Dropdown) -->
+                                            <td class="py-3 text-center">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-light border shadow-sm rounded-3 dropdown-toggle fw-semibold text-secondary px-3"
+                                                            type="button"
+                                                            id="dropdownMenuAcciones${evento.id}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                        <i class="bi bi-gear-fill me-1"></i> Acciones
+                                                    </button>
+
+                                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-1" aria-labelledby="dropdownMenuAcciones${evento.id}">
+
+                                                        <!-- Opción: Ver Detalle (visible para todos, incluido admin) -->
+                                                        <li>
+                                                            <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
+                                                               href="${pageContext.request.contextPath}/evento?action=detalle&id=${evento.id}">
+                                                                <i class="bi bi-eye-fill me-2 text-info fs-6"></i> Ver Detalle
+                                                            </a>
+                                                        </li>
+
+                                                            <%-- Editar / Cancelar: SOLO organizador (idRol == 2) dueño del evento. --%>
+                                                        <c:if test="${sessionScope.usuario.idRol != 1
+                                                                      && sessionScope.usuario.idRol == 2
+                                                                      && evento.idOrganizador == idOrganizadorSesion
+                                                                      && !evento.eventoFinalizado
+                                                                      && evento.estado != 'Cancelado'}">
+                                                            <li><hr class="dropdown-divider my-1"></li>
+
+                                                            <li>
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium"
+                                                                   href="${pageContext.request.contextPath}/evento?action=editar&id=${evento.id}">
+                                                                    <i class="bi bi-pencil-square me-2 text-primary fs-6"></i> Editar Evento
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-secondary fw-medium btn-cancelar-evento"
+                                                                   href="${pageContext.request.contextPath}/evento?action=cancelar&id=${evento.id}"
+                                                                   onclick="confirmarCancelar(event)">
+                                                                    <i class="bi bi-slash-circle-fill me-2 text-warning fs-6"></i> Cancelar Evento
+                                                                </a>
+                                                            </li>
+                                                        </c:if>
+
+                                                            <%-- Eliminar: SOLO organizador (idRol == 2) dueño del evento --%>
+                                                        <c:if test="${sessionScope.usuario.idRol != 1
+                                                                      && sessionScope.usuario.idRol == 2
+                                                                      && evento.idOrganizador == idOrganizadorSesion
+                                                                      && (evento.eventoFinalizado || evento.estado == 'Cancelado')}">
+                                                            <li><hr class="dropdown-divider my-1"></li>
+                                                            <li>
+                                                                <a class="dropdown-item py-2 d-flex align-items-center text-danger fw-medium btn-eliminar-evento"
+                                                                   href="${pageContext.request.contextPath}/evento?action=delete&id=${evento.id}"
+                                                                   onclick="confirmarEliminarEvento(event)">
+                                                                    <i class="bi bi-trash3-fill me-2 text-danger fs-6"></i> Eliminar Registro
+                                                                </a>
+                                                            </li>
+                                                        </c:if>
+
+                                                    </ul>
                                                 </div>
                                             </td>
                                         </tr>
@@ -271,7 +210,6 @@
                 </div>
 
             </div>
-
         </div>
     </div>
 
@@ -284,21 +222,69 @@
 
 <script>
     function confirmarCancelar(e) {
-        if (!confirm('¿Estás seguro de que deseas cancelar este evento?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+
+        Swal.fire({
+            title: 'Cancelar evento',
+            text: '¿Estás seguro de que deseas cancelar este evento?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 
     function confirmarEliminarEvento(e) {
-        if (!confirm('¿Deseas eliminar este evento definitivamente?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+
+        Swal.fire({
+            title: 'Eliminar registro',
+            text: '¿Deseas eliminar este evento definitivamente? Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 
     function confirmarLimpiar(e) {
-        if (!confirm('¿Deseas limpiar el historial de eventos cancelados y finalizados?')) {
-            e.preventDefault();
-        }
+        e.preventDefault();
+        const url = e.currentTarget.getAttribute('href');
+
+        Swal.fire({
+            title: 'Limpiar historial',
+            text: '¿Deseas limpiar el historial de eventos cancelados y finalizados?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, limpiar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true,
+            customClass: { popup: 'rounded-4' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 </script>
 
