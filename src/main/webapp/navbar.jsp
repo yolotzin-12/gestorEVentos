@@ -83,7 +83,8 @@
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/evento?action=crear">Gestión de categorias y ubicaciones</a>                    </li>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/evento?action=crear">Gestión de categorias y ubicaciones</a>
+                    </li>
                 </c:if>
 
                 <c:if test="${sessionScope.usuario != null && sessionScope.usuario.idRol == 1}">
@@ -121,6 +122,7 @@
                     </c:choose>
                 </a>
 
+                <!-- El botón que activa el modal -->
                 <a href="#" data-bs-toggle="modal" data-bs-target="#modalConfirmarLogout" class="nav-icon-logout shadow-sm d-flex align-items-center justify-content-center text-decoration-none" title="Cerrar sesión">
                     <i class="bi bi-box-arrow-right text-white fs-5"></i>
                 </a>
@@ -129,22 +131,7 @@
     </div>
 </nav>
 
-<div class="modal fade" id="modalConfirmarLogout" tabindex="-1" aria-labelledby="modalConfirmarLogoutLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalConfirmarLogoutLabel">Cerrar sesión</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                ¿Estás seguro de que quieres cerrar sesión?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger">Cerrar sesión</a>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- IMPORTACIÓN DEL MODAL -->
+<jsp:include page="logoutModal.jsp" />
 
 <script src="${pageContext.request.contextPath}/js/navbar.js"></script>
