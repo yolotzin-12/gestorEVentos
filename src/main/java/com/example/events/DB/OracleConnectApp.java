@@ -38,11 +38,8 @@ public class OracleConnectApp {
                 // Ruta dinámica para probar localmente en Windows
                 WALLET_LOCATION = new File(OracleConnectApp.class.getClassLoader().getResource("wallet").toURI()).getAbsolutePath();
             } else {
-                // Ruta estática para producción en el servidor Linux (Tomcat)
-                // *Asegúrate de que esta carpeta exista en tu servidor Linux*
-                WALLET_LOCATION = "/var/lib/tomcat/wallet";
+                WALLET_LOCATION = "/opt/oracle/wallet";
             }
-
             System.setProperty("oracle.net.tns_admin", WALLET_LOCATION);
 
         } catch (Exception e) {
