@@ -1,22 +1,55 @@
 package com.example.events.DB;
+
 import java.io.File;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+
 public class OracleConnectApp {
-    private static final String JDBC_URL = "jdbc:oracle:thin:@zna2k9jj9m6dqdww_medium";
-    private static final String USERNAME = "ADMIN";
-    private static final String PASSWORD = "Silvanaescamilla170707@";
-    private static final String WALLET_LOCATION;
+
+    // Las variables ahora no tienen valor por defecto, se llenarán dinámicamente
+    private static String JDBC_URL;
+    private static String USERNAME;
+    private static String PASSWORD;
+    private static String WALLET_LOCATION;
+
     static {
         try {
-            WALLET_LOCATION = new File( OracleConnectApp.class.getClassLoader().getResource("wallet").toURI() ).getAbsolutePath();
+            // 1. Cargar el archivo credentials.properties
+            InputStream input = OracleConnectApp.class.getClassLoader().getResourceAsStream("credentials.properties");
+            if (input == null) {
+                throw new RuntimeException("No se encontró el archivo credentials.properties en la carpeta resources");
+            }
+
+            Properties config = new Properties();
+            config.load(input);
+
+            // 2. Asignar los valores leídos a las variables
+            JDBC_URL = config.getProperty("db.url");
+            USERNAME = config.getProperty("db.user");
+            PASSWORD = config.getProperty("db.password");
+
+            // 3. Detectar el Sistema Operativo para la ruta de la Wallet
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("win")) {
+                // Ruta dinámica para probar localmente en Windows
+                WALLET_LOCATION = new File(OracleConnectApp.class.getClassLoader().getResource("wallet").toURI()).getAbsolutePath();
+            } else {
+                // Ruta estática para producción en el servidor Linux (Tomcat)
+                // *Asegúrate de que esta carpeta exista en tu servidor Linux*
+                WALLET_LOCATION = "/var/lib/tomcat/wallet";
+            }
+
             System.setProperty("oracle.net.tns_admin", WALLET_LOCATION);
-        }
-        catch (Exception e) { throw new RuntimeException("No se pudo ubicar la carpeta wallet", e);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error fatal: No se pudo configurar la conexión a la base de datos", e);
         }
     }
+
     public static Connection getConnection() throws SQLException {
         // Forzar a Tomcat a cargar el driver de Oracle
         try {
