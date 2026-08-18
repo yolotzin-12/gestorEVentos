@@ -213,11 +213,34 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     @Override
     public boolean delete(Integer id) {
-        String sql = "DELETE FROM EVENTO WHERE id_evento = ?";
-        try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+        String sqlReservas = "DELETE FROM RESERVA WHERE id_evento = ?";
+        String sqlEvento = "DELETE FROM EVENTO WHERE id_evento = ?";
+
+        try (Connection con = OracleConnectApp.getConnection()) {
+            con.setAutoCommit(false);
+
+            try (PreparedStatement psR = con.prepareStatement(sqlReservas);
+                 PreparedStatement psE = con.prepareStatement(sqlEvento)) {
+
+                // 1. Borra las reservas vinculadas primero
+                psR.setInt(1, id);
+                psR.executeUpdate();
+
+                // 2. Borra el evento
+                psE.setInt(1, id);
+                int filasAfectadas = psE.executeUpdate();
+
+                con.commit();
+                return filasAfectadas > 0;
+
+            } catch (SQLException ex) {
+                con.rollback();
+                ex.printStackTrace();
+                return false;
+            } finally {
+                con.setAutoCommit(true);
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
@@ -226,11 +249,33 @@ public class EventoDao implements Dao<Evento, Integer> {
 
     // Elimina eventos pasados o cancelados pertenecientes a un organizador específico
     public boolean limpiarHistorialOrganizador(int idOrganizador) {
-        String sql = "DELETE FROM EVENTO WHERE id_organizador = ? AND (estado = 'Cancelado' OR fecha_hora < SYSTIMESTAMP)";
-        try (Connection con = OracleConnectApp.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idOrganizador);
-            return ps.executeUpdate() > 0;
+        String sqlReservas = "DELETE FROM RESERVA WHERE id_evento IN " +
+                "(SELECT id_evento FROM EVENTO WHERE id_organizador = ? AND (estado = 'Cancelado' OR fecha_hora < SYSTIMESTAMP))";
+        String sqlEvento = "DELETE FROM EVENTO WHERE id_organizador = ? AND (estado = 'Cancelado' OR fecha_hora < SYSTIMESTAMP)";
+
+        try (Connection con = OracleConnectApp.getConnection()) {
+            con.setAutoCommit(false);
+
+            try (PreparedStatement psR = con.prepareStatement(sqlReservas);
+                 PreparedStatement psE = con.prepareStatement(sqlEvento)) {
+
+                psR.setInt(1, idOrganizador);
+                psR.executeUpdate();
+
+                psE.setInt(1, idOrganizador);
+                int filas = psE.executeUpdate();
+
+                con.commit();
+                return filas > 0;
+
+            } catch (SQLException ex) {
+                con.rollback();
+                ex.printStackTrace();
+                return false;
+            } finally {
+                con.setAutoCommit(true);
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
