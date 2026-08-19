@@ -1,5 +1,6 @@
 package com.example.events.controller.filters;
 
+import com.example.events.model.Usuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -22,6 +23,7 @@ public class FiltroAutenticacion extends HttpFilter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
+        // Evitar caché en el navegador
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
@@ -32,10 +34,11 @@ public class FiltroAutenticacion extends HttpFilter {
         HttpSession session = request.getSession(false);
         boolean loggedIn = (session != null && session.getAttribute("usuario") != null);
 
+        // 1. Rutas públicas
         boolean isLoginJsp = requestURI.endsWith("login.jsp");
         boolean isRegistroJsp = requestURI.endsWith("registro.jsp");
         boolean isRecuperarJsp = requestURI.endsWith("recuperarContra.jsp");
-        boolean isRecuperarServlet  = requestURI.equals(contextPath + "/recuperar");
+        boolean isRecuperarServlet = requestURI.equals(contextPath + "/recuperar");
         boolean isRestablecerServlet = requestURI.equals(contextPath + "/restablecer");
         boolean isLoginServlet = requestURI.equals(contextPath + "/login");
         boolean isRegisterServlet = requestURI.equals(contextPath + "/register");
@@ -44,12 +47,47 @@ public class FiltroAutenticacion extends HttpFilter {
         boolean esRutaPublica = isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet || isStaticResource || isRecuperarServlet || isRestablecerServlet;
 
         if (loggedIn) {
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            int idRol = (usuario != null) ? usuario.getIdRol() : 0;
+
+            // --- REGLAS BASADAS EN EL NAVBAR ---
+
+            // Analizar rutas
+            boolean vaAUsuarios = requestURI.contains("/usuarios");
+            boolean vaAReserva = requestURI.contains("/reserva");
+            boolean esRutaAdminGral = requestURI.contains("/admin") || requestURI.contains("Admin");
+
+            // Analizar parámetros para las acciones del Servlet de eventos
+            String action = request.getParameter("action");
+            boolean vaAGestionarOCrear = "gestion".equals(action) || "crear".equals(action);
+            boolean vaAEvento = requestURI.contains("/evento");
+
+            // Validaciones
             if (isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet) {
                 response.sendRedirect(contextPath + "/evento");
-            } else {
+            }
+            // 🚫 RESTRICCIÓN: Gestión de Usuarios (Solo Administrador - Rol 1)
+            else if (vaAUsuarios && idRol != 1) {
+                response.sendRedirect(contextPath + "/evento");
+            }
+            // 🚫 RESTRICCIÓN: Gestión y Creación de eventos (Administrador 1 y Organizador 2)
+            else if (vaAEvento && vaAGestionarOCrear && (idRol != 1 && idRol != 2)) {
+                response.sendRedirect(contextPath + "/evento");
+            }
+            // 🚫 RESTRICCIÓN: Mis reservas (Solo Asistente - Rol 3)
+            else if (vaAReserva && idRol != 3) {
+                response.sendRedirect(contextPath + "/evento");
+            }
+            // 🚫 RESTRICCIÓN: Rutas genéricas de administración
+            else if (esRutaAdminGral && idRol != 1) {
+                response.sendRedirect(contextPath + "/evento");
+            }
+            else {
                 chain.doFilter(req, res);
             }
+
         } else {
+            // Usuario no logueado
             if (esRutaPublica) {
                 chain.doFilter(req, res);
             } else {
