@@ -67,8 +67,8 @@
 
                                 <p class="text-secondary mb-3">
                                     <i class="bi bi-people-fill me-2" style="color:#0d8a5f;"></i>
-                                    <strong>Aforo máximo:</strong>
-                                    <c:out value="${evento.capacidadDisponible}" default="${evento.capacidadMaxima}" /> / <c:out value="${evento.capacidadMaxima}" default="N/A" /> personas
+                                    <strong>Reservas:</strong>
+                                    <c:out value="${evento.capacidadMaxima - evento.capacidadDisponible}" default="0" /> / <c:out value="${evento.capacidadMaxima}" default="N/A" /> personas
                                 </p>
                             </div>
 
