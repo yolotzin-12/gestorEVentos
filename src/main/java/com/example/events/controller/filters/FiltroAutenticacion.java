@@ -1,5 +1,6 @@
 package com.example.events.controller.filters;
 
+import com.example.events.model.Usuario;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -32,10 +33,11 @@ public class FiltroAutenticacion extends HttpFilter {
         HttpSession session = request.getSession(false);
         boolean loggedIn = (session != null && session.getAttribute("usuario") != null);
 
+        // 1. Rutas públicas
         boolean isLoginJsp = requestURI.endsWith("login.jsp");
         boolean isRegistroJsp = requestURI.endsWith("registro.jsp");
         boolean isRecuperarJsp = requestURI.endsWith("recuperarContra.jsp");
-        boolean isRecuperarServlet  = requestURI.equals(contextPath + "/recuperar");
+        boolean isRecuperarServlet = requestURI.equals(contextPath + "/recuperar");
         boolean isRestablecerServlet = requestURI.equals(contextPath + "/restablecer");
         boolean isLoginServlet = requestURI.equals(contextPath + "/login");
         boolean isRegisterServlet = requestURI.equals(contextPath + "/register");
@@ -44,12 +46,49 @@ public class FiltroAutenticacion extends HttpFilter {
         boolean esRutaPublica = isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet || isStaticResource || isRecuperarServlet || isRestablecerServlet;
 
         if (loggedIn) {
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            int idRol = (usuario != null) ? usuario.getIdRol() : 0;
+
+
+            boolean vaAUsuarios = requestURI.contains("/usuarios");
+            boolean vaAReserva = requestURI.contains("/reserva");
+            boolean esRutaAdminGral = requestURI.contains("/admin");
+
+            String action = request.getParameter("action");
+            boolean vaAGestionarOCrear = "gestion".equals(action) || "crear".equals(action);
+            boolean vaAEvento = requestURI.contains("/evento");
+
+            // Acciones de autoservicio en /usuarios: cualquier usuario logueado
+            // puede editar SU propio perfil (foto, teléfono, contraseña).
+            boolean esAutoservicioPerfil = "actualizarDatos".equals(action) || "cambiarPassword".equals(action);
+
             if (isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet) {
                 response.sendRedirect(contextPath + "/evento");
-            } else {
+            }
+            else if (vaAUsuarios && idRol != 1 && !esAutoservicioPerfil) {
+                response.sendRedirect(contextPath + "/evento");
+                return; // Corta la ejecución aquí
+            }
+            else if (vaAEvento && vaAGestionarOCrear && (idRol != 1 && idRol != 2)) {
+                response.sendRedirect(contextPath + "/evento");
+                return; // Corta la ejecución aquí
+            }
+            else if (vaAReserva && idRol != 3) {
+                response.sendRedirect(contextPath + "/evento");
+                return; // Corta la ejecución aquí
+            }
+            else if (esRutaAdminGral && idRol != 1) {
+                response.sendRedirect(contextPath + "/evento");
+                return; // Corta la ejecución aquí
+            }
+            else {
+                // Si pasa todas las pruebas, lo deja continuar normalmente a su destino
                 chain.doFilter(req, res);
             }
+
+
         } else {
+            // Usuario no logueado
             if (esRutaPublica) {
                 chain.doFilter(req, res);
             } else {
