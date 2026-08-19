@@ -52,16 +52,20 @@ public class FiltroAutenticacion extends HttpFilter {
 
             boolean vaAUsuarios = requestURI.contains("/usuarios");
             boolean vaAReserva = requestURI.contains("/reserva");
-            boolean esRutaAdminGral = requestURI.contains("/admin") || requestURI.contains("Admin");
+            boolean esRutaAdminGral = requestURI.contains("/admin");
 
             String action = request.getParameter("action");
             boolean vaAGestionarOCrear = "gestion".equals(action) || "crear".equals(action);
             boolean vaAEvento = requestURI.contains("/evento");
 
+            // Acciones de autoservicio en /usuarios: cualquier usuario logueado
+            // puede editar SU propio perfil (foto, teléfono, contraseña).
+            boolean esAutoservicioPerfil = "actualizarDatos".equals(action) || "cambiarPassword".equals(action);
+
             if (isLoginJsp || isRegistroJsp || isRecuperarJsp || isLoginServlet || isRegisterServlet) {
                 response.sendRedirect(contextPath + "/evento");
             }
-            else if (vaAUsuarios && idRol != 1) {
+            else if (vaAUsuarios && idRol != 1 && !esAutoservicioPerfil) {
                 response.sendRedirect(contextPath + "/evento");
                 return; // Corta la ejecución aquí
             }
