@@ -16,12 +16,11 @@ El sistema resuelve la complejidad logística de eventos masivos:
 
  Nombre Completo | Matrícula | Usuario de GitHub |
 
- **Armenta Galindo Axel Ernesto** | `20253ds115` | [@axel-ds](https://github.com/axel-ds) |
- **Castañeda Mendoza Emely Darian** | `20253ds093` | [@20253ds093-collab](https://github.com/20253ds093-collab) |
- **Escamilla Carrillo Silvana Lizeth** | `20253DS102` | [@Silvana-es](https://github.com/Silvana-es) |
- **Miranda Diaz Vanessa Alejandra** | `20253ds117` | [@Vanessa-Mira](https://github.com/Vanessa-Mira) |
- **Omaña Silva Alondra Yolotzin** | `20253ds154` | [@yolotzin-12](https://github.com/yolotzin-12) |
- **Pardo Diaz Alexa** | `20253ds109` | [@alexyafk](https://github.com/alexyafk) |
+Armenta Galindo Axel Ernesto | `20253ds115` | [@axel-ds](https://github.com/axel-ds) | Castañeda Mendoza Emely Darian** | `20253ds093` | [@20253ds093-collab](https://github.com/20253ds093-collab) |
+Escamilla Carrillo Silvana Lizeth | `20253DS102` | [@Silvana-es](https://github.com/Silvana-es) |
+Miranda Diaz Vanessa Alejandra  | `20253ds117` | [@Vanessa-Mira](https://github.com/Vanessa-Mira) |
+Omaña Silva Alondra Yolotzin | `20253ds154` | [@yolotzin-12](https://github.com/yolotzin-12) |
+Pardo Diaz Alexa | `20253ds109` | [@alexyafk](https://github.com/alexyafk) |
 
 ##  Funcionalidades Principales
 
